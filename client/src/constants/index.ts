@@ -37,8 +37,8 @@ export const EXPENSE_BACKGROUNDS: readonly string[] = [
 
 // todo
 /** Important => choose app status: inProduction = true | false */
-const inProduction: boolean = false;
+const inProduction: boolean = true;
 
 export const API_BASE_URL = inProduction
-  ? "https://taskproserver.vercel.app"
+  ? "https://moneyguardserver.vercel.app"
   : "http://localhost:3000";

@@ -8,10 +8,9 @@ async function sendEmail(user: { name: string; email: string }, data: string) {
       auth: { user: EMAIL, pass: PASSWORD },
     });
 
-    // todo
     const recoveryLink = IN_DEVELOPMENT
       ? `http://localhost:5173/reset-password?validationToken=${data}`
-      : `https://taskpro-beryl.vercel.app/reset-password?validationToken=${data}`;
+      : `https://moneyguard-xi.vercel.app//reset-password?validationToken=${data}`;
 
     const message = {
       from: EMAIL,
