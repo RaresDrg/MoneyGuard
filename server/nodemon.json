@@ -1,0 +1,5 @@
+{
+  "ext": "ts",
+  "exec": "tsx --inspect ./src/server.ts",
+  "ignore": ["node_modules", "dist"]
+}

@@ -1,0 +1,87 @@
+@import "modern-normalize";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+@import "animate.css";
+@import "tippy.js/dist/tippy.css";
+@import "tippy.js/themes/material.css";
+@import "react-toastify/dist/ReactToastify.css";
+@import "react-datepicker/dist/react-datepicker.css";
+
+:root {
+  --font-family: Poppins, Arial, Helvetica, sans-serif;
+
+  --textColor: #fbfbfb;
+  --errorColor: #ff868d;
+
+  --incomeColor: #ffb627;
+  --expenseColor: #ff868d;
+
+  --transition: all 0.35s ease-in-out;
+  /* --transition: all 10.35s ease-in-out; */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+body {
+  font-family: var(--font-family);
+}
+
+body:has(.modal) {
+  pointer-events: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+input {
+  appearance: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  background-color: transparent;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  appearance: none;
+}
+
+select {
+  width: 100%;
+  border: none;
+  outline: none;
+  appearance: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+@keyframes grayscaleToColor {
+  0% {
+    filter: grayscale(100%) brightness(20%);
+  }
+  50% {
+    filter: grayscale(0%) brightness(50%);
+  }
+  100% {
+    filter: grayscale(100%) brightness(20%);
+  }
+}
