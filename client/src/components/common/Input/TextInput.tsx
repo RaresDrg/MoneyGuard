@@ -10,7 +10,7 @@ type Props = {
 };
 
 const TextInput = ({ className, id, name, placeholder, icon }: Props) => {
-  const { errors, touched } = useFormikContext<{ [name]: string }>();
+  const { errors, touched } = useFormikContext<Record<string, string>>();
   const onError = !!(errors[name] && touched[name]);
 
   return (

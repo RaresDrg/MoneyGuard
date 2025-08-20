@@ -15,9 +15,8 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { errors, touched, values, setFieldValue } = useFormikContext<{
-    [name]: string;
-  }>();
+  const { errors, touched, values, setFieldValue } =
+    useFormikContext<Record<string, string>>();
   const onError = !!(errors[name] && touched[name]);
   const showToggleIcon = !!values[name]?.length;
 

@@ -41,7 +41,7 @@ export const PAGE_SIZE = 10;
 
 // todo
 /** Important => choose app status: inProduction = true | false */
-const inProduction: boolean = false;
+const inProduction: boolean = true;
 
 export const API_BASE_URL = inProduction
   ? "https://moneyguardserver.vercel.app"

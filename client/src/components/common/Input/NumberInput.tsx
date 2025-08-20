@@ -8,7 +8,7 @@ type Props = {
 };
 
 const NumberInput = ({ className, id, name, placeholder }: Props) => {
-  const { errors, touched } = useFormikContext<{ [name]: string }>();
+  const { errors, touched } = useFormikContext<Record<string, string>>();
   const onError = !!(errors[name] && touched[name]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
