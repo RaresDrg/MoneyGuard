@@ -2,8 +2,13 @@ import { Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import type { UserType, TransactionType } from "../app.types.js";
 import { envVariables } from "../config/index.js";
+import { TRANSACTION_CATEGORIES } from "../constants/index.js";
+import type {
+  UserType,
+  TransactionType,
+  TransactionAction,
+} from "../app.types.js";
 
 export function sendSuccessResponse(
   res: Response,
@@ -88,50 +93,37 @@ export function selectUserProperties(user: UserType) {
   return {
     email: user.email,
     name: user.name,
+    balance: user.balance,
   };
 }
 
-export function getTransactionCategories() {
-  return {
-    income: ["Income"],
-    expense: [
-      "Main expenses",
-      "Products",
-      "Car",
-      "Self care",
-      "Child care",
-      "Household products",
-      "Education",
-      "Leisure",
-      "Entertainment",
-      "Other expenses",
-    ],
-  };
-}
-
-export function getCategoriesArray() {
-  const categories = getTransactionCategories();
-
-  return [...categories.expense, ...categories.income];
-}
-
-// todo switch
-export function calculateBalance(transactionsList: Array<TransactionType>) {
-  const balance = transactionsList.reduce((acc, transaction) => {
-    if (transaction.type === "income") {
-      return acc + transaction.sum;
-    } else if (transaction.type === "expense") {
-      return acc - transaction.sum;
-    } else {
-      return acc;
+export function calcUpdatedBalance(
+  currentBalance: number,
+  action: TransactionAction
+) {
+  switch (action.type) {
+    case "add": {
+      const { type, sum } = action.addedTransaction;
+      return type === "income" ? currentBalance + sum : currentBalance - sum;
     }
-  }, 0);
-
-  return balance;
+    case "delete": {
+      const { type, sum } = action.deletedTransaction;
+      return type === "income" ? currentBalance - sum : currentBalance + sum;
+    }
+    case "edit": {
+      const { type: oldType, sum: oldSum } = action.oldTransaction;
+      const { type: newType, sum: newSum } = action.updatedTransaction;
+      const before = oldType === "income" ? oldSum : -oldSum;
+      const after = newType === "income" ? newSum : -newSum;
+      return currentBalance - before + after;
+    }
+    default:
+      return currentBalance;
+  }
 }
 
 export function calculateStatistics(transactionsList: Array<TransactionType>) {
-  const { income, expense } = getTransactionCategories();
+  const { income, expense } = TRANSACTION_CATEGORIES;
 
   const statistics = {
     income: {

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { delay, apiClient } from "../../utils";
+import { delay, apiClient, resetStore } from "../../utils";
 
 export const register = createAsyncThunk(
   "auth/register",
@@ -32,14 +32,12 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+export const logout = createAsyncThunk("auth/logout", async () => {
   try {
     await delay(1500);
-    const response = await apiClient.delete("/api/users/logout");
-
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    await apiClient.delete("/api/users/logout");
+  } finally {
+    resetStore();
   }
 });
 

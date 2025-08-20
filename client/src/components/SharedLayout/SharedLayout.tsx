@@ -1,28 +1,14 @@
-import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { useReactResponsive, useAppDispatch } from "../../hooks";
-import { getList } from "../../redux/transactions/operations";
+import { useReactResponsive } from "../../hooks";
 import { Header, Navigation, Modals } from "..";
-import { Section, Container, Balance, LoadingSpinner } from "../common";
+import { Section, Container, Balance } from "../common";
 
 type Props = {
   className?: string;
 };
 
 const SharedLayout = ({ className: styles }: Props) => {
-  const [shouldWait, setShouldWait] = useState(true);
   const { isOnMobile, isOnDesktop } = useReactResponsive();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getList())
-      .unwrap()
-      .then(() => {})
-      .catch(() => {})
-      .finally(() => setShouldWait(false));
-  }, []);
-
-  if (shouldWait) return <LoadingSpinner />;
 
   return (
     <>

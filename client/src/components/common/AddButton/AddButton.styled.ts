@@ -15,7 +15,7 @@ const StyledAddButton = styled(AddButton)`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   right: 20px;
   opacity: 0.7;
@@ -42,7 +42,7 @@ const StyledAddButton = styled(AddButton)`
 
   @media (min-width: 1280px) {
     bottom: 16px;
-    right: 16px;
+    right: 0;
   }
 `;
 

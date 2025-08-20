@@ -1,4 +1,5 @@
 import { ReactElement, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { useModals } from "../../../hooks";
 
 type Props = {
@@ -9,25 +10,25 @@ type Props = {
 const ModalContainer = ({ children, className: styles }: Props) => {
   const { closeModal } = useModals();
 
-  useEffect(() => {
-    function handleMouseDown(e: MouseEvent) {
-      if ((e.target as Element).classList.contains("modal")) closeModal();
-    }
+  function handleBackdropMouseDown(e: React.MouseEvent) {
+    if (e.target === e.currentTarget) closeModal();
+  }
 
+  useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") closeModal();
     }
 
-    document.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("mousedown", handleMouseDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  return <div className={`${styles} modal`}>{children}</div>;
+  return ReactDOM.createPortal(
+    <div className={`${styles} modal`} onMouseDown={handleBackdropMouseDown}>
+      {children}
+    </div>,
+    document.getElementById("modal-root")!
+  );
 };
 
 export default ModalContainer;

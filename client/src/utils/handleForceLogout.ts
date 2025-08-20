@@ -1,11 +1,6 @@
-import { store } from "../redux/store";
-import { forceLogout } from "../redux/auth/slice";
-import { setModalsClose } from "../redux/modals/slice";
-import { notify } from "./notify";
+import { resetStore, notify } from ".";
 
 export function handleForceLogout(errorMessage: string) {
-  store.dispatch(forceLogout());
-  store.dispatch(setModalsClose());
-
+  resetStore();
   notify.warning(`${errorMessage}. Please, log in again !`);
 }

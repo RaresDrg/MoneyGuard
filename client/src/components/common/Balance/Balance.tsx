@@ -1,5 +1,5 @@
 import { EllipsisTooltip } from "..";
-import { useTransactions } from "../../../hooks";
+import { useAuth } from "../../../hooks";
 import { formatAmount } from "../../../utils";
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 };
 
 const Balance = ({ className: styles }: Props) => {
-  const { balance } = useTransactions();
+  const { balance } = useAuth();
 
   return (
     <div className={`${styles} animate__animated animate__zoomIn`}>

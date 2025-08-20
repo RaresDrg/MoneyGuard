@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import type { UserType } from "../app.types.js";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "../constants/index.js";
 
 const schema = new Schema<UserType>(
   {
@@ -34,7 +35,7 @@ const schema = new Schema<UserType>(
         },
         {
           validator: function (v) {
-            return v && /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(v.trim());
+            return v && EMAIL_REGEX.test(v.trim());
           },
           message: "=> Invalid email address",
         },
@@ -51,12 +52,16 @@ const schema = new Schema<UserType>(
         },
         {
           validator: function (v) {
-            return v && /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(v);
+            return v && PASSWORD_REGEX.test(v);
           },
           message:
             "=> it must be at least 8 characters long and must include an uppercase, a lowercase and a digit",
         },
       ],
+    },
+    balance: {
+      type: Number,
+      default: 0,
     },
     token: {
       type: String,

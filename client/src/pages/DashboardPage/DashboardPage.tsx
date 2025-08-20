@@ -1,6 +1,6 @@
-import { useReactResponsive, useTransactions } from "../../hooks";
-import { Balance, AddButton } from "../../components/common";
-import { TransactionsList, TransactionsTable } from "../../components";
+import { useReactResponsive, useTransactions, useModals } from "../../hooks";
+import { Balance, AddButton, LoadingSpinner } from "../../components/common";
+import { TransactionsLayout } from "../../components";
 
 type Props = {
   className?: string;
@@ -8,26 +8,17 @@ type Props = {
 
 const DashboardPage = ({ className: styles }: Props) => {
   const { isOnMobile } = useReactResponsive();
-  const { transactionsList } = useTransactions();
+  const { isLoading } = useTransactions();
+  const { openModal } = useModals();
 
   return (
     <div className={styles}>
       <h2>Transactions</h2>
-
       {isOnMobile && <Balance />}
+      <TransactionsLayout />
+      <AddButton handleClick={() => openModal("addModal")} />
 
-      {!transactionsList ? (
-        <p className="animate__animated animate__fadeInUp">
-          Your transaction list is empty. Use the <b>Add button</b> below to
-          start tracking your activity.
-        </p>
-      ) : isOnMobile ? (
-        <TransactionsList />
-      ) : (
-        <TransactionsTable />
-      )}
-
-      <AddButton />
+      {isLoading && <LoadingSpinner />}
     </div>
   );
 };

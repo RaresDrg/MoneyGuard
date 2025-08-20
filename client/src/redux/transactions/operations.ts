@@ -1,12 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { apiClient, delay } from "../../utils";
-import type { Transaction } from "../../App.types";
+import { updateBalance } from "../auth/slice";
+import type { Transaction, PaginationParams } from "../../App.types";
 
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
   async (data: Omit<Transaction, "_id">, thunkAPI) => {
     try {
       const response = await apiClient.post("/api/transactions", data);
+      thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;
     } catch (error) {
@@ -15,11 +17,31 @@ export const addTransaction = createAsyncThunk(
   }
 );
 
-export const getList = createAsyncThunk(
-  "transactions/getList",
-  async (_, thunkAPI) => {
+export const getTransactions = createAsyncThunk(
+  "transactions/getTransactions",
+  async (paginationParams: PaginationParams, thunkAPI) => {
     try {
-      const response = await apiClient.get("/api/transactions");
+      // todo: verificat in productie
+      await delay(1000);
+      const response = await apiClient.get("/api/transactions", {
+        params: paginationParams,
+      });
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateTransaction = createAsyncThunk(
+  "transactions/updateTransaction",
+  async (data: { ID: string; updates: Omit<Transaction, "_id"> }, thunkAPI) => {
+    const { ID, updates } = data;
+
+    try {
+      const response = await apiClient.put(`/api/transactions/${ID}`, updates);
+      thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;
     } catch (error) {
@@ -33,20 +55,7 @@ export const deleteTransaction = createAsyncThunk(
   async (ID: string, thunkAPI) => {
     try {
       const response = await apiClient.delete(`/api/transactions/${ID}`);
-
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
-export const updateTransaction = createAsyncThunk(
-  "transactions/updateTransaction",
-  async (data: { ID: string; updates: Omit<Transaction, "_id"> }, thunkAPI) => {
-    try {
-      const { ID, updates } = data;
-      const response = await apiClient.put(`/api/transactions/${ID}`, updates);
+      thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;
     } catch (error) {

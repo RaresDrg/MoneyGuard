@@ -1,17 +1,21 @@
 import { useSelector } from "react-redux";
 import {
   selectIsLoading,
-  selectBalance,
   selectTransactionsList,
   selectTargetedTransaction,
   selectStatistics,
+  selectInitialFetchDone,
+  selectHasMore,
+  selectCursor,
 } from "../redux/transactions/selectors";
 
 const useTransactions = () => {
   return {
     isLoading: useSelector(selectIsLoading),
-    balance: useSelector(selectBalance),
     transactionsList: useSelector(selectTransactionsList),
+    initialFetchDone: useSelector(selectInitialFetchDone),
+    cursor: useSelector(selectCursor),
+    hasMore: useSelector(selectHasMore),
     targetedTransaction: useSelector(selectTargetedTransaction),
     statistics: useSelector(selectStatistics),
   };

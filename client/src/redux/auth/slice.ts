@@ -16,8 +16,11 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    forceLogout(state) {
-      utils.handleLogout(state);
+    resetAuth() {
+      return initialState;
+    },
+    updateBalance(state, action) {
+      if (state.user) state.user.balance = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -32,14 +35,6 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, utils.handleAuth)
       // *Logout
       .addCase(logout.pending, utils.handlePending)
-      .addCase(logout.rejected, (state, action) => {
-        utils.handleRejected(state, action);
-        utils.handleLogout(state);
-      })
-      .addCase(logout.fulfilled, (state) => {
-        utils.handleFulfilled(state);
-        utils.handleLogout(state);
-      })
       // *Change Password
       .addCase(changePassword.pending, utils.handlePending)
       .addCase(changePassword.rejected, utils.handleRejected)
@@ -47,7 +42,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { forceLogout } = authSlice.actions;
+export const { resetAuth, updateBalance } = authSlice.actions;
 
 export const authReducer = persistReducer(
   { key: "auth", storage: storageSession, whitelist: ["isLoggedIn", "user"] },

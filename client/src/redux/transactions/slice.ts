@@ -1,19 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { TransactionsState, Transaction } from "../../App.types";
 import { utils } from "../../utils/handleState";
+import { PAGE_SIZE } from "../../constants";
 import {
   addTransaction,
-  getList,
-  deleteTransaction,
+  getTransactions,
   updateTransaction,
+  deleteTransaction,
   getStatistics,
 } from "./operations";
 
 const initialState: TransactionsState = {
   isLoading: false,
   error: null,
-  balance: 0,
-  transactionsList: null,
+  transactionsList: [],
+  initialFetchDone: false,
+  cursor: null,
+  hasMore: true,
   targetedTransaction: null,
   statistics: null,
 };
@@ -22,6 +25,9 @@ const transactionsSlice = createSlice({
   name: "transactions",
   initialState: initialState,
   reducers: {
+    resetTransactions() {
+      return initialState;
+    },
     setTargetedTransaction(state, action: PayloadAction<Transaction>) {
       state.targetedTransaction = action.payload;
     },
@@ -31,25 +37,42 @@ const transactionsSlice = createSlice({
       // *Add Transaction
       .addCase(addTransaction.pending, utils.handlePending)
       .addCase(addTransaction.rejected, utils.handleRejected)
-      .addCase(addTransaction.fulfilled, utils.handleTransactions)
-
-      // *Delete Transaction
-      .addCase(deleteTransaction.pending, utils.handlePending)
-      .addCase(deleteTransaction.rejected, utils.handleRejected)
-      .addCase(deleteTransaction.fulfilled, utils.handleTransactions)
-
+      .addCase(addTransaction.fulfilled, (state, action) => {
+        utils.handleFulfilled(state);
+        state.transactionsList.unshift(action.payload.data.addedTransaction);
+      })
+      // *Get Transactions
+      .addCase(getTransactions.fulfilled, (state, action) => {
+        const newTransactions = action.payload.data.transactions;
+        const { length } = newTransactions;
+        if (length > 0) state.transactionsList.push(...newTransactions);
+        if (length === PAGE_SIZE) state.cursor = newTransactions.at(-1)._id;
+        if (length < PAGE_SIZE) state.hasMore = false;
+        if (!("cursor" in action.meta.arg)) state.initialFetchDone = true;
+      })
       // *Update Transaction
       .addCase(updateTransaction.pending, utils.handlePending)
       .addCase(updateTransaction.rejected, utils.handleRejected)
-      .addCase(updateTransaction.fulfilled, utils.handleTransactions)
-
-      // *Get Transactions List
-      .addCase(getList.rejected, (state, action) => {
-        utils.handleRejected(state, action);
-        state.transactionsList = null;
-        state.balance = 0;
+      .addCase(updateTransaction.fulfilled, (state, action) => {
+        utils.handleFulfilled(state);
+        const updatedTransaction = action.payload.data.updatedTransaction;
+        const { _id } = updatedTransaction;
+        const index = state.transactionsList.findIndex(
+          (item) => item._id === _id
+        );
+        state.transactionsList[index] = updatedTransaction;
       })
-      .addCase(getList.fulfilled, utils.handleTransactions)
+      // *Delete Transaction
+      .addCase(deleteTransaction.pending, utils.handlePending)
+      .addCase(deleteTransaction.rejected, utils.handleRejected)
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
+        utils.handleFulfilled(state);
+        const { _id } = action.payload.data.deletedTransaction;
+        const index = state.transactionsList.findIndex(
+          (item) => item._id === _id
+        );
+        state.transactionsList.splice(index, 1);
+      })
 
       // *Get Statistics
       .addCase(getStatistics.pending, utils.handlePending)
@@ -64,5 +87,7 @@ const transactionsSlice = createSlice({
   },
 });
 
-export const { setTargetedTransaction } = transactionsSlice.actions;
+export const { resetTransactions, setTargetedTransaction } =
+  transactionsSlice.actions;
+
 export const transactionsReducer = transactionsSlice.reducer;

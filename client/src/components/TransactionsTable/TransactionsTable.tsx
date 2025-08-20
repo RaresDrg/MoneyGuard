@@ -1,15 +1,17 @@
 import { TransactionsTableRow } from "..";
-import { useTransactions } from "../../hooks";
+import type { Transaction } from "../../App.types";
 
 type Props = {
   className?: string;
+  transactions: Transaction[];
+  observerRef: (node: HTMLElement | null) => void;
 };
 
-const TransactionsTable = ({ className: styles }: Props) => {
-  const { transactionsList } = useTransactions();
+const TransactionsTable = ({ className, transactions, observerRef }: Props) => {
+  const styles = `${className} animate__animated animate__zoomIn`;
 
   return (
-    <table className={`${styles} animate__animated animate__zoomIn`}>
+    <table className={styles}>
       <thead>
         <tr>
           <th>Date</th>
@@ -22,8 +24,12 @@ const TransactionsTable = ({ className: styles }: Props) => {
         </tr>
       </thead>
       <tbody>
-        {transactionsList!.map((item) => (
-          <TransactionsTableRow key={item._id} transaction={item} />
+        {transactions.map((item, index) => (
+          <TransactionsTableRow
+            key={item._id}
+            transaction={item}
+            observerRef={index === transactions.length - 1 ? observerRef : null}
+          />
         ))}
       </tbody>
     </table>

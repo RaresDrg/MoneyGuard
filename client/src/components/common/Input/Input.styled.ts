@@ -6,18 +6,27 @@ const StyledInput = styled(Input)`
 
   & {
     label {
+      opacity: 0.4;
+      transition: var(--transition);
+
+      &.onError,
+      &:has(> input:focus) {
+        opacity: 1;
+      }
+
       & {
         input {
           font-weight: 400;
           font-size: 18px;
           line-height: 27px;
-          padding: ${(props) =>
-            props.type === "text" ? "0 10px 8px 54px" : "0 50px 8px 54px"};
+          padding-top: 0;
+          padding-right: ${(props) =>
+            props.type === "password" ? "50px" : "10px"};
+          padding-bottom: 8px;
+          padding-left: 54px;
           color: var(--textColor);
           caret-color: var(--textColor);
           border-bottom: 1px solid var(--textColor);
-          opacity: 0.4;
-          transition: var(--transition);
 
           &::placeholder {
             color: var(--textColor);
@@ -29,14 +38,6 @@ const StyledInput = styled(Input)`
             -webkit-text-fill-color: var(--textColor);
             -webkit-background-clip: text;
           }
-
-          &:focus {
-            opacity: 1;
-
-            & + svg {
-              opacity: 1;
-            }
-          }
         }
 
         svg {
@@ -46,13 +47,19 @@ const StyledInput = styled(Input)`
           left: 10px;
           top: 2px;
           fill: var(--textColor);
-          opacity: 0.4;
-          transition: var(--transition);
         }
       }
     }
 
-    .showPassword {
+    p.error {
+      margin-top: 2px;
+      margin-left: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--errorColor);
+    }
+
+    .toggle-icon {
       position: absolute;
       top: -1.5px;
       right: 0;
@@ -64,28 +71,6 @@ const StyledInput = styled(Input)`
       &:hover {
         opacity: 1;
       }
-    }
-  }
-
-  &.onError {
-    label {
-      & {
-        input {
-          opacity: 1;
-        }
-
-        svg {
-          opacity: 1;
-        }
-      }
-    }
-
-    .error {
-      margin-top: 2px;
-      margin-left: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--errorColor);
     }
   }
 `;

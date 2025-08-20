@@ -26,6 +26,7 @@ const StyledLoadingScreen = styled(LoadingScreen)`
 
     .loader {
       font-size: 48px;
+      line-height: 72px;
       font-weight: bold;
       letter-spacing: 2px;
       position: relative;
@@ -37,12 +38,12 @@ const StyledLoadingScreen = styled(LoadingScreen)`
         position: absolute;
         left: 0;
         top: 0;
-        width: 100%;
         height: 100%;
         overflow: hidden;
         color: #ff868d80;
         -webkit-text-stroke: 1px var(--textColor);
         animation: animloader 3s linear infinite;
+        animation-direction: alternate;
       }
     }
   }
@@ -53,6 +54,18 @@ const StyledLoadingScreen = styled(LoadingScreen)`
     }
     100% {
       width: 100%;
+    }
+  }
+
+  @keyframes grayscaleToColor {
+    0% {
+      filter: grayscale(100%) brightness(20%);
+    }
+    50% {
+      filter: grayscale(0%) brightness(50%);
+    }
+    100% {
+      filter: grayscale(100%) brightness(20%);
     }
   }
 `;

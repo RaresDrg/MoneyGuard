@@ -8,15 +8,11 @@
 
 :root {
   --font-family: Poppins, Arial, Helvetica, sans-serif;
-
   --textColor: #fbfbfb;
   --errorColor: #ff868d;
-
   --incomeColor: #ffb627;
   --expenseColor: #ff868d;
-
   --transition: all 0.35s ease-in-out;
-  /* --transition: all 10.35s ease-in-out; */
 }
 
 * {
@@ -27,10 +23,6 @@
 
 body {
   font-family: var(--font-family);
-}
-
-body:has(.modal) {
-  pointer-events: none;
 }
 
 a {
@@ -72,16 +64,4 @@ button {
   cursor: pointer;
   border: none;
   background-color: transparent;
-}
-
-@keyframes grayscaleToColor {
-  0% {
-    filter: grayscale(100%) brightness(20%);
-  }
-  50% {
-    filter: grayscale(0%) brightness(50%);
-  }
-  100% {
-    filter: grayscale(100%) brightness(20%);
-  }
 }

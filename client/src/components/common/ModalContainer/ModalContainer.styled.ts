@@ -9,7 +9,6 @@ const StyledModalContainer = styled(ModalContainer)`
   height: calc(100dvh - 60px);
   width: 100%;
   overflow: auto;
-  pointer-events: all;
   background: #220d5b3b;
   backdrop-filter: blur(7px);
   animation: fadeIn 0.35s ease-in-out;

@@ -48,7 +48,7 @@ const RegisterForm = ({ className: styles }: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, values, touched, isSubmitting }) => (
+        {({ isSubmitting, isValid }) => (
           <Form>
             <Logo />
             <Input
@@ -56,7 +56,6 @@ const RegisterForm = ({ className: styles }: Props) => {
               id="nameInput"
               name="name"
               placeholder="Name"
-              hasErrors={!!(errors.name && touched.name)}
               icon="icon-name"
             />
             <Input
@@ -64,7 +63,6 @@ const RegisterForm = ({ className: styles }: Props) => {
               id="emailInput"
               name="email"
               placeholder="Email"
-              hasErrors={!!(errors.email && touched.email)}
               icon="icon-email"
             />
             <Input
@@ -72,37 +70,18 @@ const RegisterForm = ({ className: styles }: Props) => {
               id="passwordInput"
               name="password"
               placeholder="Password"
-              hasErrors={!!(errors.password && touched.password)}
-              values={values.password}
-              icon="icon-password"
             />
             <Input
               type="password"
               id="confirmPasswordInput"
               name="confirmPassword"
               placeholder="Confirm password"
-              hasErrors={
-                !!(
-                  (errors.confirmPassword || errors.password) &&
-                  touched.confirmPassword
-                )
-              }
-              values={values.confirmPassword}
-              icon="icon-password"
             />
             <FormButton
               type="submit"
               variant="gradient"
               text="register"
-              isDisabled={
-                !!(
-                  isSubmitting ||
-                  (errors.name && touched.name) ||
-                  (errors.email && touched.email) ||
-                  (errors.password && touched.password) ||
-                  (errors.confirmPassword && touched.confirmPassword)
-                )
-              }
+              isDisabled={isSubmitting || !isValid}
             />
             <FormButton
               type="button"

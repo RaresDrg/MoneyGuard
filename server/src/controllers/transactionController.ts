@@ -1,84 +1,68 @@
 import { Request, Response, NextFunction } from "express";
-import { transactionService } from "../servicies/index.js";
+import { transactionService, userService } from "../servicies/index.js";
 import * as utils from "../utils/index.js";
 import { validateData } from "../config/index.js";
 import type { UserType } from "../app.types.js";
+import { TRANSACTION_CATEGORIES } from "../constants/index.js";
 
 async function addTransaction(req: Request, res: Response, next: NextFunction) {
   try {
     const { type, category, sum, date, comment } = req.body;
     validateData({ type, category, sum, date, comment });
 
-    const owner = (req.user as UserType)._id;
-    const data = { owner, type, category, sum, date, comment };
-    await transactionService.addTransactionToDB(data);
+    const user = req.user as UserType;
 
-    const query = { owner };
-    const currentList = await transactionService.getTransactionsFromDB(query);
-    const balance = utils.calculateBalance(currentList);
+    const data = { owner: user._id, type, category, sum, date, comment };
+    const addedTransaction = await transactionService.addTransactionToDB(data);
+
+    const updatedBalance = utils.calcUpdatedBalance(user.balance, {
+      type: "add",
+      addedTransaction: { type, sum },
+    });
+    await userService.updateUser(user._id, { balance: updatedBalance });
 
     utils.sendSuccessResponse(res, 201, {
-      message: "The transaction has been successfully added",
-      data: { transactionslist: currentList, balance },
+      message: "Transaction added successfully",
+      data: { addedTransaction, updatedBalance },
     });
   } catch (error) {
     next(error);
   }
 }
 
-async function getList(req: Request, res: Response, next: NextFunction) {
-  try {
-    const query = { owner: (req.user as UserType)._id };
-    const currentList = await transactionService.getTransactionsFromDB(query);
-
-    if (currentList.length === 0) {
-      utils.sendSuccessResponse(res, 200, {
-        message: "There are no transactions saved in the database",
-        data: { transactionslist: null, balance: 0 },
-      });
-      return;
-    }
-
-    const balance = utils.calculateBalance(currentList);
-    utils.sendSuccessResponse(res, 200, {
-      message: "Transactions retrieved successfully",
-      data: { transactionslist: currentList, balance },
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function deleteTransaction(
+async function getTransactions(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const { transactionID: ID } = req.params;
-    const result = await transactionService.deleteTransactionFromDB(ID);
+    const { limit: rawLimit, cursor: rawCursor, sort: rawSort } = req.query;
 
-    if (!result) {
-      utils.sendFailureResponse(res, 404, "Not found");
-      return;
-    }
+    const filteredQuery = Object.fromEntries(
+      Object.entries({ rawLimit, rawCursor, rawSort }).filter(
+        ([, value]) => value !== undefined
+      )
+    );
+    validateData(filteredQuery);
 
-    const query = { owner: (req.user as UserType)._id };
-    const currentList = await transactionService.getTransactionsFromDB(query);
+    const limit = rawLimit ? Number(rawLimit) : null;
+    const sort = rawSort === "descending" ? "descending" : "ascending";
+    const cursor = rawCursor
+      ? { _id: sort === "ascending" ? { $gt: rawCursor } : { $lt: rawCursor } }
+      : null;
 
-    if (currentList.length === 0) {
-      utils.sendSuccessResponse(res, 200, {
-        message: "The transaction has been successfully deleted",
-        data: { transactionslist: null, balance: 0 },
-      });
-      return;
-    }
+    const owner = (req.user as UserType)._id;
+    const dbQuery = cursor ? { owner, ...cursor } : { owner };
 
-    const balance = utils.calculateBalance(currentList);
-    utils.sendSuccessResponse(res, 200, {
-      message: "The transaction has been successfully deleted",
-      data: { transactionslist: currentList, balance },
-    });
+    const transactions = limit
+      ? await transactionService.getTransactionsFromDB(dbQuery, sort, limit)
+      : await transactionService.getTransactionsFromDB(dbQuery, sort);
+
+    const message = transactions.length
+      ? "Transactions retrieved successfully"
+      : "Looks like there's nothing here for now";
+
+    utils.sendSuccessResponse(res, 200, { message, data: { transactions } });
   } catch (error) {
     next(error);
   }
@@ -102,15 +86,57 @@ async function updateTransaction(
     validateData({ type, category, sum, date, comment });
 
     const updates = { type, category, sum, date, comment };
-    await transactionService.updateTransactionInDB(ID, updates);
+    const updatedTransaction = await transactionService.updateTransactionInDB(
+      ID,
+      updates
+    );
 
-    const query = { owner: (req.user as UserType)._id };
-    const currentList = await transactionService.getTransactionsFromDB(query);
-    const balance = utils.calculateBalance(currentList);
+    const user = req.user as UserType;
+
+    const updatedBalance = utils.calcUpdatedBalance(user.balance, {
+      type: "edit",
+      oldTransaction: {
+        type: targetedDocument.type,
+        sum: targetedDocument.sum,
+      },
+      updatedTransaction: { type, sum },
+    });
+    await userService.updateUser(user._id, { balance: updatedBalance });
 
     utils.sendSuccessResponse(res, 200, {
-      message: "The transaction has been successfully updated",
-      data: { transactionslist: currentList, balance },
+      message: "Transaction updated successfully",
+      data: { updatedTransaction, updatedBalance },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteTransaction(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { transactionID: ID } = req.params;
+    const result = await transactionService.deleteTransactionFromDB(ID);
+
+    if (!result) {
+      utils.sendFailureResponse(res, 404, "Not found");
+      return;
+    }
+
+    const user = req.user as UserType;
+
+    const updatedBalance = utils.calcUpdatedBalance(user.balance, {
+      type: "delete",
+      deletedTransaction: { type: result.type, sum: result.sum },
+    });
+    await userService.updateUser(user._id, { balance: updatedBalance });
+
+    utils.sendSuccessResponse(res, 200, {
+      message: "Transaction deleted successfully",
+      data: { deletedTransaction: result, updatedBalance },
     });
   } catch (error) {
     next(error);
@@ -119,10 +145,9 @@ async function updateTransaction(
 
 async function getCategories(req: Request, res: Response, next: NextFunction) {
   try {
-    const categories = utils.getTransactionCategories();
     utils.sendSuccessResponse(res, 200, {
       message: "Categories retrieved successfully",
-      data: categories,
+      data: TRANSACTION_CATEGORIES,
     });
   } catch (error) {
     next(error);
@@ -161,9 +186,9 @@ async function getStatistics(req: Request, res: Response, next: NextFunction) {
 
 export default {
   addTransaction,
-  getList,
-  deleteTransaction,
+  getTransactions,
   updateTransaction,
+  deleteTransaction,
   getCategories,
   getStatistics,
 };

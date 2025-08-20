@@ -1,6 +1,6 @@
 import { useModals, useAppDispatch } from "../../../hooks";
 import { addTransaction } from "../../../redux/transactions/operations";
-import { getValidationSchema, notify } from "../../../utils";
+import * as utils from "../../../utils";
 import { Form, Formik, FormikHelpers } from "formik";
 import {
   ModalContainer,
@@ -25,27 +25,31 @@ const AddTransactionModal = ({ className: styles }: Props) => {
     type: "income",
     category: "",
     sum: "",
-    date: new Date().toISOString(),
+    date: utils.normalizeDate(new Date()),
     comment: "",
   };
   type Values = typeof initialValues;
 
-  const validationSchema = getValidationSchema(["category", "sum", "comment"]);
+  const config = ["category", "sum", "comment"] as const;
+  const validationSchema = utils.getValidationSchema([...config]);
 
   const handleSubmit = (values: Values, formikBag: FormikHelpers<Values>) => {
-    const { date, comment } = values;
-    const type = values.type === "income" ? "income" : "expense";
-    const category = type === "income" ? "Income" : values.category;
-    const sum = Number(values.sum);
-
-    dispatch(addTransaction({ type, category, sum, date, comment }))
+    const { type, category, sum, date, comment } = values;
+    const data = {
+      type: type === "income" ? "income" : "expense",
+      category: type === "income" ? "Income" : category,
+      sum: Number(sum),
+      date,
+      comment: utils.prettifyText(comment),
+    } as const;
+    dispatch(addTransaction(data))
       .unwrap()
       .then((response) => {
-        notify.success(response.message);
+        utils.notify.success(response.message);
         closeModal();
       })
       .catch((error) => {
-        notify.error(error);
+        utils.notify.error(error);
         formikBag.setSubmitting(false);
       });
   };
@@ -68,7 +72,6 @@ const AddTransactionModal = ({ className: styles }: Props) => {
                 id="sumInput"
                 name="sum"
                 placeholder="$ 0.00"
-                hasErrors={!!(errors.sum && touched.sum)}
               />
               <DateField />
               <Input
@@ -76,7 +79,6 @@ const AddTransactionModal = ({ className: styles }: Props) => {
                 id="commentInput"
                 name="comment"
                 placeholder="Comment"
-                hasErrors={!!(errors.comment && touched.comment)}
               />
               <FormButton
                 type="submit"

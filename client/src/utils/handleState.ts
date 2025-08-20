@@ -2,7 +2,6 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import type {
   AuthState,
   TransactionsState,
-  TransactionPayloadResponse,
   ErrorResponse,
   User,
 } from "../App.types";
@@ -32,18 +31,5 @@ export const utils = {
     state.error = null;
     state.isLoggedIn = true;
     state.user = { ...action.payload.data.user };
-  },
-  handleLogout(state: AuthState) {
-    state.isLoggedIn = false;
-    state.user = null;
-  },
-  handleTransactions(
-    state: TransactionsState,
-    action: PayloadAction<TransactionPayloadResponse>
-  ) {
-    state.isLoading = false;
-    state.error = null;
-    state.balance = action.payload.data.balance;
-    state.transactionsList = action.payload.data.transactionslist;
   },
 };

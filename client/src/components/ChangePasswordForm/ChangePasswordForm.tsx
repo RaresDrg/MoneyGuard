@@ -45,7 +45,7 @@ const ChangePasswordForm = ({ className: styles }: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, values, touched, isSubmitting }) => (
+        {({ isSubmitting, isValid }) => (
           <Form>
             <FormTitle text="Change Password" />
             <Input
@@ -53,35 +53,18 @@ const ChangePasswordForm = ({ className: styles }: Props) => {
               id="passwordInput"
               name="password"
               placeholder="Password"
-              hasErrors={!!(errors.password && touched.password)}
-              values={values.password}
-              icon="icon-password"
             />
             <Input
               type="password"
               id="confirmPasswordInput"
               name="confirmPassword"
               placeholder="Confirm password"
-              hasErrors={
-                !!(
-                  (errors.confirmPassword || errors.password) &&
-                  touched.confirmPassword
-                )
-              }
-              values={values.confirmPassword}
-              icon="icon-password"
             />
             <FormButton
               type="submit"
               variant="gradient"
               text="send"
-              isDisabled={
-                !!(
-                  isSubmitting ||
-                  (errors.password && touched.password) ||
-                  (errors.confirmPassword && touched.confirmPassword)
-                )
-              }
+              isDisabled={isSubmitting || !isValid}
             />
             <FormButton
               type="button"

@@ -1,17 +1,23 @@
 import { TransactionsListItem } from "..";
-import { useTransactions } from "../../hooks";
+import type { Transaction } from "../../App.types";
 
 type Props = {
   className?: string;
+  transactions: Transaction[];
+  observerRef: (node: HTMLElement | null) => void;
 };
 
-const TransactionsList = ({ className: styles }: Props) => {
-  const { transactionsList } = useTransactions();
+const TransactionsList = (props: Props) => {
+  const { className: styles, transactions, observerRef } = props;
 
   return (
     <ul className={styles}>
-      {transactionsList!.map((item) => (
-        <TransactionsListItem key={item._id} transaction={item} />
+      {transactions.map((item, index) => (
+        <TransactionsListItem
+          key={item._id}
+          transaction={item}
+          observerRef={index === transactions.length - 1 ? observerRef : null}
+        />
       ))}
     </ul>
   );

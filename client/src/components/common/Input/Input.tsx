@@ -1,47 +1,30 @@
-import { useState } from "react";
-import { Field, ErrorMessage } from "formik";
-import type { InputProps } from "../../../App.types";
-import { renderIcon } from "../../../utils";
-import UseAnimations from "react-useanimations";
-import visibility from "react-useanimations/lib/visibility";
+import TextInput from "./TextInput";
+import PasswordInput from "./PasswordInput";
+import NumberInput from "./NumberInput";
 
-const Input = (props: InputProps) => {
-  const [isVisible, setIsVisible] = useState(false);
+type Props = {
+  className?: string;
+  type: "text" | "password" | "number";
+  id: string;
+  name: string;
+  placeholder: string;
+  icon?: string;
+};
 
-  function handleClick() {
-    if (!isVisible) {
-      const field = document.querySelector(`#${props.id}`) as HTMLInputElement;
-      field.focus();
+const Input = (props: Props) => {
+  switch (props.type) {
+    case "text": {
+      return <TextInput {...props} />;
     }
-
-    setIsVisible((prev) => !prev);
+    case "password": {
+      return <PasswordInput {...props} />;
+    }
+    case "number": {
+      return <NumberInput {...props} />;
+    }
+    default:
+      return null;
   }
-
-  return (
-    <div className={`${props.className} ${props.hasErrors ? "onError" : ""}`}>
-      <label>
-        <Field
-          type={isVisible ? "text" : props.type}
-          id={props.id}
-          name={props.name}
-          placeholder={props.placeholder}
-        />
-        {props.icon && renderIcon(props.icon)}
-      </label>
-      <ErrorMessage className="error" name={props.name} component="p" />
-
-      {props.type === "password" && props.values && (
-        <UseAnimations
-          animation={visibility}
-          onClick={handleClick}
-          size={30}
-          className="showPassword"
-          strokeColor="currentColor"
-          speed={2}
-        />
-      )}
-    </div>
-  );
 };
 
 export default Input;

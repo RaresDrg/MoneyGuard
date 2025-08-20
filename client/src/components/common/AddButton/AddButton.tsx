@@ -1,18 +1,19 @@
 import { renderIcon } from "../../../utils";
-import { useModals } from "../../../hooks";
 
 type Props = {
   className?: string;
+  handleClick: () => void;
 };
 
-const AddButton = ({ className: styles }: Props) => {
-  const { openModal } = useModals();
+const AddButton = ({ className, handleClick }: Props) => {
+  const styles = `${className} animate__animated animate__slideInUp`;
 
   return (
     <button
       type="button"
-      className={`${styles} animate__animated animate__slideInUp`}
-      onClick={() => openModal("addModal")}
+      className={styles}
+      onClick={handleClick}
+      aria-label={"add-button"}
     >
       {renderIcon("icon-plus")}
     </button>

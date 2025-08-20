@@ -1,6 +1,6 @@
 import { useModals, useAppDispatch, useTransactions } from "../../../hooks";
 import { updateTransaction } from "../../../redux/transactions/operations";
-import { getValidationSchema, notify, renderIcon } from "../../../utils";
+import * as utils from "../../../utils";
 import { Form, Formik, FormikHelpers } from "formik";
 import {
   ModalContainer,
@@ -26,31 +26,25 @@ const EditTransactionModal = ({ className: styles }: Props) => {
   const initialValues = { type, category, sum, date, comment };
   type Values = typeof initialValues;
 
-  const validationSchema = getValidationSchema(["sum", "comment"]);
+  const validationSchema = utils.getValidationSchema(["sum", "comment"]);
 
   const handleSubmit = (values: Values, formikBag: FormikHelpers<Values>) => {
-    if (JSON.stringify(values) === JSON.stringify(initialValues)) {
-      closeModal();
-      return;
-    }
-
-    const { date, comment } = values;
-    const type = values.type === "income" ? "income" : "expense";
-    const category = type === "income" ? "Income" : values.category;
-    const sum = Number(values.sum);
-
-    // todo: const updates: { type, category, sum, date, comment }
-
-    dispatch(
-      updateTransaction({ ID, updates: { type, category, sum, date, comment } })
-    )
+    const { type, category, sum, date, comment } = values;
+    const updates = {
+      type,
+      category,
+      sum: Number(sum),
+      date,
+      comment: utils.prettifyText(comment),
+    };
+    dispatch(updateTransaction({ ID, updates }))
       .unwrap()
       .then((response) => {
-        notify.success(response.message);
+        utils.notify.success(response.message);
         closeModal();
       })
       .catch((error) => {
-        notify.error(error);
+        utils.notify.error(error);
         formikBag.setSubmitting(false);
       });
   };
@@ -66,9 +60,9 @@ const EditTransactionModal = ({ className: styles }: Props) => {
           {({ values, errors, touched, isSubmitting }) => (
             <Form>
               <FormTitle text="Edit transaction" />
-              <div className={`type ${targetedTransaction!.type}`}>
+              <div className={`type ${type}`}>
                 <span>Income</span>
-                {renderIcon("icon-typeSeparator")}
+                {utils.renderIcon("icon-typeSeparator")}
                 <span>Expense</span>
               </div>
               {values.type === "expense" && <CategoryDropdown />}
@@ -77,7 +71,6 @@ const EditTransactionModal = ({ className: styles }: Props) => {
                 id="sumInput"
                 name="sum"
                 placeholder="0.00"
-                hasErrors={!!(errors.sum && touched.sum)}
               />
               <DateField />
               <Input
@@ -85,7 +78,6 @@ const EditTransactionModal = ({ className: styles }: Props) => {
                 id="commentInput"
                 name="comment"
                 placeholder="Comment"
-                hasErrors={!!(errors.comment && touched.comment)}
               />
               <FormButton
                 type="submit"

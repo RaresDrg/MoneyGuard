@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import type { TransactionType } from "../app.types.js";
-import { getCategoriesArray } from "../utils/index.js";
+import { ALL_CATEGORIES } from "../constants/index.js";
 
 const schema = new Schema<TransactionType>(
   {
@@ -20,17 +20,19 @@ const schema = new Schema<TransactionType>(
     category: {
       type: String,
       enum: {
-        values: getCategoriesArray(),
-        message: `=> it should be one of: ${getCategoriesArray().join(", ")}`,
+        values: ALL_CATEGORIES,
+        message: `=> it should be one of: ${ALL_CATEGORIES.join(", ")}`,
       },
       required: [true, "=> this field is required"],
     },
     sum: {
       type: Number,
-      min: [0, "a positive value is required for the sum field"],
       required: [true, "=> this field is required"],
+      validate: {
+        validator: (value: number) => value > 0 && value < 100000000,
+        message: "Sum must be between 0 and 100,000,000",
+      },
     },
-    // todo: index compus owner + date
     date: {
       type: Date,
       required: [true, "=> this field is required"],
@@ -38,15 +40,9 @@ const schema = new Schema<TransactionType>(
     comment: {
       type: String,
       trim: true,
-      minlength: [10, "Comment must be at least 10 characters long"],
-      maxlength: [200, "Comment must be less than 200 characters long"],
+      minlength: [5, "Comment must be at least 5 characters long"],
+      maxlength: [200, "Comment must be at most 200 characters long"],
       required: [true, "=> this field is required"],
-      set: (value: string) =>
-        value
-          .trim()
-          .replace(/\s+/g, " ")
-          .toLowerCase()
-          .replace(/^./, (char) => char.toUpperCase()),
     },
   },
   { versionKey: false }

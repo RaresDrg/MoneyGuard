@@ -13,7 +13,7 @@ const StyledDashboardPage = styled(DashboardPage)`
       margin-bottom: 10px;
     }
 
-    > p {
+    p.fallback {
       font-weight: 400;
       font-size: 16px;
       line-height: 24px;
@@ -21,12 +21,16 @@ const StyledDashboardPage = styled(DashboardPage)`
       color: #ffffff99;
       margin-top: 20px;
     }
+
+    p.text-loader {
+      margin-top: 10px;
+    }
   }
 
   @media (min-width: 768px) {
     margin-top: 0;
 
-    & > p {
+    p.fallback {
       margin-top: 0;
     }
   }

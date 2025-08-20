@@ -19,7 +19,7 @@ const StyledFormContainer = styled(FormContainer)`
     height: fit-content;
     margin: auto;
     border-radius: 8px;
-    border: 1px solid #ffffff99;
+    border: 1px solid #ffffff66;
   }
 `;
 

@@ -7,5 +7,8 @@ export * from "./getBackgroundPath";
 export * from "./getValidationSchema";
 export * from "./handleForceLogout";
 export * from "./handleState";
+export * from "./normalizeDate";
 export * from "./notify";
+export * from "./prettifyText";
 export * from "./renderIcon";
+export * from "./resetStore";

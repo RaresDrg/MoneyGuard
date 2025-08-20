@@ -1,13 +1,24 @@
 import { Transaction } from "../models/index.js";
 import type { TransactionType } from "../app.types.js";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, SortOrder } from "mongoose";
 
 export function addTransactionToDB(data: Omit<TransactionType, "_id">) {
   return Transaction.create(data);
 }
 
-export function deleteTransactionFromDB(ID: string) {
-  return Transaction.findByIdAndDelete(ID);
+export function getTransactionsFromDB(
+  query: FilterQuery<TransactionType>,
+  sort: "ascending" | "descending" = "ascending",
+  limit?: number
+) {
+  const sorted: Record<string, SortOrder> =
+    sort === "descending" ? { _id: -1 } : { _id: 1 };
+
+  if (limit) {
+    return Transaction.find(query).sort(sorted).limit(limit);
+  } else {
+    return Transaction.find(query).sort(sorted);
+  }
 }
 
 export function updateTransactionInDB(
@@ -20,10 +31,10 @@ export function updateTransactionInDB(
   });
 }
 
-export function findDocument(query: FilterQuery<TransactionType>) {
-  return Transaction.findOne(query);
+export function deleteTransactionFromDB(ID: string) {
+  return Transaction.findByIdAndDelete(ID);
 }
 
-export function getTransactionsFromDB(query: FilterQuery<TransactionType>) {
-  return Transaction.find(query);
+export function findDocument(query: FilterQuery<TransactionType>) {
+  return Transaction.findOne(query);
 }

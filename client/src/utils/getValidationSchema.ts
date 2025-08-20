@@ -28,11 +28,12 @@ const VALIDATIONS_MAP = {
     otherwise: (schema) => schema.notRequired(),
   }),
   sum: Yup.number()
-    .moreThan(0, "Sum must be a positive number")
+    .moreThan(0, "Amount is too low")
+    .lessThan(100000000, "Amount is too much")
     .required("Required *"),
   comment: Yup.string()
     .trim()
-    .min(10, "Comment must be at least 10 characters long")
+    .min(5, "Comment must be at least 5 characters long")
     .max(200, "Comment must be less than 200 characters long")
     .required("Required *"),
 };

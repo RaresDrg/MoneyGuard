@@ -93,6 +93,7 @@ const StyledTransactionsTable = styled(TransactionsTable)`
   @media (min-width: 1280px) {
     display: block;
     height: calc(100% - 55px);
+    max-height: fit-content;
     overflow-y: auto;
     scrollbar-gutter: stable;
     padding-right: 16px;

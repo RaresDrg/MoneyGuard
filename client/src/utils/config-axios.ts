@@ -1,5 +1,5 @@
 import axios from "axios";
-import { handleForceLogout } from "./handleForceLogout";
+import { handleForceLogout } from ".";
 import { API_BASE_URL } from "../constants";
 
 const apiClient = axios.create({
@@ -9,8 +9,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.response.use(
   (response) => response,
-
-  async (error) => {
+  (error) => {
     if (error?.response?.status === 401 && !error.config?._retry) {
       error.config._retry = true;
 

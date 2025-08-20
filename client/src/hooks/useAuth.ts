@@ -6,6 +6,7 @@ const useAuth = () => {
     isLoading: useSelector(authSelectors.selectIsLoading),
     isLoggedIn: useSelector(authSelectors.selectIsLoggedIn),
     user: useSelector(authSelectors.selectUser),
+    balance: useSelector(authSelectors.selectBalance),
   };
 };
 

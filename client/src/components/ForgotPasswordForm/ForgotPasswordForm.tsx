@@ -51,7 +51,7 @@ const ForgotPasswordForm = ({ className: styles }: Props) => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ isSubmitting, isValid }) => (
             <Form>
               <FormTitle text="Reset Password" />
               <Input
@@ -59,14 +59,13 @@ const ForgotPasswordForm = ({ className: styles }: Props) => {
                 id="emailInput"
                 name="email"
                 placeholder="Email"
-                hasErrors={!!(errors.email && touched.email)}
                 icon="icon-email"
               />
               <FormButton
                 type="submit"
                 variant="gradient"
                 text="send"
-                isDisabled={!!(isSubmitting || (errors.email && touched.email))}
+                isDisabled={isSubmitting || !isValid}
               />
               <FormButton
                 type="button"

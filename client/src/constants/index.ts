@@ -1,4 +1,4 @@
-export const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+export const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})$/;
 export const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
 export const MONTHS: readonly string[] = [
@@ -16,9 +16,11 @@ export const MONTHS: readonly string[] = [
   "December",
 ];
 
-const CURRENT_YEAR = new Date().getFullYear();
+export const CURRENT_YEAR = new Date().getFullYear();
+export const MIN_YEAR = 2020;
+
 export const YEARS: readonly string[] = Array.from(
-  { length: CURRENT_YEAR - 2019 },
+  { length: CURRENT_YEAR - MIN_YEAR + 1 },
   (_, index) => String(CURRENT_YEAR - index)
 );
 
@@ -35,9 +37,11 @@ export const EXPENSE_BACKGROUNDS: readonly string[] = [
   "#ff7700",
 ];
 
+export const PAGE_SIZE = 10;
+
 // todo
 /** Important => choose app status: inProduction = true | false */
-const inProduction: boolean = true;
+const inProduction: boolean = false;
 
 export const API_BASE_URL = inProduction
   ? "https://moneyguardserver.vercel.app"

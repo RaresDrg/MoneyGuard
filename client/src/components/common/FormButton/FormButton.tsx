@@ -1,13 +1,16 @@
-import { MouseEvent } from "react";
-import type { FormButtonProps } from "../../../App.types";
+type Props = {
+  className?: string;
+  type: "button" | "submit";
+  variant: "gradient" | "white";
+  text: string;
+  isDisabled?: boolean;
+  handlerFunction?: () => void;
+};
 
-const FormButton = (props: FormButtonProps) => {
-  function handleClick(e: MouseEvent<HTMLButtonElement>) {
+const FormButton = (props: Props) => {
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-
-    if (props.handlerFunction) {
-      props.handlerFunction();
-    }
+    if (props.handlerFunction) props.handlerFunction();
   }
 
   return (
