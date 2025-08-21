@@ -8,6 +8,7 @@ export { default as Navigation } from "./Navigation/Navigation.styled";
 export { default as RegisterForm } from "./RegisterForm/RegisterForm.styled";
 export { default as SharedLayout } from "./SharedLayout/SharedLayout.styled";
 export { default as StatisticsChart } from "./StatisticsChart/StatisticsChart.styled";
+export { default as StatisticsLayout } from "./StatisticsLayout/StatisticsLayout.styled";
 export { default as StatisticsTable } from "./StatisticsTable/StatisticsTable.styled";
 export { default as TransactionsLayout } from "./TransactionsLayout/TransactionsLayout";
 export { default as TransactionsList } from "./TransactionsList/TransactionsList.styled";

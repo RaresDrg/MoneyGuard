@@ -19,6 +19,13 @@ const StyledStatisticsChart = styled(StatisticsChart)`
     line-height: 27px;
     color: var(--textColor);
   }
+
+  .text-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 export default StyledStatisticsChart;

@@ -3,7 +3,6 @@ import {
   selectIsLoading,
   selectTransactionsList,
   selectTargetedTransaction,
-  selectStatistics,
   selectInitialFetchDone,
   selectHasMore,
   selectCursor,
@@ -17,7 +16,6 @@ const useTransactions = () => {
     cursor: useSelector(selectCursor),
     hasMore: useSelector(selectHasMore),
     targetedTransaction: useSelector(selectTargetedTransaction),
-    statistics: useSelector(selectStatistics),
   };
 };
 

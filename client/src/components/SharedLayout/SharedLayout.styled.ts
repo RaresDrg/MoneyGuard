@@ -63,7 +63,7 @@ const StyledSharedLayout = styled(SharedLayout)`
     padding: 0;
 
     & > div {
-      grid-template-columns: 480px 1px 1fr;
+      grid-template-columns: 360px 1px 1fr;
       column-gap: 16px;
       padding-right: calc(16px - 8px);
 
@@ -85,7 +85,7 @@ const StyledSharedLayout = styled(SharedLayout)`
           grid-column: 2;
           width: 1px;
           height: 100%;
-          background-color: #ffffff99;
+          background-color: #ffffff66;
           box-shadow: 1px 4px 1px 0px #00000040;
         }
 

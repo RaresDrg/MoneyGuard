@@ -1,18 +1,24 @@
-import { useTransactions } from "../../hooks";
 import { formatAmount } from "../../utils";
-import { EllipsisTooltip } from "../common";
+import { EllipsisTooltip, TextLoader } from "../common";
+import type { Statistics } from "../../App.types";
 
 type Props = {
   className?: string;
+  statistics: Statistics | null;
+  isLoading: boolean;
 };
 
-const StatisticsTable = ({ className: styles }: Props) => {
-  const { statistics } = useTransactions();
+const StatisticsTable = ({ className, statistics, isLoading }: Props) => {
+  const styles = `${className} animate__animated animate__fadeIn`;
+
+  if (isLoading) {
+    return <TextLoader className={styles} text="Loading..." />;
+  }
 
   if (!statistics) {
     return (
       <p className={`${styles} fallback`}>
-        There is no data available for the selected date
+        There is no data available for the selected time
       </p>
     );
   }

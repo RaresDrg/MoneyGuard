@@ -11,6 +11,10 @@ const dynamicRowStyles = EXPENSE_BACKGROUNDS.map(
 ).join("");
 
 const StyledStatisticsTable = styled(StatisticsTable)`
+  &.text-loader {
+    margin: 0 auto;
+  }
+
   &.fallback {
     font-weight: 400;
     font-size: 16px;

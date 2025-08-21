@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSessionStorage } from ".";
-import { categoriesService } from "../services";
+import { transactionsService } from "../services";
 
 type Categories = {
   income: Array<string>;
@@ -13,7 +13,7 @@ const useCategories = () => {
 
   async function fetchData() {
     try {
-      const res = await categoriesService.fetchCategories();
+      const res = await transactionsService.fetchCategories();
       setCategories(res.data);
     } catch (error) {
       console.error("Failed to fetch categories:", error);

@@ -63,21 +63,3 @@ export const deleteTransaction = createAsyncThunk(
     }
   }
 );
-
-export const getStatistics = createAsyncThunk(
-  "transactions/getStatistics",
-  async (data: { month: number; year: number }, thunkAPI) => {
-    const { month, year } = data;
-
-    try {
-      await delay(500);
-      const response = await apiClient.get(
-        `/api/transactions/statistics?month=${month}&year=${year}`
-      );
-
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);

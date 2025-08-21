@@ -30,8 +30,14 @@ const StyledDashboardPage = styled(DashboardPage)`
   @media (min-width: 768px) {
     margin-top: 0;
 
-    p.fallback {
-      margin-top: 0;
+    & {
+      h2 {
+        margin-bottom: 15px;
+      }
+
+      p.fallback {
+        margin-top: 0;
+      }
     }
   }
 

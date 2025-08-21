@@ -7,7 +7,6 @@ import {
   getTransactions,
   updateTransaction,
   deleteTransaction,
-  getStatistics,
 } from "./operations";
 
 const initialState: TransactionsState = {
@@ -18,7 +17,6 @@ const initialState: TransactionsState = {
   cursor: null,
   hasMore: true,
   targetedTransaction: null,
-  statistics: null,
 };
 
 const transactionsSlice = createSlice({
@@ -72,17 +70,6 @@ const transactionsSlice = createSlice({
           (item) => item._id === _id
         );
         state.transactionsList.splice(index, 1);
-      })
-
-      // *Get Statistics
-      .addCase(getStatistics.pending, utils.handlePending)
-      .addCase(getStatistics.rejected, (state, action) => {
-        utils.handleRejected(state, action);
-        state.statistics = null;
-      })
-      .addCase(getStatistics.fulfilled, (state, action) => {
-        utils.handleFulfilled(state);
-        state.statistics = action.payload.data.statistics;
       });
   },
 });

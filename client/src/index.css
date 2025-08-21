@@ -65,3 +65,15 @@ button {
   border: none;
   background-color: transparent;
 }
+
+@keyframes grayscaleToColor {
+  0% {
+    filter: grayscale(100%) brightness(20%);
+  }
+  50% {
+    filter: grayscale(0%) brightness(50%);
+  }
+  100% {
+    filter: grayscale(100%) brightness(20%);
+  }
+}

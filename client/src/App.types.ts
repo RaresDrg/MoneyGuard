@@ -30,7 +30,6 @@ export interface TransactionsState {
   cursor: null | string;
   hasMore: boolean;
   targetedTransaction: null | Transaction;
-  statistics: null | Statistics;
 }
 
 export interface Transaction {

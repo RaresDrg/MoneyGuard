@@ -15,6 +15,3 @@ export const selectHasMore = (state: RootState) => state.transactions.hasMore;
 
 export const selectTargetedTransaction = (state: RootState) =>
   state.transactions.targetedTransaction;
-
-export const selectStatistics = (state: RootState) =>
-  state.transactions.statistics;

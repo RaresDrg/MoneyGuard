@@ -56,18 +56,6 @@ const StyledLoadingScreen = styled(LoadingScreen)`
       width: 100%;
     }
   }
-
-  @keyframes grayscaleToColor {
-    0% {
-      filter: grayscale(100%) brightness(20%);
-    }
-    50% {
-      filter: grayscale(0%) brightness(50%);
-    }
-    100% {
-      filter: grayscale(100%) brightness(20%);
-    }
-  }
 `;
 
 export default StyledLoadingScreen;

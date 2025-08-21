@@ -71,6 +71,7 @@ const StyledNavigation = styled(Navigation)`
         display: flex;
         align-items: center;
         gap: 20px;
+        width: fit-content;
 
         & {
           > div.icon {

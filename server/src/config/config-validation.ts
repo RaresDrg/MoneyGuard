@@ -80,25 +80,28 @@ const VALIDATIONS_MAP = {
     "string.max": "Comment must be at most 200 characters long",
     "any.required": "Comment field is required",
   }),
-  year: Joi.number()
-    .integer()
-    .min(MIN_YEAR)
-    .max(CURRENT_YEAR)
+  startDate: Joi.date()
+    .iso()
+    .min(`${MIN_YEAR}-01-01`)
+    .max(`${CURRENT_YEAR}-12-31`)
     .required()
     .messages({
-      "number.base": "Year must be a number",
-      "number.integer": "Year must be an integer",
-      "number.min": `Year must not be earlier than ${MIN_YEAR}`,
-      "number.max": `Year must not be later than ${CURRENT_YEAR}`,
-      "any.required": "Year field is required",
+      "date.base": "Start Date must be a valid ISO date",
+      "date.min": `Start Date must be after 01.01.${MIN_YEAR}`,
+      "date.max": `Start Date must be before 31.12.${CURRENT_YEAR}`,
+      "any.required": "Start Date field is required",
     }),
-  month: Joi.number().integer().min(0).max(11).required().messages({
-    "number.base": "Month must be a valid number",
-    "number.integer": "Month must be an integer",
-    "number.min": "Month must be between 0 (January) and 11 (December)",
-    "number.max": "Month must be between 0 (January) and 11 (December)",
-    "any.required": "Month field is required",
-  }),
+  endDate: Joi.date()
+    .iso()
+    .min(`${MIN_YEAR}-01-01`)
+    .max(`${CURRENT_YEAR}-12-31`)
+    .required()
+    .messages({
+      "date.base": "End Date must be a valid ISO date",
+      "date.min": `End Date must be after 01.01.${MIN_YEAR}`,
+      "date.max": `End Date must be before 31.12.${CURRENT_YEAR}`,
+      "any.required": "End Date field is required",
+    }),
   rawLimit: Joi.number().integer().min(1).max(30).required().messages({
     "number.base": "Limit must be a number",
     "number.integer": "Limit must be an integer",

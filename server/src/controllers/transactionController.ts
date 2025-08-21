@@ -156,25 +156,32 @@ async function getCategories(req: Request, res: Response, next: NextFunction) {
 
 async function getStatistics(req: Request, res: Response, next: NextFunction) {
   try {
-    const { year, month } = req.query;
-    validateData({ year, month });
+    const { startDate, endDate } = req.query;
+    validateData({ startDate, endDate });
 
-    const query = {
-      owner: (req.user as UserType)._id,
-      date: {
-        $gte: new Date(Date.UTC(Number(year), Number(month), 1)),
-        $lt: new Date(Date.UTC(Number(year), Number(month) + 1, 0, 23, 59, 59)),
-      },
-    };
-    const transactions = await transactionService.getTransactionsFromDB(query);
+    const start = utils.normalizeDate(new Date(startDate as string), false);
+    const end = utils.normalizeDate(new Date(endDate as string), true);
 
-    // todo
-    if (transactions.length === 0) {
-      utils.sendFailureResponse(res, 404, "Transactions not found");
+    if (start > end) {
+      const msg = "Start Date must be before End Date";
+      utils.sendFailureResponse(res, 400, msg);
       return;
     }
 
-    const statistics = utils.calculateStatistics(transactions);
+    const dbQuery = {
+      owner: (req.user as UserType)._id,
+      date: { $gte: start, $lt: end },
+    };
+    const data = await transactionService.getTransactionsFromDB(dbQuery);
+
+    if (data.length === 0) {
+      const msg = "There are no statistics available for the specified period";
+      utils.sendFailureResponse(res, 404, msg);
+      return;
+    }
+
+    const statistics = utils.calculateStatistics(data);
+
     utils.sendSuccessResponse(res, 200, {
       message: "Statistics retrieved successfully",
       data: { statistics },

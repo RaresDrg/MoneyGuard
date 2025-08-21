@@ -15,7 +15,7 @@ const TransactionsLayout = () => {
   return (
     <>
       {showFallback && (
-        <p className="fallback animate__animated animate__flipInX">
+        <p className="fallback animate__animated animate__fadeIn">
           Your transaction list is empty. Use the <b>Add button</b> below to
           start tracking your activity.
         </p>
