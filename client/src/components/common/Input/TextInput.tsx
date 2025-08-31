@@ -1,4 +1,4 @@
-import { Field, ErrorMessage, useFormikContext } from "formik";
+import { Field, ErrorMessage } from "formik";
 import { renderIcon } from "../../../utils";
 
 type Props = {
@@ -10,12 +10,9 @@ type Props = {
 };
 
 const TextInput = ({ className, id, name, placeholder, icon }: Props) => {
-  const { errors, touched } = useFormikContext<Record<string, string>>();
-  const onError = !!(errors[name] && touched[name]);
-
   return (
     <div className={className}>
-      <label className={`${onError ? "onError" : ""}`}>
+      <label>
         <Field type="text" id={id} name={name} placeholder={placeholder} />
         {icon && renderIcon(icon)}
       </label>

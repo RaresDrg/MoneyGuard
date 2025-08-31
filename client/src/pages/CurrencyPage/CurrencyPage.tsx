@@ -1,6 +1,5 @@
-import { useCurrencyData } from "../../hooks";
-import { formatDate } from "../../utils";
-import { LoadingSpinner } from "../../components/common";
+import { useExchangeRates } from "../../hooks";
+import { TextLoader } from "../../components/common";
 import { CurrencyConverter } from "../../components";
 
 type Props = {
@@ -8,26 +7,22 @@ type Props = {
 };
 
 const CurrencyPage = ({ className: styles }: Props) => {
-  const { currencyData, isLoading, hasFetchError } = useCurrencyData();
-
-  if (isLoading || (!currencyData && !hasFetchError)) return <LoadingSpinner />;
+  const { rates, expiresAt, isLoading, hasFetchError } = useExchangeRates();
+  const showFallback = (hasFetchError || !rates) && !isLoading;
+  const showConverter = rates && expiresAt && !isLoading;
 
   return (
     <div className={styles}>
       <h2>Currency Converter</h2>
-
-      {hasFetchError || !currencyData ? (
-        <p className="error animate__animated animate__flipInX">
+      {isLoading && <TextLoader text="Loading..." />}
+      {showFallback && (
+        <p className="fallback animate__animated animate__fadeInUp">
           ❌ Our currency provider is currently unreachable. We're working on it
           — please try again later ❌
         </p>
-      ) : (
-        <CurrencyConverter
-          rates={currencyData.rates}
-          lastUpdatedDate={formatDate(
-            new Date(currencyData.timestamp).toDateString()
-          )}
-        />
+      )}
+      {showConverter && (
+        <CurrencyConverter rates={rates} expiresAt={expiresAt} />
       )}
     </div>
   );

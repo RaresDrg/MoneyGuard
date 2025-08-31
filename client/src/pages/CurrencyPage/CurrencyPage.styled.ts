@@ -10,18 +10,19 @@ const StyledCurrencyPage = styled(CurrencyPage)`
       font-size: 30px;
       line-height: 45px;
       color: var(--textColor);
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
-    > p.error {
+    .fallback {
       font-weight: 600;
       font-size: 16px;
       line-height: 24px;
       text-align: center;
-      color: #623f8b;
-      background-color: #fff3cd;
-      border: 1px solid var(--errorColor);
-      box-shadow: 0px 6px 15px 0px #ff868d80;
+      color: var(--textColor);
+      background-color: #ff868d33;
+      backdrop-filter: blur(100px);
+      box-shadow: 0px 6px 15px 0px #ff868d50;
+      border: 0.5px solid #ffffff80;
       border-radius: 8px;
       padding: 16px;
       max-width: fit-content;
@@ -31,30 +32,14 @@ const StyledCurrencyPage = styled(CurrencyPage)`
 
   @media (min-width: 768px) {
     margin-top: 0;
+
+    & > h2 {
+      margin-bottom: 15px;
+    }
   }
 
   @media (min-width: 1280px) {
-    padding: 32px 0 46px 53px;
-
-    & > div {
-      height: calc(100% - 65px);
-      overflow: auto;
-      padding-right: 16px;
-      padding-bottom: 1px;
-      scrollbar-gutter: stable;
-
-      &::-webkit-scrollbar {
-        width: 8px;
-        border-radius: 12px;
-        background-color: #e8e8e8;
-        cursor: pointer;
-      }
-      &::-webkit-scrollbar-thumb {
-        border-radius: 12px;
-        background-color: #523b7e99;
-        cursor: move;
-      }
-    }
+    padding: 32px 0 20px 53px;
   }
 `;
 

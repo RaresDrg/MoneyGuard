@@ -1,8 +1,9 @@
 export { default as useAppDispatch } from "./useAppDispatch";
 export { default as useAuth } from "./useAuth";
 export { default as useCategories } from "./useCategories";
-export { default as useCurrencyData } from "./useCurrencyData";
 export { default as useDebounce } from "./useDebounce";
+export { default as useEffectAfterMount } from "./useEffectAfterMount";
+export { default as useExchangeRates } from "./useExchangeRates";
 export { default as useModals } from "./useModals";
 export { default as usePaginatedTransactions } from "./usePaginatedTransactions";
 export { default as useReactResponsive } from "./useReactResponsive";

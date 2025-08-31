@@ -15,20 +15,16 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { errors, touched, values, setFieldValue } =
-    useFormikContext<Record<string, string>>();
-  const onError = !!(errors[name] && touched[name]);
+  const { values, setFieldValue } = useFormikContext<Record<string, string>>();
   const showToggleIcon = !!values[name]?.length;
 
   function togglePasswordClick() {
     if (!isVisible) inputRef.current?.focus();
     setIsVisible((prev) => !prev);
   }
-
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === " ") e.preventDefault();
   }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value.replace(/\s/g, "");
     setFieldValue(name, value);
@@ -36,7 +32,7 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
 
   return (
     <div className={className}>
-      <label className={`${onError ? "onError" : ""}`}>
+      <label>
         <Field
           type={isVisible ? "text" : "password"}
           innerRef={inputRef}

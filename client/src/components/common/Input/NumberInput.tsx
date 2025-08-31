@@ -1,4 +1,4 @@
-import { Field, ErrorMessage, useFormikContext } from "formik";
+import { Field, ErrorMessage } from "formik";
 
 type Props = {
   className?: string;
@@ -8,20 +8,16 @@ type Props = {
 };
 
 const NumberInput = ({ className, id, name, placeholder }: Props) => {
-  const { errors, touched } = useFormikContext<Record<string, string>>();
-  const onError = !!(errors[name] && touched[name]);
-
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (["E", "e", "-", "+"].includes(e.key)) e.preventDefault();
   }
-
   function handleWheel(e: React.WheelEvent<HTMLInputElement>) {
     e.currentTarget.blur();
   }
 
   return (
     <div className={className}>
-      <label className={`${onError ? "onError" : ""}`}>
+      <label>
         <Field
           type="number"
           id={id}

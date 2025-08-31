@@ -1,83 +1,89 @@
-import { useEffect, useState, useMemo } from "react";
-import { useDebounce, useLocalStorage } from "../../hooks";
-import { formatAmount, renderIcon } from "../../utils";
-import { Dropdown, CopyButton, Tooltip } from "../common";
+import { useState } from "react";
+import { CopyButton, Dropdown, EllipsisTooltip } from "../common";
+import { formatAmount, formatDate, renderIcon } from "../../utils";
+import {
+  useLocalStorage,
+  useAuth,
+  useEffectAfterMount,
+  useDebounce,
+} from "../../hooks";
 
 type Props = {
   className?: string;
   rates: Record<string, number>;
-  lastUpdatedDate: string;
+  expiresAt: number;
 };
 
-const CurrencyConverter = ({ className, rates, lastUpdatedDate }: Props) => {
+const CurrencyConverter = ({ className, rates, expiresAt }: Props) => {
+  const [inputError, setInputError] = useState<null | string>(null);
   const [amount, setAmount] = useState("");
   const debouncedAmount = useDebounce(Number(amount), 500);
 
-  const [favoriteCurrency, setFavoriteCurrency] =
-    useLocalStorage<string>("favoriteCurrency");
+  const [storageData, setStorageData] = useLocalStorage<string>("currency");
+  const favoriteCurrency = storageData?.payload;
+  const { user } = useAuth();
 
   const [convertedAmount, setConvertedAmount] = useState(0);
 
-  const exchangeRateInfo = useMemo(() => {
-    return favoriteCurrency
-      ? `1 USD = ${rates[favoriteCurrency].toFixed(4)} ${favoriteCurrency}`
-      : "There is no info";
-  }, [rates, favoriteCurrency]);
-
-  useEffect(() => {
-    if (debouncedAmount === 0) return setConvertedAmount(0);
-    if (favoriteCurrency) {
+  useEffectAfterMount(() => {
+    if (debouncedAmount && favoriteCurrency) {
       setConvertedAmount(debouncedAmount / rates[favoriteCurrency]);
+      return;
     }
+    if (convertedAmount !== 0) setConvertedAmount(0);
   }, [debouncedAmount, favoriteCurrency, rates]);
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (Number(e.target.value) < 100_000_000_000) {
+      setAmount(e.target.value);
+      if (inputError) setInputError(null);
+    } else {
+      setInputError("Amount is too much");
+    }
+  }
 
   return (
     <div className={className}>
-      <p className="animate__animated animate__fadeInUp">
-        <span>🌍 Traveling or dealing in other currencies ?</span>
-        <span>
+      <div className="form animate__animated animate__zoomIn">
+        <h3>🌍 Traveling or dealing in other currencies ?</h3>
+        <p>
           &mdash; enter the amount and select the currency to instantly see the
           equivalent value in <b>USD</b>
-        </span>
-      </p>
-      <div className="animate__animated animate__zoomIn">
-        <input
-          type="number"
-          placeholder="0.00"
-          value={amount}
-          min="0"
-          step="any"
-          onChange={(e) => setAmount(e.target.value)}
-          onKeyDown={(e) => {
-            if (["E", "e", "-", "+"].includes(e.key)) e.preventDefault();
-          }}
-        />
+        </p>
+        <div className="input-field">
+          <input
+            type="number"
+            placeholder="0.00"
+            value={amount}
+            onChange={handleInputChange}
+            onWheel={(e) => e.currentTarget.blur()}
+            onKeyDown={(e) => {
+              if (["E", "e", "-", "+"].includes(e.key)) e.preventDefault();
+            }}
+          />
+          {inputError && <p className="error">{inputError}</p>}
+        </div>
         <Dropdown
           options={Object.keys(rates)}
           currentOption={favoriteCurrency ?? "Select currency"}
           handlerFunction={(selectedOption) =>
-            setFavoriteCurrency(selectedOption)
+            setStorageData({
+              payload: selectedOption,
+              owner: user!.email,
+              expiresAt: null,
+            })
           }
         />
-        <div className="result">
-          <output>
-            Result : <b>{formatAmount(convertedAmount)}</b>
-          </output>
-          {convertedAmount > 0 && (
-            <>
-              <Tooltip
-                content={exchangeRateInfo}
-                className="info"
-                label={renderIcon("icon-info")}
-                placement="top-start"
-              />
-              <CopyButton valueToCopy={convertedAmount.toFixed(2)} />
-            </>
-          )}
-        </div>
-        <p className="exchange-info">
-          <span> exchange rates last updated on</span>
-          <b>{lastUpdatedDate}</b>
+        {!inputError && convertedAmount !== 0 && (
+          <div className="result animate__animated animate__flipInX">
+            {renderIcon("icon-arrow")}
+            <EllipsisTooltip text={formatAmount(convertedAmount)} />
+            <CopyButton valueToCopy={convertedAmount.toFixed(2)} />
+          </div>
+        )}
+        <p className="update-info">
+          <span>exchange rates last updated on</span>
+          <b>{formatDate(expiresAt)}</b>
         </p>
       </div>
     </div>

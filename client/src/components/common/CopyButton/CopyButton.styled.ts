@@ -2,26 +2,22 @@ import styled from "styled-components";
 import CopyButton from "./CopyButton";
 
 const StyledCopyButton = styled(CopyButton)`
-  color: var(--textColor);
+  width: 20px;
+  height: 20px;
   transition: var(--transition);
-  opacity: 0.6;
+  opacity: 0.5;
 
-  &:is(span) {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 21px;
+  &:hover {
+    opacity: 1;
   }
 
-  &:is(button) {
-    &:hover {
-      opacity: 1;
-    }
+  & > svg {
+    height: 100%;
+    width: 100%;
+  }
 
-    & > svg {
-      height: 24px;
-      width: 24px;
-      fill: currentColor;
-    }
+  &[disabled] {
+    opacity: 0.8;
   }
 `;
 

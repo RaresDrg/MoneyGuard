@@ -8,17 +8,10 @@ type Props = {
 
 const CategoryDropdown = ({ className }: Props) => {
   const { expenseCategories } = useCategories();
-
-  const { values, errors, touched, setFieldValue } = useFormikContext<{
-    category: string;
-  }>();
-
-  const styles = `${className} ${
-    errors.category && touched.category ? "onError" : ""
-  }`;
+  const { values, setFieldValue } = useFormikContext<{ category: string }>();
 
   return (
-    <div className={styles}>
+    <div className={className}>
       <Field name="category">
         {() => (
           <Dropdown

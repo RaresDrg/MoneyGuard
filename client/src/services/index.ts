@@ -1,3 +1,3 @@
 export * as authService from "./authService";
-export * as currencyService from "./currencyService";
+export * as exchangeRatesService from "./exchangeRatesService";
 export * as transactionsService from "./transactionsService";

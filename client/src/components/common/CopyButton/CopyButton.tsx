@@ -7,32 +7,38 @@ type Props = {
   valueToCopy: string;
 };
 
-const CopyButton = ({ className: styles, valueToCopy }: Props) => {
+const CopyButton = ({ className, valueToCopy }: Props) => {
   const [isCopied, setIsCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
     navigator.clipboard.writeText(valueToCopy);
     setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+    setTimeout(() => setIsCopied(false), 1000);
   };
 
+  const content = isCopied ? "Copied !" : "Copy to clipboard !";
+
   return (
-    <>
-      {isCopied ? (
-        <span className={styles}>✅Copied!</span>
-      ) : (
-        <Tippy content="Copy to clipboard !" theme="material">
-          <button
-            type="button"
-            className={styles}
-            onClick={handleClick}
-            aria-label="Copy to clipboard"
-          >
-            {renderIcon("icon-copy")}
-          </button>
-        </Tippy>
-      )}
-    </>
+    <Tippy
+      content={content}
+      theme="material"
+      visible={isHovered || isCopied}
+      placement="top"
+      offset={[0, 20]}
+    >
+      <button
+        type="button"
+        aria-label={content}
+        className={className}
+        disabled={isCopied}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={handleClick}
+      >
+        {renderIcon(isCopied ? "icon-checkmark" : "icon-copy")}
+      </button>
+    </Tippy>
   );
 };
 

@@ -27,7 +27,7 @@ const StyledSharedLayout = styled(SharedLayout)`
       &::-webkit-scrollbar {
         width: 8px;
         border-radius: 12px;
-        background-color: #e8e8e8;
+        background-color: #b0afc0;
         cursor: pointer;
       }
       &::-webkit-scrollbar-thumb {

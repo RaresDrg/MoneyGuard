@@ -19,11 +19,7 @@ const StyledLoginForm = styled(LoginForm)`
         margin-bottom: 40px;
       }
 
-      > div:has(> label + p):nth-of-type(2) {
-        margin-bottom: -5px;
-      }
-
-      > div:not(:has(> label + p)):nth-of-type(2) {
+      > div:has(> label):nth-of-type(2) {
         margin-bottom: 14px;
       }
 

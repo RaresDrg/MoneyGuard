@@ -2,7 +2,7 @@ import express from "express";
 import {
   userRouter,
   transactionRouter,
-  currencyRouter,
+  exchangeRatesRouter,
 } from "./routes/api/index.js";
 import {
   corsMiddleware,
@@ -24,7 +24,7 @@ app.use(disableCacheMiddleware);
 
 app.use("/api/users", userRouter);
 app.use("/api/transactions", jwtAuthMiddleware, transactionRouter);
-app.use("/api/currency", jwtAuthMiddleware, currencyRouter);
+app.use("/api/exchangeRates", jwtAuthMiddleware, exchangeRatesRouter);
 
 app.use(missingRouteMiddleware);
 app.use(errorMiddleware);

@@ -20,5 +20,4 @@ export { default as ModalContainer } from "./ModalContainer/ModalContainer.style
 export { default as Notification } from "./Notification/Notification";
 export { default as Section } from "./Section/Section.styled";
 export { default as TextLoader } from "./TextLoader/TextLoader.styled";
-export { default as Tooltip } from "./Tooltip/Tooltip";
 export { default as TypeSwitcher } from "./TypeSwitcher/TypeSwitcher.styled";

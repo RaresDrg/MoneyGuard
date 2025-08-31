@@ -9,7 +9,7 @@ const StyledInput = styled(Input)`
       opacity: 0.4;
       transition: var(--transition);
 
-      &.onError,
+      &:has(+ p.error),
       &:has(> input:focus) {
         opacity: 1;
       }
@@ -49,14 +49,6 @@ const StyledInput = styled(Input)`
           fill: var(--textColor);
         }
       }
-    }
-
-    p.error {
-      margin-top: 2px;
-      margin-left: 10px;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--errorColor);
     }
 
     .toggle-icon {

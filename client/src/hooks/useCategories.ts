@@ -8,25 +8,29 @@ type Categories = {
 };
 
 const useCategories = () => {
-  const [categories, setCategories] =
+  const [storageData, setStorageData] =
     useSessionStorage<Categories>("categories");
 
   async function fetchData() {
     try {
       const res = await transactionsService.fetchCategories();
-      setCategories(res.data);
+      setStorageData({
+        payload: res.data,
+        owner: null,
+        expiresAt: Date.now() + 1000 * 60 * 60 * 24,
+      });
     } catch (error) {
       console.error("Failed to fetch categories:", error);
     }
   }
 
   useEffect(() => {
-    if (!categories) fetchData();
+    if (!storageData) fetchData();
   }, []);
 
   return {
-    expenseCategories: categories?.expense || [],
-    incomeCategories: categories?.income || [],
+    expenseCategories: storageData?.payload.expense || [],
+    incomeCategories: storageData?.payload.income || [],
   };
 };
 

@@ -18,7 +18,7 @@ const StyledAddButton = styled(AddButton)`
   position: absolute;
   bottom: 20px;
   right: 20px;
-  opacity: 0.7;
+  opacity: 0.6;
   transition: var(--transition);
 
   & > svg {

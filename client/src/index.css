@@ -66,6 +66,16 @@ button {
   background-color: transparent;
 }
 
+.error {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--errorColor);
+  position: absolute;
+  left: 10px;
+  bottom: -23px;
+}
+
 @keyframes grayscaleToColor {
   0% {
     filter: grayscale(100%) brightness(20%);

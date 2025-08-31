@@ -8,6 +8,11 @@ export type UserType = {
   validationToken: { value: string; expiresAt: Date } | null;
 };
 
+export type ExchangeRatesType = {
+  rates: Record<string, number>;
+  expiresAt: Date;
+};
+
 export type TransactionType = {
   _id: string;
   owner: string;
