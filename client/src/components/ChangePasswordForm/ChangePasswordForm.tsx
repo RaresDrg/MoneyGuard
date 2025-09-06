@@ -45,7 +45,7 @@ const ChangePasswordForm = ({ className: styles }: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, isValid }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form>
             <FormTitle text="Change Password" />
             <Input
@@ -64,7 +64,13 @@ const ChangePasswordForm = ({ className: styles }: Props) => {
               type="submit"
               variant="gradient"
               text="send"
-              isDisabled={isSubmitting || !isValid}
+              isDisabled={
+                !!(
+                  isSubmitting ||
+                  (errors.password && touched.password) ||
+                  (errors.confirmPassword && touched.confirmPassword)
+                )
+              }
             />
             <FormButton
               type="button"

@@ -44,7 +44,7 @@ const LoginForm = ({ className: styles }: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, isValid }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form>
             <Logo />
             <Input
@@ -71,7 +71,13 @@ const LoginForm = ({ className: styles }: Props) => {
               type="submit"
               variant="gradient"
               text="log in"
-              isDisabled={isSubmitting || !isValid}
+              isDisabled={
+                !!(
+                  isSubmitting ||
+                  (errors.email && touched.email) ||
+                  (errors.loginPassword && touched.loginPassword)
+                )
+              }
             />
             <FormButton
               type="button"

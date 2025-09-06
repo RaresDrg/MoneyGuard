@@ -29,7 +29,7 @@ const schema = new Schema<TransactionType>(
       type: Number,
       required: [true, "=> this field is required"],
       validate: {
-        validator: (value: number) => value > 0 && value < 100000000,
+        validator: (value: number) => value > 0 && value < 100_000_000,
         message: "Sum must be between 0 and 100,000,000",
       },
     },

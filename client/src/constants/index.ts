@@ -1,5 +1,13 @@
-export const EMAIL_REGEX = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})$/;
-export const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+export const DECIMAL_INPUT_ALLOWED_KEYS: readonly string[] = [
+  ...Array.from({ length: 10 }, (_, i) => i.toString()),
+  "Backspace",
+  "Delete",
+  "Enter",
+  "ArrowLeft",
+  "ArrowRight",
+  "Tab",
+  ".",
+];
 
 export const MONTHS: readonly string[] = [
   "January",

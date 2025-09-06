@@ -44,13 +44,11 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (data: { validationToken: string; password: string }, thunkAPI) => {
-    const { validationToken, password } = data;
-
     try {
       await delay(2500);
       const response = await apiClient.patch(
-        `/api/users/update-password?validationToken=${validationToken}`,
-        { password }
+        "/api/users/update-password",
+        data
       );
 
       return response.data;

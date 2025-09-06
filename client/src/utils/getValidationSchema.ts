@@ -1,20 +1,20 @@
 import * as Yup from "yup";
-import { EMAIL_REGEX, PASSWORD_REGEX } from "../constants";
 
 const VALIDATIONS_MAP = {
   name: Yup.string()
     .trim()
-    .min(3, "Name must be at least 3 characters")
-    .max(50, "Name must be less than 50 characters")
+    .min(3, "Name is too short")
+    .max(50, "Name is too long")
     .required("Required *"),
   email: Yup.string()
     .trim()
-    .matches(EMAIL_REGEX, { message: "Invalid email address" })
+    .email("Invalid email format")
     .required("Required *"),
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(PASSWORD_REGEX, {
-      message: "Must include an uppercase, a lowercase, a digit",
+    .min(8, "Password is too short")
+    .max(50, "Password is too long")
+    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/, {
+      message: "Missing uppercase, lowercase or digit",
     })
     .required("Required *"),
   confirmPassword: Yup.string()
@@ -29,12 +29,12 @@ const VALIDATIONS_MAP = {
   }),
   sum: Yup.number()
     .moreThan(0, "Amount is too low")
-    .lessThan(100000000, "Amount is too much")
+    .lessThan(100_000_000, "Amount is too much")
     .required("Required *"),
   comment: Yup.string()
     .trim()
-    .min(5, "Comment must be at least 5 characters long")
-    .max(200, "Comment must be less than 200 characters long")
+    .min(5, "Comment is too short")
+    .max(200, `Comment is too long`)
     .required("Required *"),
 };
 type ValidationKey = keyof typeof VALIDATIONS_MAP;

@@ -37,6 +37,18 @@ const EditTransactionModal = ({ className: styles }: Props) => {
       date,
       comment: utils.prettifyText(comment),
     };
+
+    const hasUpdates = Object.keys(initialValues).some((key) => {
+      const typedKey = key as keyof Values;
+      return initialValues[typedKey] !== updates[typedKey];
+    });
+
+    if (!hasUpdates) {
+      utils.notify.warning("No changes detected");
+      formikBag.resetForm();
+      return;
+    }
+
     dispatch(updateTransaction({ ID, updates }))
       .unwrap()
       .then((response) => {
@@ -57,7 +69,7 @@ const EditTransactionModal = ({ className: styles }: Props) => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ values, errors, touched, isSubmitting }) => (
+          {({ values, errors, touched, isSubmitting, dirty }) => (
             <Form>
               <FormTitle text="Edit transaction" />
               <div className={`type ${type}`}>
@@ -67,7 +79,7 @@ const EditTransactionModal = ({ className: styles }: Props) => {
               </div>
               {values.type === "expense" && <CategoryDropdown />}
               <Input
-                type="number"
+                type="decimalInput"
                 id="sumInput"
                 name="sum"
                 placeholder="0.00"
@@ -78,6 +90,7 @@ const EditTransactionModal = ({ className: styles }: Props) => {
                 id="commentInput"
                 name="comment"
                 placeholder="Comment"
+                maxLength={201}
               />
               <FormButton
                 type="submit"
@@ -86,6 +99,7 @@ const EditTransactionModal = ({ className: styles }: Props) => {
                 isDisabled={
                   !!(
                     isSubmitting ||
+                    !dirty ||
                     (errors.sum && touched.sum) ||
                     (errors.comment && touched.comment)
                   )

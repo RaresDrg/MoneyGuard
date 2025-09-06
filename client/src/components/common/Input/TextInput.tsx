@@ -7,13 +7,22 @@ type Props = {
   name: string;
   placeholder: string;
   icon?: string;
+  maxLength?: number;
 };
 
-const TextInput = ({ className, id, name, placeholder, icon }: Props) => {
+const TextInput = (props: Props) => {
+  const { className, id, name, placeholder, icon, maxLength } = props;
+
   return (
     <div className={className}>
       <label>
-        <Field type="text" id={id} name={name} placeholder={placeholder} />
+        <Field
+          type="text"
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          maxLength={maxLength}
+        />
         {icon && renderIcon(icon)}
       </label>
       <ErrorMessage className="error" name={name} component="p" />

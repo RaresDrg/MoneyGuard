@@ -78,8 +78,9 @@ async function updateTransaction(
     const targetedDocument = await transactionService.findDocument({ _id: ID });
 
     if (!targetedDocument) {
-      utils.sendFailureResponse(res, 404, "Not found");
-      return;
+      const error = new Error("Transaction not found");
+      error.name = "NotFound";
+      throw error;
     }
 
     const { type, category, sum, date, comment } = req.body;
@@ -122,8 +123,9 @@ async function deleteTransaction(
     const result = await transactionService.deleteTransactionFromDB(ID);
 
     if (!result) {
-      utils.sendFailureResponse(res, 404, "Not found");
-      return;
+      const error = new Error("Transaction not found");
+      error.name = "NotFound";
+      throw error;
     }
 
     const user = req.user as UserType;
@@ -163,9 +165,9 @@ async function getStatistics(req: Request, res: Response, next: NextFunction) {
     const end = utils.normalizeDate(new Date(endDate as string), true);
 
     if (start > end) {
-      const msg = "Start Date must be before End Date";
-      utils.sendFailureResponse(res, 400, msg);
-      return;
+      const error = new Error("Start Date must be before End Date");
+      error.name = "ValidationError";
+      throw error;
     }
 
     const dbQuery = {
@@ -175,9 +177,9 @@ async function getStatistics(req: Request, res: Response, next: NextFunction) {
     const data = await transactionService.getTransactionsFromDB(dbQuery);
 
     if (data.length === 0) {
-      const msg = "There are no statistics available for the specified period";
-      utils.sendFailureResponse(res, 404, msg);
-      return;
+      const error = new Error("No statistics available for this period");
+      error.name = "NotFound";
+      throw error;
     }
 
     const statistics = utils.calculateStatistics(data);

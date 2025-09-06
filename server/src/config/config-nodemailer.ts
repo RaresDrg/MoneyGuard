@@ -26,10 +26,8 @@ async function sendEmail(user: { name: string; email: string }, data: string) {
     };
 
     await transporter.sendMail(message);
-    console.log(`Email sent succesfully`);
   } catch (error) {
-    console.error(error);
-    throw new Error("Email not sent. Internal server error");
+    throw new Error(`Email not sent. ${error}`);
   }
 }
 

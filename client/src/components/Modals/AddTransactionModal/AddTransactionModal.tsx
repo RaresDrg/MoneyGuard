@@ -68,7 +68,7 @@ const AddTransactionModal = ({ className: styles }: Props) => {
               <TypeSwitcher />
               {values.type === "expense" && <CategoryDropdown />}
               <Input
-                type="number"
+                type="decimalInput"
                 id="sumInput"
                 name="sum"
                 placeholder="$ 0.00"
@@ -79,6 +79,7 @@ const AddTransactionModal = ({ className: styles }: Props) => {
                 id="commentInput"
                 name="comment"
                 placeholder="Comment"
+                maxLength={201}
               />
               <FormButton
                 type="submit"

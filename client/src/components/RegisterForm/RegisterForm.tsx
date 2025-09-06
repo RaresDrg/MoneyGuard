@@ -48,7 +48,7 @@ const RegisterForm = ({ className: styles }: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, isValid }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form>
             <Logo />
             <Input
@@ -57,6 +57,7 @@ const RegisterForm = ({ className: styles }: Props) => {
               name="name"
               placeholder="Name"
               icon="icon-name"
+              maxLength={51}
             />
             <Input
               type="text"
@@ -81,7 +82,15 @@ const RegisterForm = ({ className: styles }: Props) => {
               type="submit"
               variant="gradient"
               text="register"
-              isDisabled={isSubmitting || !isValid}
+              isDisabled={
+                !!(
+                  isSubmitting ||
+                  (errors.name && touched.name) ||
+                  (errors.email && touched.email) ||
+                  (errors.password && touched.password) ||
+                  (errors.confirmPassword && touched.confirmPassword)
+                )
+              }
             />
             <FormButton
               type="button"

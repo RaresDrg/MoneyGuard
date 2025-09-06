@@ -9,7 +9,9 @@ async function register(req: Request, res: Response, next: NextFunction) {
     const { name, email, password } = req.body;
     validateData({ name, email, password });
 
-    const newUser = await userService.addUsertoDB({ name, email, password });
+    const userData = { name, email, password: utils.hash(password) };
+    const newUser = await userService.addUsertoDB(userData);
+
     const tokens = utils.generateAuthTokens(newUser);
     await userService.updateUser(newUser._id, { token: tokens.refreshToken });
 
@@ -30,15 +32,16 @@ async function login(req: Request, res: Response, next: NextFunction) {
 
     const user = await userService.findUser({ email });
     if (!user) {
-      const message = "There is no account associated with this email address";
-      utils.sendFailureResponse(res, 404, message);
-      return;
+      const error = new Error("There is no account associated with this email");
+      error.name = "NotFound";
+      throw error;
     }
 
     const passwordMatch = utils.compareHashedData(loginPassword, user.password);
     if (!passwordMatch) {
-      utils.sendFailureResponse(res, 400, "Password is wrong");
-      return;
+      const error = new Error("Password is wrong");
+      error.name = "ValidationError";
+      throw error;
     }
 
     const tokens = utils.generateAuthTokens(user);
@@ -62,9 +65,7 @@ async function logout(req: Request, res: Response, next: NextFunction) {
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
 
-    utils.sendSuccessResponse(res, 200, {
-      message: "Logged out successfully",
-    });
+    utils.sendSuccessResponse(res, 200, { message: "Logged out successfully" });
   } catch (error) {
     next(error);
   }
@@ -77,9 +78,9 @@ async function forgotPassword(req: Request, res: Response, next: NextFunction) {
 
     const user = await userService.findUser({ email });
     if (!user) {
-      const message = "There is no account associated with this email address";
-      utils.sendFailureResponse(res, 404, message);
-      return;
+      const error = new Error("There is no account associated with this email");
+      error.name = "NotFound";
+      throw error;
     }
 
     const validationToken = utils.generateValidationToken();

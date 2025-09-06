@@ -6,7 +6,7 @@ type Props = {
 };
 
 const AddButton = ({ className, handleClick }: Props) => {
-  const styles = `${className} animate__animated animate__flip`;
+  const styles = `${className} animate__animated animate__heartBeat`;
 
   return (
     <button

@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import { sendFailureResponse } from "../utils/index.js";
 
 const missingRouteMiddleware = (
   req: Request,
   res: Response,
-  next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
+  next: NextFunction
 ) => {
-  sendFailureResponse(res, 404, "API route not found.");
+  const error = new Error("API route not found");
+  error.name = "NotFound";
+  next(error);
 };
 
 export default missingRouteMiddleware;

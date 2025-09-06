@@ -3,8 +3,6 @@ import {
   TRANSACTION_CATEGORIES,
   CURRENT_YEAR,
   MIN_YEAR,
-  EMAIL_REGEX,
-  PASSWORD_REGEX,
 } from "../constants/index.js";
 
 const { income, expense } = TRANSACTION_CATEGORIES;
@@ -17,23 +15,39 @@ const VALIDATIONS_MAP = {
     "string.max": "Name must be between 3 and 50 characters long",
     "any.required": "Name field is required",
   }),
-  email: Joi.string().trim().pattern(EMAIL_REGEX).required().messages({
-    "string.base": "Email must be a string",
-    "string.empty": "Email is required",
-    "string.pattern.base": "Invalid email address",
-    "any.required": "Email field is required",
-  }),
-  password: Joi.string().pattern(PASSWORD_REGEX).required().messages({
-    "string.base": "Password must be a string",
-    "string.empty": "Password is required",
-    "string.pattern.base":
-      "Password must be at least 8 characters long and must include an uppercase, a lowercase and a digit",
-    "any.required": "Password field is required",
-  }),
-  loginPassword: Joi.string().required().messages({
+  email: Joi.string()
+    .trim()
+    .email({ tlds: { allow: false } })
+    .required()
+    .messages({
+      "string.base": "Email must be a string",
+      "string.empty": "Email is required",
+      "string.email": "Invalid email format",
+      "any.required": "Email field is required",
+    }),
+  password: Joi.string()
+    .min(8)
+    .max(50)
+    .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/)
+    .required()
+    .messages({
+      "string.base": "Password must be a string",
+      "string.empty": "Password is required",
+      "string.min": "Password must be between 8 and 50 characters long",
+      "string.max": "Password must be between 8 and 50 characters long",
+      "string.pattern.base":
+        "Password must include an uppercase, a lowercase and a digit",
+      "any.required": "Password field is required",
+    }),
+  loginPassword: Joi.string().trim().required().messages({
     "string.base": "LoginPassword must be a string",
     "string.empty": "LoginPassword is required",
     "any.required": "LoginPassword field is required",
+  }),
+  validationToken: Joi.string().trim().required().messages({
+    "string.base": "ValidationToken must be a string",
+    "string.empty": "ValidationToken is required",
+    "any.required": "ValidationToken field is required",
   }),
   type: Joi.string().valid("income", "expense").required().messages({
     "any.only": "Type is either: income or expense",
@@ -56,7 +70,7 @@ const VALIDATIONS_MAP = {
     .messages({
       "any.required": "Category field is required",
     }),
-  sum: Joi.number().greater(0).less(100000000).required().messages({
+  sum: Joi.number().greater(0).less(100_000_000).required().messages({
     "number.base": "Sum must be a number",
     "number.greater": "Sum must be greater than 0",
     "number.less": "Sum must be less than 100,000,000",

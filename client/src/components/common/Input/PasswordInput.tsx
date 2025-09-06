@@ -39,6 +39,7 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
           id={id}
           name={name}
           placeholder={placeholder}
+          maxLength={51}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
         />

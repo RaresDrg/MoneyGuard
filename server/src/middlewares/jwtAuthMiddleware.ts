@@ -42,12 +42,16 @@ function jwtAuthMiddleware(req: Request, res: Response, next: NextFunction) {
         try {
           const refreshToken = req?.signedCookies?.refreshToken ?? null;
           if (!refreshToken) {
-            throw new Error("Refresh token missing. Please re-login !");
+            const error = new Error("Unauthorized access");
+            error.name = "Unauthorized";
+            throw error;
           }
 
           const userByRefreshToken = await findUser({ token: refreshToken });
           if (!userByRefreshToken) {
-            throw new Error("Invalid refresh token. Please re-login !");
+            const error = new Error("Unauthorized access");
+            error.name = "Unauthorized";
+            throw error;
           }
 
           const renewedTokens = utils.generateAuthTokens(userByRefreshToken);
@@ -60,8 +64,7 @@ function jwtAuthMiddleware(req: Request, res: Response, next: NextFunction) {
           next();
           return;
         } catch (error) {
-          console.error(error);
-          utils.sendFailureResponse(res, 401, "Unauthorized access");
+          next(error);
         }
       }
     }

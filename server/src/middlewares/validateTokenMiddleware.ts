@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { sendFailureResponse } from "../utils/index.js";
+import { validateData } from "../config/index.js";
 import { findUser } from "../servicies/userService.js";
 
 const validateTokenMiddleware = async (
@@ -8,29 +8,27 @@ const validateTokenMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const { validationToken } = req.query;
-    if (!validationToken || validationToken === "undefined") {
-      sendFailureResponse(res, 400, "Validation token missing.");
-      return;
-    }
+    const { validationToken } = req.body;
+    validateData({ validationToken });
 
     const user = await findUser({ "validationToken.value": validationToken });
 
     if (!user) {
-      sendFailureResponse(res, 404, "Not found");
-      return;
+      const error = new Error("No user found for the given validation token");
+      error.name = "NotFound";
+      throw error;
     }
 
     if (user.validationToken!.expiresAt < new Date()) {
-      sendFailureResponse(res, 403, "Validation token is expired");
-      return;
+      const error = new Error("Validation token is expired");
+      error.name = "Forbidden";
+      throw error;
     }
 
     req.user = user;
     next();
   } catch (error) {
-    console.error(error);
-    sendFailureResponse(res, 500, "Internal server error");
+    next(error);
   }
 };
 

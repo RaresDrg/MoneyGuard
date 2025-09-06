@@ -1,34 +1,38 @@
 import { Request, Response, NextFunction } from "express";
-import { sendFailureResponse } from "../utils/index.js";
+import { MongoServerError } from "mongodb";
+import { sendFailureResponse, formatDuplicateMessage } from "../utils/index.js";
 
-interface CustomError extends Error {
-  code?: number;
-}
+type CustomError = Error & MongoServerError;
 
 const errorMiddleware = (
-  err: CustomError,
+  error: CustomError,
   req: Request,
   res: Response,
   next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
 ) => {
-  if (err?.name === "ValidationError") {
-    sendFailureResponse(res, 400, err.message);
-    return;
+  if (error.code === 11000) {
+    const duplicatedField = Object.keys(error.keyPattern)[0];
+    const duplicatedValue = error.keyValue[duplicatedField];
+    const msg = formatDuplicateMessage(duplicatedField, duplicatedValue);
+    return sendFailureResponse(res, 409, msg);
   }
 
-  if (err?.name === "CastError") {
-    sendFailureResponse(res, 400, "Invalid id value");
-    return;
+  switch (error.name) {
+    case "NotFound":
+      return sendFailureResponse(res, 404, error.message);
+    case "Forbidden":
+      return sendFailureResponse(res, 403, error.message);
+    case "Unauthorized":
+      return sendFailureResponse(res, 401, error.message);
+    case "ValidationError":
+      return sendFailureResponse(res, 400, error.message);
+    case "CastError":
+      return sendFailureResponse(res, 400, "Invalid ID format in URL");
+    default: {
+      console.error(error);
+      return sendFailureResponse(res, 500, "Internal server error");
+    }
   }
-
-  if (err?.code === 11000) {
-    const message = "You can't use this email. It belongs to another account";
-    sendFailureResponse(res, 409, message);
-    return;
-  }
-
-  console.error(err);
-  sendFailureResponse(res, 500, "Internal server error");
 };
 
 export default errorMiddleware;

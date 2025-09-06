@@ -26,10 +26,17 @@ export function sendFailureResponse(
   res.status(statusCode).json({ status: "failed", message });
 }
 
-export function hash(text: string) {
-  const salt = bcrypt.genSaltSync(envVariables.SALT_ROUNDS);
-  const hashedText = bcrypt.hashSync(text, salt);
+export function formatDuplicateMessage(field: string, value: string): string {
+  switch (field) {
+    case "email":
+      return `You can't use this email. It belongs to another account`;
+    default:
+      return `Duplicate entry for the field '${field}': the value '${value}' is already in use`;
+  }
+}
 
+export function hash(text: string) {
+  const hashedText = bcrypt.hashSync(text, envVariables.SALT_ROUNDS);
   return hashedText;
 }
 
@@ -90,11 +97,8 @@ export function sendTokensAsCookies(
 }
 
 export function selectUserProperties(user: UserType) {
-  return {
-    email: user.email,
-    name: user.name,
-    balance: user.balance,
-  };
+  const { name, email, balance } = user;
+  return { name, email, balance };
 }
 
 export function calcUpdatedBalance(

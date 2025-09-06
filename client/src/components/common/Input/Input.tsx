@@ -1,14 +1,15 @@
 import TextInput from "./TextInput";
 import PasswordInput from "./PasswordInput";
-import NumberInput from "./NumberInput";
+import DecimalInput from "./DecimalInput";
 
 type Props = {
   className?: string;
-  type: "text" | "password" | "number";
+  type: "text" | "password" | "decimalInput";
   id: string;
   name: string;
   placeholder: string;
   icon?: string;
+  maxLength?: number;
 };
 
 const Input = (props: Props) => {
@@ -19,8 +20,8 @@ const Input = (props: Props) => {
     case "password": {
       return <PasswordInput {...props} />;
     }
-    case "number": {
-      return <NumberInput {...props} />;
+    case "decimalInput": {
+      return <DecimalInput {...props} />;
     }
     default:
       return null;
