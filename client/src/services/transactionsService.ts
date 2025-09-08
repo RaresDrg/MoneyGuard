@@ -1,4 +1,4 @@
-import { apiClient, delay } from "../utils";
+import { apiClient } from "../utils";
 
 export async function fetchCategories() {
   const res = await apiClient.get("/api/transactions/categories");
@@ -6,8 +6,6 @@ export async function fetchCategories() {
 }
 
 export async function fetchStatistics(startDate: string, endDate: string) {
-  // todo
-  await delay(500);
   const res = await apiClient.get("/api/transactions/statistics", {
     params: { startDate, endDate },
   });

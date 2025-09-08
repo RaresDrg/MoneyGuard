@@ -15,7 +15,8 @@ const StyledHeader = styled(Header)`
 
       & {
         > a {
-          margin: 0;
+          margin: 0 50px 0 0;
+          flex-shrink: 0;
 
           & {
             svg {
@@ -36,7 +37,6 @@ const StyledHeader = styled(Header)`
           color: var(--textColor);
           opacity: 0.6;
           margin-left: auto;
-          max-width: calc(100% - 200px);
         }
 
         > span.separator {

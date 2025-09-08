@@ -5,13 +5,12 @@ type Props = {
   className?: string;
 };
 
-const Header = ({ className: styles }: Props) => {
+const Header = ({ className }: Props) => {
   const { user } = useAuth();
+  const styles = `${className} animate__animated animate__fadeIn animate__slow`;
 
   return (
-    <header
-      className={`${styles} animate__animated animate__fadeIn animate__slow`}
-    >
+    <header className={styles}>
       <Container>
         <Logo />
         <EllipsisTooltip className="username" text={user!.name} />

@@ -25,7 +25,7 @@ const StatisticsPage = ({ className: styles }: Props) => {
     <div className={styles}>
       <h2>Statistics</h2>
       <div>
-        <StatisticsChart statistics={statistics} isLoading={isLoading} />
+        <StatisticsChart statistics={statistics} />
         <div className="dropdowns">
           <Dropdown
             options={MONTHS}

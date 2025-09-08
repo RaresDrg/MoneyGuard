@@ -1,6 +1,7 @@
+import { useAnimatedNumber } from "../../hooks";
 import { EXPENSE_BACKGROUNDS } from "../../constants";
 import { formatAmount } from "../../utils";
-import { EllipsisTooltip, TextLoader } from "../common";
+import { EllipsisTooltip } from "../common";
 import type { Statistics } from "../../App.types";
 import { Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
@@ -8,10 +9,10 @@ import "chart.js/auto";
 type Props = {
   className?: string;
   statistics: Statistics | null;
-  isLoading: boolean;
 };
 
-const StatisticsChart = ({ className, statistics, isLoading }: Props) => {
+const StatisticsChart = ({ className, statistics }: Props) => {
+  const animatedBalance = useAnimatedNumber(statistics?.balance ?? 0);
   const hasExpenseData = !!(statistics && statistics.expense.total > 0);
 
   const data = {
@@ -37,11 +38,7 @@ const StatisticsChart = ({ className, statistics, isLoading }: Props) => {
   return (
     <div className={className}>
       <Doughnut data={data} options={options} />
-      {isLoading ? (
-        <TextLoader text="Loading..." />
-      ) : (
-        <EllipsisTooltip text={formatAmount(statistics?.balance ?? 0)} />
-      )}
+      <EllipsisTooltip text={formatAmount(animatedBalance)} />
     </div>
   );
 };
