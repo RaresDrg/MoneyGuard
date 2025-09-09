@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { delay, apiClient, resetStore } from "../../utils";
+import { apiClient, resetStore, requestWithDelay } from "../../utils";
 
 export const register = createAsyncThunk(
   "auth/register",
@@ -8,8 +8,10 @@ export const register = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      await delay(2500);
-      const response = await apiClient.post("/api/users/register", userData);
+      const response = await requestWithDelay(
+        apiClient.post("/api/users/register", userData),
+        2500
+      );
 
       return response.data;
     } catch (error) {
@@ -22,8 +24,10 @@ export const login = createAsyncThunk(
   "auth/login",
   async (userData: { email: string; loginPassword: string }, thunkAPI) => {
     try {
-      await delay(2500);
-      const response = await apiClient.post("/api/users/login", userData);
+      const response = await requestWithDelay(
+        apiClient.post("/api/users/login", userData),
+        2500
+      );
 
       return response.data;
     } catch (error) {
@@ -34,8 +38,9 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   try {
-    await delay(1500);
-    await apiClient.delete("/api/users/logout");
+    await requestWithDelay(apiClient.delete("/api/users/logout"), 1500);
+  } catch {
+    // ignore error
   } finally {
     resetStore();
   }
@@ -45,10 +50,9 @@ export const changePassword = createAsyncThunk(
   "auth/changePassword",
   async (data: { validationToken: string; password: string }, thunkAPI) => {
     try {
-      await delay(2500);
-      const response = await apiClient.patch(
-        "/api/users/update-password",
-        data
+      const response = await requestWithDelay(
+        apiClient.patch("/api/users/update-password", data),
+        2500
       );
 
       return response.data;

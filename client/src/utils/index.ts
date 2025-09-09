@@ -1,7 +1,6 @@
 export * from "./amountUtils";
 export * from "./capitalize";
 export { default as apiClient } from "./config-axios";
-export * from "./delay";
 export * from "./formatDate";
 export * from "./getBackgroundPath";
 export * from "./getValidationSchema";
@@ -11,4 +10,5 @@ export * from "./normalizeDate";
 export * from "./notify";
 export * from "./prettifyText";
 export * from "./renderIcon";
+export * from "./requestWithDelay";
 export * from "./resetStore";

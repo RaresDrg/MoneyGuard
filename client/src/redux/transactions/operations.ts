@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { apiClient, delay } from "../../utils";
+import { apiClient, requestWithDelay } from "../../utils";
 import { updateBalance } from "../auth/slice";
 import type { Transaction, PaginationParams } from "../../App.types";
 
@@ -21,11 +21,10 @@ export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async (paginationParams: PaginationParams, thunkAPI) => {
     try {
-      // todo: verificat in productie
-      await delay(1000);
-      const response = await apiClient.get("/api/transactions", {
-        params: paginationParams,
-      });
+      const response = await requestWithDelay(
+        apiClient.get("/api/transactions", { params: paginationParams }),
+        1000
+      );
 
       return response.data;
     } catch (error) {
