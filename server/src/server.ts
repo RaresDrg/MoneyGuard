@@ -5,13 +5,13 @@ import { DB_URI, PORT } from "./config/config-env.js";
 (async () => {
   try {
     await mongoose.connect(DB_URI);
-    console.log("Database connection successful");
+    console.log("✅ [MongoDB] Connected successfully");
 
-    app.listen(PORT, () => {
-      console.log(`Server is running. Use our API on port: ${PORT}`);
-    });
+    app.listen(PORT, () =>
+      console.log(`✅ [Server] Listening on port: ${PORT}`)
+    );
   } catch (error) {
-    console.error("Failed to start server:", error);
+    console.error("❌ [Startup] Failed to initialize:", error);
     process.exit(1);
   }
 })();

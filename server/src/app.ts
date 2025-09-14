@@ -12,6 +12,7 @@ import {
   jwtAuthMiddleware,
   missingRouteMiddleware,
   errorMiddleware,
+  swaggerMiddleware,
 } from "./middlewares/index.js";
 
 const app = express();
@@ -21,6 +22,8 @@ app.use(express.json());
 app.use(loggerMiddleware);
 app.use(cookieParserMiddleware);
 app.use(disableCacheMiddleware);
+
+app.use("/api-docs", ...swaggerMiddleware);
 
 app.use("/api/users", userRouter);
 app.use("/api/transactions", jwtAuthMiddleware, transactionRouter);

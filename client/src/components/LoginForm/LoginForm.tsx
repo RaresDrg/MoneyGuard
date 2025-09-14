@@ -23,7 +23,7 @@ const LoginForm = ({ className: styles }: Props) => {
 
     dispatch(login({ email, loginPassword }))
       .unwrap()
-      .then((value) => notify.success(`Welcome, ${value.data.user.name} !`))
+      .then((value) => notify.success(`Welcome, ${value.data.name} !`))
       .catch((error) => {
         notify.error(error);
 

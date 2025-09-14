@@ -18,7 +18,7 @@ async function register(req: Request, res: Response, next: NextFunction) {
     utils.sendTokensAsCookies(res, tokens);
     utils.sendSuccessResponse(res, 201, {
       message: "User created successfully",
-      data: { user: utils.selectUserProperties(newUser) },
+      data: utils.selectUserProperties(newUser),
     });
   } catch (error) {
     next(error);
@@ -50,7 +50,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
     utils.sendTokensAsCookies(res, tokens);
     utils.sendSuccessResponse(res, 200, {
       message: "Logged in successfully",
-      data: { user: utils.selectUserProperties(user) },
+      data: utils.selectUserProperties(user),
     });
   } catch (error) {
     next(error);
@@ -113,7 +113,7 @@ async function updatePassword(req: Request, res: Response, next: NextFunction) {
     utils.sendTokensAsCookies(res, tokens);
     utils.sendSuccessResponse(res, 200, {
       message: "Password changed successfully",
-      data: { user: utils.selectUserProperties(user) },
+      data: utils.selectUserProperties(user),
     });
   } catch (error) {
     next(error);

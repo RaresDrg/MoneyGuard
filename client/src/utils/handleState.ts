@@ -23,13 +23,10 @@ export const utils = {
     state.isLoading = false;
     state.error = null;
   },
-  handleAuth(
-    state: AuthState,
-    action: PayloadAction<{ data: { user: User } }>
-  ) {
+  handleAuth(state: AuthState, action: PayloadAction<{ data: User }>) {
     state.isLoading = false;
     state.error = null;
     state.isLoggedIn = true;
-    state.user = { ...action.payload.data.user };
+    state.user = { ...action.payload.data };
   },
 };
