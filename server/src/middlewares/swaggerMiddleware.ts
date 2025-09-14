@@ -1,5 +1,7 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import path from "path";
+import { fileURLToPath } from "url";
 import { IN_DEVELOPMENT } from "../config/config-env.js";
 import {
   ALL_CATEGORIES,
@@ -7,6 +9,15 @@ import {
   CURRENT_YEAR,
   TRANSACTION_CATEGORIES,
 } from "../constants/index.js";
+
+function getApiDocsGlob() {
+  if (IN_DEVELOPMENT) return "src/routes/swaggerDocs/*.ts";
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const apiDocsDir = path.join(__dirname, "..", "routes", "swaggerDocs");
+  return `${apiDocsDir}/*.js`;
+}
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
@@ -410,9 +421,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: IN_DEVELOPMENT
-    ? ["src/routes/swaggerDocs/**/*.ts"]
-    : ["dist/routes/swaggerDocs/**/*.js"],
+  apis: [getApiDocsGlob()],
 });
 
 const swaggerMiddleware = [swaggerUi.serve, swaggerUi.setup(swaggerSpec)];
