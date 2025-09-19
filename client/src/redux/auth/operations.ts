@@ -9,7 +9,7 @@ export const register = createAsyncThunk(
   ) => {
     try {
       const response = await requestWithDelay(
-        apiClient.post("/api/users/register", userData),
+        apiClient.post("/users/register", userData),
         2500
       );
 
@@ -25,7 +25,7 @@ export const login = createAsyncThunk(
   async (userData: { email: string; loginPassword: string }, thunkAPI) => {
     try {
       const response = await requestWithDelay(
-        apiClient.post("/api/users/login", userData),
+        apiClient.post("/users/login", userData),
         2500
       );
 
@@ -38,7 +38,7 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   try {
-    await requestWithDelay(apiClient.delete("/api/users/logout"), 1500);
+    await requestWithDelay(apiClient.delete("/users/logout"), 1500);
   } catch {
     // ignore error
   } finally {
@@ -51,7 +51,7 @@ export const changePassword = createAsyncThunk(
   async (data: { validationToken: string; password: string }, thunkAPI) => {
     try {
       const response = await requestWithDelay(
-        apiClient.patch("/api/users/update-password", data),
+        apiClient.patch("/users/update-password", data),
         2500
       );
 

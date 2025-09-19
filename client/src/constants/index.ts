@@ -46,11 +46,3 @@ export const EXPENSE_BACKGROUNDS: readonly string[] = [
 ];
 
 export const PAGE_SIZE = 10;
-
-// todo
-/** Important => choose app status: inProduction = true | false */
-const inProduction: boolean = true;
-
-export const API_BASE_URL = inProduction
-  ? "https://moneyguardserver.vercel.app"
-  : "http://localhost:3000";

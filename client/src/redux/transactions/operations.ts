@@ -7,7 +7,7 @@ export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
   async (data: Omit<Transaction, "_id">, thunkAPI) => {
     try {
-      const response = await apiClient.post("/api/transactions", data);
+      const response = await apiClient.post("/transactions", data);
       thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;
@@ -22,7 +22,7 @@ export const getTransactions = createAsyncThunk(
   async (paginationParams: PaginationParams, thunkAPI) => {
     try {
       const response = await requestWithDelay(
-        apiClient.get("/api/transactions", { params: paginationParams }),
+        apiClient.get("/transactions", { params: paginationParams }),
         1000
       );
 
@@ -39,7 +39,7 @@ export const updateTransaction = createAsyncThunk(
     const { ID, updates } = data;
 
     try {
-      const response = await apiClient.put(`/api/transactions/${ID}`, updates);
+      const response = await apiClient.put(`/transactions/${ID}`, updates);
       thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;
@@ -53,7 +53,7 @@ export const deleteTransaction = createAsyncThunk(
   "transactions/deleteTransaction",
   async (ID: string, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/api/transactions/${ID}`);
+      const response = await apiClient.delete(`/transactions/${ID}`);
       thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;

@@ -1,9 +1,10 @@
 import axios from "axios";
 import { handleForceLogout } from ".";
-import { API_BASE_URL } from "../constants";
+
+const IN_DEVELOPMENT = import.meta.env.MODE === "development";
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: IN_DEVELOPMENT ? "http://localhost:3000/api" : "/api",
   withCredentials: true,
 });
 

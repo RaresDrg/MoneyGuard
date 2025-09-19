@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
 import { EMAIL, PASSWORD, IN_DEVELOPMENT } from "./config-env.js";
 
+// todo
+// from: `"MoneyGuard" ${EMAIL}`,
+
 async function sendEmail(user: { name: string; email: string }, data: string) {
   try {
     const transporter = nodemailer.createTransport({
@@ -10,7 +13,7 @@ async function sendEmail(user: { name: string; email: string }, data: string) {
 
     const recoveryLink = IN_DEVELOPMENT
       ? `http://localhost:5173/reset-password?validationToken=${data}`
-      : `https://moneyguard-xi.vercel.app//reset-password?validationToken=${data}`;
+      : `https://moneyguard-phi.vercel.app/reset-password?validationToken=${data}`;
 
     const message = {
       from: EMAIL,

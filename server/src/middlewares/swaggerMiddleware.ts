@@ -10,6 +10,7 @@ import {
   TRANSACTION_CATEGORIES,
 } from "../constants/index.js";
 
+// todo
 function getApiDocsGlob() {
   if (IN_DEVELOPMENT) return "src/routes/swaggerDocs/*.ts";
 
