@@ -27,7 +27,7 @@ const ChangePasswordForm = ({ className: styles }: Props) => {
       .unwrap()
       .then((value) => notify.success(value.message))
       .catch((error) => {
-        if (error?.status === 403 || error?.status === 404) {
+        if (error?.status === 404) {
           notify.warning("The reset link is expired. Please request a new one");
           setSearchParams({});
           return;

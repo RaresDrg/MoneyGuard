@@ -44,7 +44,7 @@ const transactionsSlice = createSlice({
         const newTransactions = action.payload.data.transactions;
         const { length } = newTransactions;
         if (length > 0) state.transactionsList.push(...newTransactions);
-        if (length === PAGE_SIZE) state.cursor = newTransactions.at(-1)._id;
+        if (length === PAGE_SIZE) state.cursor = newTransactions.at(-1).id;
         if (length < PAGE_SIZE) state.hasMore = false;
         if (!("cursor" in action.meta.arg)) state.initialFetchDone = true;
       })
@@ -54,9 +54,8 @@ const transactionsSlice = createSlice({
       .addCase(updateTransaction.fulfilled, (state, action) => {
         utils.handleFulfilled(state);
         const updatedTransaction = action.payload.data.updatedTransaction;
-        const { _id } = updatedTransaction;
         const index = state.transactionsList.findIndex(
-          (item) => item._id === _id
+          (item) => item.id === updatedTransaction.id
         );
         state.transactionsList[index] = updatedTransaction;
       })
@@ -65,9 +64,9 @@ const transactionsSlice = createSlice({
       .addCase(deleteTransaction.rejected, utils.handleRejected)
       .addCase(deleteTransaction.fulfilled, (state, action) => {
         utils.handleFulfilled(state);
-        const { _id } = action.payload.data.deletedTransaction;
+        const deletedTransactionID = action.payload.data.deletedTransaction.id;
         const index = state.transactionsList.findIndex(
-          (item) => item._id === _id
+          (item) => item.id === deletedTransactionID
         );
         state.transactionsList.splice(index, 1);
       });

@@ -1,8 +1,8 @@
 import { renderIcon } from "../../../utils";
 
-interface Props {
+type Props = {
   className?: string;
-}
+};
 
 const Logo = ({ className: styles }: Props) => {
   return (

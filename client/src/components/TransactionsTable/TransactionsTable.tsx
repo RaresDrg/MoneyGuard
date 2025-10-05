@@ -26,7 +26,7 @@ const TransactionsTable = ({ className, transactions, observerRef }: Props) => {
       <tbody>
         {transactions.map((item, index) => (
           <TransactionsTableRow
-            key={item._id}
+            key={item.id}
             transaction={item}
             observerRef={index === transactions.length - 1 ? observerRef : null}
           />

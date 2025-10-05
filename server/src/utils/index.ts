@@ -1,14 +1,15 @@
 import { Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import jwt from "jsonwebtoken";
-import { envVariables } from "../config/index.js";
+import { envVariables, sendEmail } from "../config/index.js";
 import { TRANSACTION_CATEGORIES } from "../constants/index.js";
+import { sessionService } from "../servicies/index.js";
 import type {
   UserType,
   TransactionType,
   TransactionAction,
-} from "../app.types.js";
+  AtLeastOne,
+} from "../types/app.types.js";
 
 export function sendSuccessResponse(
   res: Response,
@@ -20,7 +21,7 @@ export function sendSuccessResponse(
 
 export function sendFailureResponse(
   res: Response,
-  statusCode: 400 | 401 | 403 | 404 | 409 | 500,
+  statusCode: 400 | 401 | 403 | 404 | 409 | 500 | 502,
   message: string
 ) {
   res.status(statusCode).json({ status: "failed", message });
@@ -52,53 +53,59 @@ export function generateRandomBytes() {
   return token;
 }
 
-export function generateValidationToken() {
-  const validationToken = {
-    value: generateRandomBytes(),
-    expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+export async function handleAuthSession(
+  userId: UserType["_id"],
+  action: "init" | "renew",
+  res: Response
+) {
+  const sessionData = {
+    owner: userId,
+    type: "auth" as const,
+    accessToken: generateRandomBytes(),
+    refreshToken: generateRandomBytes(),
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
   };
 
-  return validationToken;
+  const session =
+    action === "init"
+      ? await sessionService.addSession(sessionData)
+      : await sessionService.updateSession(
+          { owner: userId, type: "auth" },
+          sessionData
+        );
+
+  if (session) {
+    if (action === "init") {
+      res.setHeader("session-id", session._id.toString());
+      res.setHeader("Access-Control-Expose-Headers", "session-id");
+    }
+
+    res.cookie("accessToken", sessionData.accessToken, {
+      httpOnly: true,
+      secure: true,
+      signed: true,
+      maxAge: 15 * 60 * 1000,
+      sameSite: "none",
+    });
+    res.cookie("refreshToken", sessionData.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      signed: true,
+      maxAge: sessionData.expiresAt.getTime() - Date.now(),
+      sameSite: "none",
+    });
+  }
 }
 
-export function generateAuthTokens(user: UserType) {
-  const accessToken = jwt.sign(
-    { email: user.email, id: user._id },
-    envVariables.ACCESS_TOKEN_SECRET,
-    { expiresIn: "15min" }
-  );
-  const refreshToken = generateRandomBytes();
-
-  const tokens = { accessToken, refreshToken };
-  return tokens;
-}
-
-export function sendTokensAsCookies(
-  res: Response,
-  tokens: ReturnType<typeof generateAuthTokens>
-) {
-  const { accessToken, refreshToken } = tokens;
-
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: true,
-    signed: true,
-    maxAge: 15 * 60 * 1000,
-    sameSite: "none",
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    signed: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: "none",
-  });
-}
-
-export function selectUserProperties(user: UserType) {
-  const { name, email, balance } = user;
-  return { name, email, balance };
+export async function handleValidationSession(user: UserType) {
+  const sessionData = {
+    owner: user._id,
+    type: "validation" as const,
+    validationToken: generateRandomBytes(),
+    expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+  };
+  await sessionService.addSession(sessionData);
+  await sendEmail(user, sessionData.validationToken);
 }
 
 export function calcUpdatedBalance(
@@ -159,7 +166,6 @@ export function calculateStatistics(transactionsList: Array<TransactionType>) {
       statistics.income.summary[category] += sum;
       statistics.balance += sum;
     }
-
     if (type === "expense") {
       statistics.expense.total += sum;
       statistics.expense.summary[category] += sum;
@@ -171,13 +177,37 @@ export function calculateStatistics(transactionsList: Array<TransactionType>) {
 }
 
 export async function externalFetch(url: string, options?: RequestInit) {
-  const response = await fetch(url, options);
+  try {
+    const response = await fetch(url, options);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    const error = `HTTP ${response.status} - ${response.statusText}: ${errorText}`;
-    throw new Error(error);
+    if (!response.ok) {
+      const errorText = await response.text();
+      const error = `HTTP ${response.status} - ${response.statusText}: ${errorText}`;
+      throw new Error(error);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("❌ [External fetch failed]");
+    console.error(error);
+
+    const errorForClient = new Error();
+    errorForClient.name = "BadGateway";
+    throw errorForClient;
   }
+}
 
-  return response.json();
+export function extractOptionalQuery<
+  T extends Record<string, unknown>,
+  K extends keyof T
+>(query: T, optionalQueryKeys: readonly K[]) {
+  const filteredQuery = Object.fromEntries(
+    optionalQueryKeys
+      .filter((key) => query[key] !== undefined)
+      .map((filteredKey) => [filteredKey, query[filteredKey]])
+  );
+
+  return Object.keys(filteredQuery).length > 0
+    ? (filteredQuery as AtLeastOne<Record<K, string>>)
+    : null;
 }

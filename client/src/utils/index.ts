@@ -1,10 +1,10 @@
 export * from "./amountUtils";
 export * from "./capitalize";
 export { default as apiClient } from "./config-axios";
+export * from "./forceLogout";
 export * from "./formatDate";
 export * from "./getBackgroundPath";
 export * from "./getValidationSchema";
-export * from "./handleForceLogout";
 export * from "./handleState";
 export * from "./normalizeDate";
 export * from "./notify";

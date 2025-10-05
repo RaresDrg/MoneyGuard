@@ -1,13 +1,12 @@
 import { Schema, model } from "mongoose";
-import type { TransactionType } from "../app.types.js";
-import { ALL_CATEGORIES } from "../constants/index.js";
+import type { TransactionType } from "../types/app.types.js";
 
 const schema = new Schema<TransactionType>(
   {
     owner: {
-      type: String,
-      ref: "users",
-      required: [true, "=> this field is required"],
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     type: {
       type: String,
@@ -19,10 +18,6 @@ const schema = new Schema<TransactionType>(
     },
     category: {
       type: String,
-      enum: {
-        values: ALL_CATEGORIES,
-        message: `=> it should be one of: ${ALL_CATEGORIES.join(", ")}`,
-      },
       required: [true, "=> this field is required"],
     },
     sum: {
@@ -45,9 +40,18 @@ const schema = new Schema<TransactionType>(
       required: [true, "=> this field is required"],
     },
   },
-  { versionKey: false }
+  {
+    versionKey: false,
+    strict: true,
+    toJSON: {
+      transform(_doc, ret) {
+        const { _id, type, category, sum, date, comment } = ret;
+        return { id: _id.toString(), type, category, sum, date, comment };
+      },
+    },
+  }
 );
 
-const Transaction = model<TransactionType>("transaction", schema);
+const Transaction = model<TransactionType>("Transaction", schema);
 
 export default Transaction;

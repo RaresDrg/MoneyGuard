@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
+import { findSession } from "../servicies/sessionService.js";
 import { validateData } from "../config/index.js";
-import { findUser } from "../servicies/userService.js";
 
-const validateTokenMiddleware = async (
+const validationSessionMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -11,25 +11,18 @@ const validateTokenMiddleware = async (
     const { validationToken } = req.body;
     validateData({ validationToken });
 
-    const user = await findUser({ "validationToken.value": validationToken });
-
-    if (!user) {
+    const session = await findSession({ validationToken });
+    if (!session?.owner) {
       const error = new Error("No user found for the given validation token");
       error.name = "NotFound";
       throw error;
     }
 
-    if (user.validationToken!.expiresAt < new Date()) {
-      const error = new Error("Validation token is expired");
-      error.name = "Forbidden";
-      throw error;
-    }
-
-    req.user = user;
+    req.user = session.owner;
     next();
   } catch (error) {
     next(error);
   }
 };
 
-export default validateTokenMiddleware;
+export default validationSessionMiddleware;

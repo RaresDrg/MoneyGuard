@@ -22,7 +22,7 @@ const DeleteTransactionModal = ({ className: styles }: Props) => {
   function handleDelete() {
     setIsSubmitting(true);
 
-    dispatch(deleteTransaction(targetedTransaction!._id))
+    dispatch(deleteTransaction(targetedTransaction!.id))
       .unwrap()
       .then((response) => {
         notify.success(response.message);

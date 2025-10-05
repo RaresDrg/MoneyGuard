@@ -21,7 +21,7 @@ const EditTransactionModal = ({ className: styles }: Props) => {
   const dispatch = useAppDispatch();
 
   const { targetedTransaction } = useTransactions();
-  const { _id: ID, type, category, sum, date, comment } = targetedTransaction!;
+  const { id, type, category, sum, date, comment } = targetedTransaction!;
 
   const initialValues = { type, category, sum, date, comment };
   type Values = typeof initialValues;
@@ -49,7 +49,7 @@ const EditTransactionModal = ({ className: styles }: Props) => {
       return;
     }
 
-    dispatch(updateTransaction({ ID, updates }))
+    dispatch(updateTransaction({ id, updates }))
       .unwrap()
       .then((response) => {
         utils.notify.success(response.message);

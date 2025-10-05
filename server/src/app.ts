@@ -9,7 +9,7 @@ import {
   loggerMiddleware,
   cookieParserMiddleware,
   disableCacheMiddleware,
-  jwtAuthMiddleware,
+  authSessionMiddleware,
   missingRouteMiddleware,
   errorMiddleware,
   swaggerMiddleware,
@@ -26,8 +26,8 @@ app.use(disableCacheMiddleware);
 app.use("/api-docs", ...swaggerMiddleware);
 
 app.use("/api/users", userRouter);
-app.use("/api/transactions", jwtAuthMiddleware, transactionRouter);
-app.use("/api/exchangeRates", jwtAuthMiddleware, exchangeRatesRouter);
+app.use("/api/transactions", authSessionMiddleware, transactionRouter);
+app.use("/api/exchangeRates", authSessionMiddleware, exchangeRatesRouter);
 
 app.use(missingRouteMiddleware);
 app.use(errorMiddleware);

@@ -1,40 +1,40 @@
 import { Transaction } from "../models/index.js";
-import type { TransactionType } from "../app.types.js";
+import type { TransactionType } from "../types/app.types.js";
 import { FilterQuery, SortOrder } from "mongoose";
 
-export function addTransactionToDB(data: Omit<TransactionType, "_id">) {
+export function addTransaction(data: Omit<TransactionType, "_id">) {
   return Transaction.create(data);
 }
 
-export function getTransactionsFromDB(
-  query: FilterQuery<TransactionType>,
-  sort: "ascending" | "descending" = "ascending",
-  limit?: number
-) {
-  const sorted: Record<string, SortOrder> =
-    sort === "descending" ? { _id: -1 } : { _id: 1 };
-
-  if (limit) {
-    return Transaction.find(query).sort(sorted).limit(limit);
-  } else {
-    return Transaction.find(query).sort(sorted);
-  }
+export function findTransaction(id: string) {
+  return Transaction.findById(id);
 }
 
-export function updateTransactionInDB(
-  ID: string,
+export function findTransactions(
+  query: FilterQuery<TransactionType> & { owner: TransactionType["owner"] },
+  sortBy: Exclude<keyof TransactionType, "owner" | "comment"> = "_id",
+  sortDirection: "ascending" | "descending" = "ascending",
+  limit?: number
+) {
+  const sort: Record<string, SortOrder> = {
+    [sortBy]: sortDirection === "ascending" ? 1 : -1,
+  };
+
+  return limit
+    ? Transaction.find(query).sort(sort).limit(limit)
+    : Transaction.find(query).sort(sort);
+}
+
+export function updateTransaction(
+  id: string,
   updates: Omit<TransactionType, "_id" | "owner">
 ) {
-  return Transaction.findByIdAndUpdate(ID, updates, {
+  return Transaction.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,
   });
 }
 
-export function deleteTransactionFromDB(ID: string) {
-  return Transaction.findByIdAndDelete(ID);
-}
-
-export function findDocument(query: FilterQuery<TransactionType>) {
-  return Transaction.findOne(query);
+export function deleteTransaction(id: string) {
+  return Transaction.findByIdAndDelete(id);
 }

@@ -1,10 +1,10 @@
 import { ExchangeRates } from "../models/index.js";
-import type { ExchangeRatesType } from "../app.types.js";
+import type { ExchangeRatesType } from "../types/app.types.js";
 
-export function addExchangeRatesDataToDB(data: ExchangeRatesType) {
+export function addExchangeRatesData(data: Omit<ExchangeRatesType, "_id">) {
   return ExchangeRates.create(data);
 }
 
-export function getExchangeRatesDataFromDB() {
+export function getExchangeRatesData() {
   return ExchangeRates.findOne({ expiresAt: { $gt: new Date() } });
 }

@@ -14,7 +14,7 @@ const TransactionsList = (props: Props) => {
     <ul className={styles}>
       {transactions.map((item, index) => (
         <TransactionsListItem
-          key={item._id}
+          key={item.id}
           transaction={item}
           observerRef={index === transactions.length - 1 ? observerRef : null}
         />

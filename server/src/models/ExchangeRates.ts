@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import type { ExchangeRatesType } from "../app.types.js";
+import type { ExchangeRatesType } from "../types/app.types.js";
 
 const schema = new Schema<ExchangeRatesType>(
   {
@@ -18,12 +18,28 @@ const schema = new Schema<ExchangeRatesType>(
     expiresAt: {
       type: Date,
       required: true,
+      validate: {
+        validator: function (value: Date) {
+          return value.getTime() > Date.now();
+        },
+        message: "expiresAt must be in the future",
+      },
       index: { expires: 0 },
     },
   },
-  { versionKey: false, collection: "exchangeRates" }
+  {
+    versionKey: false,
+    strict: true,
+    collection: "exchangeRates",
+    toJSON: {
+      transform(_doc, ret) {
+        const { rates, expiresAt } = ret;
+        return { rates, expiresAt };
+      },
+    },
+  }
 );
 
-const ExchangeRates = model<ExchangeRatesType>("exchangeRates", schema);
+const ExchangeRates = model<ExchangeRatesType>("ExchangeRates", schema);
 
 export default ExchangeRates;

@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { userService } from "../servicies/index.js";
+import { userService, sessionService } from "../servicies/index.js";
 import * as utils from "../utils/index.js";
-import { validateData, sendEmail } from "../config/index.js";
-import type { UserType } from "../app.types.js";
+import { validateData } from "../config/index.js";
 
 async function register(req: Request, res: Response, next: NextFunction) {
   try {
@@ -10,15 +9,13 @@ async function register(req: Request, res: Response, next: NextFunction) {
     validateData({ name, email, password });
 
     const userData = { name, email, password: utils.hash(password) };
-    const newUser = await userService.addUsertoDB(userData);
+    const newUser = await userService.addUser(userData);
 
-    const tokens = utils.generateAuthTokens(newUser);
-    await userService.updateUser(newUser._id, { token: tokens.refreshToken });
+    await utils.handleAuthSession(newUser._id, "init", res);
 
-    utils.sendTokensAsCookies(res, tokens);
     utils.sendSuccessResponse(res, 201, {
       message: "User created successfully",
-      data: utils.selectUserProperties(newUser),
+      data: newUser,
     });
   } catch (error) {
     next(error);
@@ -44,13 +41,11 @@ async function login(req: Request, res: Response, next: NextFunction) {
       throw error;
     }
 
-    const tokens = utils.generateAuthTokens(user);
-    await userService.updateUser(user._id, { token: tokens.refreshToken });
+    await utils.handleAuthSession(user._id, "init", res);
 
-    utils.sendTokensAsCookies(res, tokens);
     utils.sendSuccessResponse(res, 200, {
       message: "Logged in successfully",
-      data: utils.selectUserProperties(user),
+      data: user,
     });
   } catch (error) {
     next(error);
@@ -59,8 +54,7 @@ async function login(req: Request, res: Response, next: NextFunction) {
 
 async function logout(req: Request, res: Response, next: NextFunction) {
   try {
-    const user = req.user as UserType;
-    await userService.updateUser(user._id, { token: null });
+    await sessionService.deleteSession({ owner: req.user!._id, type: "auth" });
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
@@ -83,13 +77,9 @@ async function forgotPassword(req: Request, res: Response, next: NextFunction) {
       throw error;
     }
 
-    const validationToken = utils.generateValidationToken();
-    await userService.updateUser(user.id, { validationToken });
+    await utils.handleValidationSession(user);
 
-    await sendEmail(user, validationToken.value);
-
-    const message =
-      "Password change request received. Please check your email (including spam folder) for a confirmation message.";
+    const message = `Request received - check your email (including spam folder) for further instructions`;
     utils.sendSuccessResponse(res, 200, { message });
   } catch (error) {
     next(error);
@@ -101,19 +91,17 @@ async function updatePassword(req: Request, res: Response, next: NextFunction) {
     const { password } = req.body;
     validateData({ password });
 
-    const user = req.user as UserType;
-    const tokens = utils.generateAuthTokens(user);
+    const userId = req.user!._id;
 
-    await userService.updateUser(user._id, {
-      password: utils.hash(password),
-      token: tokens.refreshToken,
-      validationToken: null,
-    });
+    const updates = { password: utils.hash(password) };
+    const updatedUser = await userService.updateUser(userId, updates);
 
-    utils.sendTokensAsCookies(res, tokens);
+    await sessionService.deleteSession({ owner: userId, type: "validation" });
+    await utils.handleAuthSession(userId, "init", res);
+
     utils.sendSuccessResponse(res, 200, {
       message: "Password changed successfully",
-      data: utils.selectUserProperties(user),
+      data: updatedUser,
     });
   } catch (error) {
     next(error);

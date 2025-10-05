@@ -5,7 +5,6 @@ export const PORT = process.env.PORT ?? 3000;
 export const DB_URI = process.env.DB_URI!;
 
 export const SALT_ROUNDS = Number(process.env.SALT_ROUNDS!);
-export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
 export const RANDOM_BYTES_LENGTH = Number(process.env.RANDOM_BYTES_LENGTH!);
 export const COOKIE_PARSER_SECRET = process.env.COOKIE_PARSER_SECRET!;
 

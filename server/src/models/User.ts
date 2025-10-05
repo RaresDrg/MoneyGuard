@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import type { UserType } from "../app.types.js";
+import type { UserType } from "../types/app.types.js";
 
 const schema = new Schema<UserType>(
   {
@@ -24,21 +24,19 @@ const schema = new Schema<UserType>(
       type: Number,
       default: 0,
     },
-    token: {
-      type: String,
-      default: null,
-    },
-    validationToken: {
-      type: {
-        value: { type: String, required: true },
-        expiresAt: { type: Date, required: true },
-      },
-      default: null,
-    },
   },
-  { versionKey: false }
+  {
+    versionKey: false,
+    strict: true,
+    toJSON: {
+      transform(_doc, ret) {
+        const { name, email, balance } = ret;
+        return { name, email, balance };
+      },
+    },
+  }
 );
 
-const User = model<UserType>("user", schema);
+const User = model<UserType>("User", schema);
 
 export default User;

@@ -3,9 +3,12 @@ import { apiClient, requestWithDelay } from "../../utils";
 import { updateBalance } from "../auth/slice";
 import type { Transaction, PaginationParams } from "../../App.types";
 
+type TransactionData = Omit<Transaction, "id">;
+type TransactionID = Transaction["id"];
+
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
-  async (data: Omit<Transaction, "_id">, thunkAPI) => {
+  async (data: TransactionData, thunkAPI) => {
     try {
       const response = await apiClient.post("/transactions", data);
       thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
@@ -35,11 +38,11 @@ export const getTransactions = createAsyncThunk(
 
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
-  async (data: { ID: string; updates: Omit<Transaction, "_id"> }, thunkAPI) => {
-    const { ID, updates } = data;
+  async (data: { id: TransactionID; updates: TransactionData }, thunkAPI) => {
+    const { id, updates } = data;
 
     try {
-      const response = await apiClient.put(`/transactions/${ID}`, updates);
+      const response = await apiClient.put(`/transactions/${id}`, updates);
       thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;
@@ -51,9 +54,9 @@ export const updateTransaction = createAsyncThunk(
 
 export const deleteTransaction = createAsyncThunk(
   "transactions/deleteTransaction",
-  async (ID: string, thunkAPI) => {
+  async (id: TransactionID, thunkAPI) => {
     try {
-      const response = await apiClient.delete(`/transactions/${ID}`);
+      const response = await apiClient.delete(`/transactions/${id}`);
       thunkAPI.dispatch(updateBalance(response.data.data.updatedBalance));
 
       return response.data;

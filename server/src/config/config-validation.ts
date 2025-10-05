@@ -1,4 +1,6 @@
 import Joi from "joi";
+import { Types } from "mongoose";
+import type { AtLeastOne } from "../types/app.types.js";
 import {
   TRANSACTION_CATEGORIES,
   CURRENT_YEAR,
@@ -8,141 +10,216 @@ import {
 const { income, expense } = TRANSACTION_CATEGORIES;
 
 const VALIDATIONS_MAP = {
-  name: Joi.string().trim().min(3).max(50).required().messages({
-    "string.base": "Name must be a string",
-    "string.empty": "Name is required",
-    "string.min": "Name must be between 3 and 50 characters long",
-    "string.max": "Name must be between 3 and 50 characters long",
-    "any.required": "Name field is required",
+  name: Joi.string().trim().min(3).max(50).required().label("Name").messages({
+    "string.base": "{#label} must be a string",
+    "string.empty": "{#label} is required",
+    "string.min": "{#label} must be at least {#limit} characters long",
+    "string.max": "{#label} must be at most {#limit} characters long",
+    "any.required": "{#label} is required",
   }),
   email: Joi.string()
     .trim()
     .email({ tlds: { allow: false } })
     .required()
+    .label("Email")
     .messages({
-      "string.base": "Email must be a string",
-      "string.empty": "Email is required",
-      "string.email": "Invalid email format",
-      "any.required": "Email field is required",
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "string.email": "{#label} has an invalid format",
+      "any.required": "{#label} is required",
     }),
   password: Joi.string()
+    .trim()
     .min(8)
     .max(50)
     .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/)
     .required()
+    .label("Password")
     .messages({
-      "string.base": "Password must be a string",
-      "string.empty": "Password is required",
-      "string.min": "Password must be between 8 and 50 characters long",
-      "string.max": "Password must be between 8 and 50 characters long",
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "string.min": "{#label} must be at least {#limit} characters long",
+      "string.max": "{#label} must be at most {#limit} characters long",
       "string.pattern.base":
-        "Password must include an uppercase, a lowercase and a digit",
-      "any.required": "Password field is required",
+        "{#label} must include an uppercase, a lowercase and a digit",
+      "any.required": "{#label} is required",
     }),
-  loginPassword: Joi.string().trim().required().messages({
-    "string.base": "LoginPassword must be a string",
-    "string.empty": "LoginPassword is required",
-    "any.required": "LoginPassword field is required",
-  }),
-  validationToken: Joi.string().trim().required().messages({
-    "string.base": "ValidationToken must be a string",
-    "string.empty": "ValidationToken is required",
-    "any.required": "ValidationToken field is required",
-  }),
-  type: Joi.string().valid("income", "expense").required().messages({
-    "any.only": "Type is either: income or expense",
-    "any.required": "Type field is required",
-  }),
+  loginPassword: Joi.string()
+    .trim()
+    .required()
+    .label("Login Password")
+    .messages({
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "any.required": "{#label} is required",
+    }),
+  type: Joi.string()
+    .trim()
+    .valid("income", "expense")
+    .required()
+    .label("Type")
+    .messages({
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "any.only": "{#label} is either: income or expense",
+      "any.required": "{#label} is required",
+    }),
   category: Joi.string()
     .when("type", {
       is: "income",
-      then: Joi.valid(...income).messages({
-        "any.only": `Category is one of: ${income.join(", ")}`,
-      }),
+      then: Joi.string()
+        .valid(...income)
+        .messages({ "any.only": `{#label} is one of: ${income.join(", ")}` }),
     })
     .when("type", {
       is: "expense",
-      then: Joi.valid(...expense).messages({
-        "any.only": `Category is one of: ${expense.join(", ")}`,
-      }),
+      then: Joi.string()
+        .valid(...expense)
+        .messages({ "any.only": `{#label} is one of: ${expense.join(", ")}` }),
     })
     .required()
+    .label("Category")
+    .messages({ "any.required": "{#label} is required" }),
+  sum: Joi.number()
+    .greater(0)
+    .less(100_000_000)
+    .required()
+    .label("Sum")
     .messages({
-      "any.required": "Category field is required",
+      "number.base": "{#label} must be a number",
+      "number.greater": "{#label} must be greater than {#limit}",
+      "number.less": "{#label} must be less than {#limit}",
+      "any.required": "{#label} is required",
     }),
-  sum: Joi.number().greater(0).less(100_000_000).required().messages({
-    "number.base": "Sum must be a number",
-    "number.greater": "Sum must be greater than 0",
-    "number.less": "Sum must be less than 100,000,000",
-    "any.required": "Sum field is required",
-  }),
   date: Joi.date()
     .iso()
     .min(`${MIN_YEAR}-01-01`)
     .max(`${CURRENT_YEAR}-12-31`)
     .required()
+    .label("Date")
     .messages({
-      "date.base": "Date must be a valid ISO date",
-      "date.min": `Date cannot be before 01.01.${MIN_YEAR}`,
-      "date.max": `Date cannot be after 31.12.${CURRENT_YEAR}`,
-      "any.required": "Date field is required",
+      "date.base": "{#label} must be a valid ISO date",
+      "date.min": `{#label} must be after 01.01.${MIN_YEAR}`,
+      "date.max": `{#label} must be before 31.12.${CURRENT_YEAR}`,
+      "any.required": "{#label} is required",
     }),
-  comment: Joi.string().trim().min(5).max(200).required().messages({
-    "string.base": "Comment must be a string",
-    "string.empty": "Comment is required",
-    "string.min": "Comment must be at least 5 characters long",
-    "string.max": "Comment must be at most 200 characters long",
-    "any.required": "Comment field is required",
-  }),
-  startDate: Joi.date()
-    .iso()
-    .min(`${MIN_YEAR}-01-01`)
-    .max(`${CURRENT_YEAR}-12-31`)
+  comment: Joi.string()
+    .trim()
+    .min(5)
+    .max(200)
     .required()
+    .label("Comment")
     .messages({
-      "date.base": "Start Date must be a valid ISO date",
-      "date.min": `Start Date must be after 01.01.${MIN_YEAR}`,
-      "date.max": `Start Date must be before 31.12.${CURRENT_YEAR}`,
-      "any.required": "Start Date field is required",
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "string.min": "{#label} must be at least {#limit} characters long",
+      "string.max": "{#label} must be at most {#limit} characters long",
+      "any.required": "{#label} is required",
     }),
-  endDate: Joi.date()
-    .iso()
-    .min(`${MIN_YEAR}-01-01`)
-    .max(`${CURRENT_YEAR}-12-31`)
+  statisticsRange: Joi.object({
+    startDate: Joi.date()
+      .iso()
+      .min(`${MIN_YEAR}-01-01`)
+      .max(`${CURRENT_YEAR}-12-31`)
+      .required()
+      .label("Start Date")
+      .messages({
+        "date.base": "{#label} must be a valid ISO date",
+        "date.min": `{#label} must be after 01.01.${MIN_YEAR}`,
+        "date.max": `{#label} must be before 31.12.${CURRENT_YEAR}`,
+        "any.required": "{#label} is required",
+      }),
+    endDate: Joi.date()
+      .iso()
+      .min(`${MIN_YEAR}-01-01`)
+      .max(`${CURRENT_YEAR}-12-31`)
+      .required()
+      .label("End Date")
+      .messages({
+        "date.base": "{#label} must be a valid ISO date",
+        "date.min": `{#label} must be after 01.01.${MIN_YEAR}`,
+        "date.max": `{#label} must be before 31.12.${CURRENT_YEAR}`,
+        "any.required": "{#label} is required",
+      }),
+  })
+    .custom((value, helpers) => {
+      if (value.startDate > value.endDate) return helpers.error("any.invalid");
+      return value;
+    })
+    .messages({
+      "any.invalid": "Start Date must be before or equal to End Date",
+    }),
+  limit: Joi.number()
+    .integer()
+    .min(1)
+    .max(30)
     .required()
+    .label("Limit")
     .messages({
-      "date.base": "End Date must be a valid ISO date",
-      "date.min": `End Date must be after 01.01.${MIN_YEAR}`,
-      "date.max": `End Date must be before 31.12.${CURRENT_YEAR}`,
-      "any.required": "End Date field is required",
+      "number.base": "{#label} must be a number",
+      "number.integer": "{#label} must be an integer",
+      "number.min": "{#label} must be at least {#limit}",
+      "number.max": "{#label} must be at most {#limit}",
+      "any.required": "{#label} is required",
     }),
-  rawLimit: Joi.number().integer().min(1).max(30).required().messages({
-    "number.base": "Limit must be a number",
-    "number.integer": "Limit must be an integer",
-    "number.min": "Limit must be at least 1",
-    "number.max": "Limit must not exceed 30",
-    "any.required": "Limit field is required",
-  }),
-  rawCursor: Joi.string().trim().required().messages({
-    "string.base": "Cursor must be a string",
-    "string.empty": "Cursor is required",
-    "any.required": "Cursor field is required",
-  }),
-  rawSort: Joi.string().valid("ascending", "descending").required().messages({
-    "any.only": "Sort is either: ascending or descending",
-    "any.required": "Sort field is required",
-  }),
+  cursor: Joi.string()
+    .trim()
+    .custom((value, helpers) => {
+      if (!Types.ObjectId.isValid(value)) return helpers.error("any.invalid");
+      return value;
+    })
+    .required()
+    .label("Cursor")
+    .messages({
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "any.invalid":
+        "{#label} has an invalid format - it must be a 24-character hexadecimal string",
+      "any.required": "{#label} is required",
+    }),
+  sort: Joi.string()
+    .valid("ascending", "descending")
+    .required()
+    .label("Sort")
+    .messages({
+      "any.only": "{#label} must be either: ascending or descending",
+      "any.required": "{#label} is required",
+    }),
+  ID: Joi.string()
+    .trim()
+    .custom((value, helpers) => {
+      if (!Types.ObjectId.isValid(value)) return helpers.error("any.invalid");
+      return value;
+    })
+    .required()
+    .label("ID")
+    .messages({
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "any.invalid":
+        "{#label} has an invalid format - it must be a 24-character hexadecimal string",
+      "any.required": "{#label} is required",
+    }),
+  validationToken: Joi.string()
+    .trim()
+    .required()
+    .label("Validation Token")
+    .messages({
+      "string.base": "{#label} must be a string",
+      "string.empty": "{#label} is required",
+      "any.required": "{#label} is required",
+    }),
 };
 type ValidationKey = keyof typeof VALIDATIONS_MAP;
 
-export function validateData(data: Partial<Record<ValidationKey, unknown>>) {
+export function validateData(data: AtLeastOne<Record<ValidationKey, unknown>>) {
   const schema = Joi.object(
     Object.fromEntries(
       Object.keys(data)
         .filter((key) => key in VALIDATIONS_MAP)
         .map((key) => [key, VALIDATIONS_MAP[key as ValidationKey]])
     )
-  );
+  ).options({ errors: { wrap: { label: false } } });
 
   const { error } = schema.validate(data, { abortEarly: false });
   if (error) throw error;

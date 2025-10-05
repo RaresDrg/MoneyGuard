@@ -1,17 +1,18 @@
 import { User } from "../models/index.js";
-import type { UserType } from "../app.types.js";
-import { FilterQuery } from "mongoose";
+import type { UserType, AtLeastOne } from "../types/app.types.js";
 
-type Data = Pick<UserType, "name" | "email" | "password">;
-export function addUsertoDB(data: Data) {
+export function addUser(data: Omit<UserType, "_id" | "balance">) {
   return User.create(data);
 }
 
-export function findUser(query: FilterQuery<UserType>) {
+export function findUser(query: AtLeastOne<UserType, "_id" | "email">) {
   return User.findOne(query);
 }
 
-export function updateUser(userId: string, updates: Partial<UserType>) {
+export function updateUser(
+  userId: UserType["_id"],
+  updates: AtLeastOne<UserType, "name" | "email" | "password" | "balance">
+) {
   return User.findByIdAndUpdate(userId, updates, {
     new: true,
     runValidators: true,

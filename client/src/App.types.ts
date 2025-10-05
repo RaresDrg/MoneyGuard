@@ -4,25 +4,25 @@ export type RootState = ReturnType<
   typeof import("./redux/store").store.getState
 >;
 
-export interface AuthState {
+export type AuthState = {
   isLoading: boolean;
   error: null | string;
   isLoggedIn: boolean;
   user: null | User;
-}
+};
 
-export interface User {
+export type User = {
   name: string;
   email: string;
   balance: number;
-}
+};
 
-export interface ErrorResponse {
+export type ErrorResponse = {
   status?: number;
   response?: { data?: { message?: string } };
-}
+};
 
-export interface TransactionsState {
+export type TransactionsState = {
   isLoading: boolean;
   error: null | string;
   transactionsList: Array<Transaction>;
@@ -30,18 +30,18 @@ export interface TransactionsState {
   cursor: null | string;
   hasMore: boolean;
   targetedTransaction: null | Transaction;
-}
+};
 
-export interface Transaction {
-  _id: string;
+export type Transaction = {
+  id: string;
   type: "income" | "expense";
   category: string;
   sum: number;
   date: string;
   comment: string;
-}
+};
 
-export interface Statistics {
+export type Statistics = {
   income: {
     total: number;
     summary: Record<string, number>;
@@ -51,7 +51,7 @@ export interface Statistics {
     summary: Record<string, number>;
   };
   balance: number;
-}
+};
 
 export type Background =
   | "gradientBg_mobile"

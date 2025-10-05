@@ -1,10 +1,10 @@
 import { ReactElement } from "react";
 
-interface Props {
+type Props = {
   className?: string;
   children: ReactElement;
   variant: "loginBg" | "registerBg" | "gradientBg";
-}
+};
 
 const Section = ({ className: styles, children }: Props) => {
   return (
