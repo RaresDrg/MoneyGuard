@@ -1,36 +1,67 @@
 import nodemailer from "nodemailer";
 import { EMAIL, PASSWORD, IN_DEVELOPMENT } from "./config-env.js";
+import type { UserType } from "../types/app.types.js";
+import { createError } from "../utils/index.js";
 
-// todo
-// from: `"MoneyGuard" ${EMAIL}`,
+type EmailType = "reset-password";
 
-async function sendEmail(user: { name: string; email: string }, data: string) {
+function buildEmailMessage(type: EmailType, user: UserType, data: unknown) {
+  switch (type) {
+    case "reset-password": {
+      const recoveryLink = IN_DEVELOPMENT
+        ? `http://localhost:5173/reset-password?validationToken=${data}`
+        : `https://moneyguard-phi.vercel.app/reset-password?validationToken=${data}`;
+
+      return {
+        from: `"MoneyGuard" <${EMAIL}>`,
+        to: user.email,
+        subject: "Password Reset Notification",
+        text: `Dear ${user.name}, \n\nWe have received your request to change the password for the account associated with this email address. \n\nPlease click the link below to reset your password: \n${recoveryLink} \n\nIf you did not request this password change, please ignore this email. \n\nBest regards, \nMoneyGuard Customer Support Team !`,
+        html: `
+          <div style="font-family: Poppins, Arial, sans-serif; color: #FBFBFB; padding: 20px; border: 1px solid #FFD8D0; border-left: 4px solid #FFD8D0; border-radius: 30px; background-color: rgba(82, 59, 126, 0.6); background-image: url('https://res.cloudinary.com/db73szjbz/image/upload/f_auto,q_auto/v1759878029/email_bg_x5uynm.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+            <div style="display: none; font-size: 1px; color: #ffffff; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+              🛡️ Your secure password reset link is ready.
+            </div>
+            <div style="text-align: center; margin-bottom: 40px">
+      		    <a href="https://moneyguard-phi.vercel.app" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+      			    <img
+                  src="https://res.cloudinary.com/db73szjbz/image/upload/f_auto,q_auto/v1759876502/logo_22_plnuey.png"
+      				    alt="MoneyGuard Logo"
+      				    style="width: 160px; display: inline-block;"
+      			    />
+      		    </a>
+      	    </div>
+            <h2 style="margin: 0 0 20px 0; padding: 0; font-size: 20px; line-height: 30px; font-weight: 700;">🔐 Password Reset Notification</h2>
+            <p style="margin: 0 0 5px 0; padding: 0; font-size: 16px; line-height: 24px; font-weight: 400">Hello <b style="color: #FFD8D0">${user.name}</b>,</p>
+            <p style="margin: 0 0 10px 0; padding: 0; font-size: 16px; line-height: 24px; font-weight: 400;">Looks like you asked to reset your password — just click the button below.</p>
+            <a href="${recoveryLink}" target="_blank" rel="noopener noreferrer" style="display: inline-block; text-align: center; padding: 7px 14px; border-radius: 20px; font-weight: 400; font-size: 16px; line-height: 24px; letter-spacing: 1px; background-color: #FCFCFC; text-decoration: none; color: #623F8B; border: 1px solid black; box-shadow: 1px 9px 15px 0px rgba(0, 0, 0, 0.2);">
+              Change Password
+            </a>
+            <p style="margin: 10px 0 0 0; padding: 0; font-size: 16px; line-height: 24px; font-weight: 400;" >If you didn't request this, you can safely ignore this email.</p>
+            <p style="margin: 35px 0 0 0; padding: 10px 0 0 0; border-top: 1px solid rgba(255, 216, 208, 0.8); font-size: 16px; line-height: 24px; font-weight: 400; font-style: italic; color: rgba(255, 255, 255, 0.8)">Best regards,</p>
+            <p style="margin: 0; padding: 0; font-size: 16px; line-height: 24px; font-weight: 400; font-style: italic; color: rgba(255, 255, 255, 0.8)"><b style="color: rgba(255, 255, 255)">MoneyGuard</b> Customer Support Team !</p>
+          </div>
+        `,
+      };
+    }
+    default: {
+      throw new Error("Unknown email type");
+    }
+  }
+}
+
+async function sendEmail(type: EmailType, user: UserType, data: unknown) {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: { user: EMAIL, pass: PASSWORD },
     });
-
-    const recoveryLink = IN_DEVELOPMENT
-      ? `http://localhost:5173/reset-password?validationToken=${data}`
-      : `https://moneyguard-phi.vercel.app/reset-password?validationToken=${data}`;
-
-    const message = {
-      from: EMAIL,
-      to: user.email,
-      subject: "Password Change Request Received",
-      text: `Dear ${user.name}, \n\nWe have received your request to change the password for the account associated with this email address. \n\nPlease click the link below to reset your password: \n${recoveryLink} \n\nIf you did not request this password change, please ignore this email. \n\nBest regards, \nMoneyGuard Customer Support Team !`,
-      html: `<p>Dear <strong>${user.name}</strong>,</p>
-            <p>We have received your request to change the password for the account associated with this email address.</p>
-            <p>Please click the following link to reset your password: <a href="${recoveryLink}">Reset Password</a></p>
-            <p>If you did not request this password change, please ignore this email.</p>
-            <p>Best regards,</p>
-            <p><strong>MoneyGuard</strong> Customer Support Team !</p>`,
-    };
-
+    const message = buildEmailMessage(type, user, data);
     await transporter.sendMail(message);
   } catch (error) {
-    throw new Error(`Email not sent. ${error}`);
+    console.error("❌ [Email not sent]");
+    console.error(error);
+    throw createError("Internal");
   }
 }
 

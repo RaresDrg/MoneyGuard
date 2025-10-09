@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Types } from "mongoose";
 import { findSession } from "../servicies/sessionService.js";
-import { handleAuthSession } from "../utils/index.js";
+import { handleAuthSession, createError } from "../utils/index.js";
 
 const authSessionMiddleware = async (
   req: Request,
@@ -38,8 +38,10 @@ const authSessionMiddleware = async (
 
     throw new Error();
   } catch {
-    const error = new Error("Access denied: invalid or expired session");
-    error.name = "Unauthorized";
+    const error = createError(
+      "Unauthorized",
+      "Access denied: invalid or expired session"
+    );
     next(error);
   }
 };

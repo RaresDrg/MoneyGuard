@@ -20,6 +20,10 @@ const errorMiddleware = (
       const msg = `We're experiencing issues with an external service. Please try again later`;
       return sendFailureResponse(res, 502, msg);
     }
+    case "Internal": {
+      const msg = `We're experiencing technical difficulties. Please try again later`;
+      return sendFailureResponse(res, 500, msg);
+    }
     case "NotFound":
       return sendFailureResponse(res, 404, error.message);
     case "Forbidden":

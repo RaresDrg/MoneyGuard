@@ -27,6 +27,12 @@ export function sendFailureResponse(
   res.status(statusCode).json({ status: "failed", message });
 }
 
+export function createError(name: string, message?: string) {
+  const error = new Error(message ?? "");
+  error.name = name;
+  return error;
+}
+
 export function formatDuplicateMessage(field: string, value: string): string {
   switch (field) {
     case "email":
@@ -105,7 +111,7 @@ export async function handleValidationSession(user: UserType) {
     expiresAt: new Date(Date.now() + 15 * 60 * 1000),
   };
   await sessionService.addSession(sessionData);
-  await sendEmail(user, sessionData.validationToken);
+  await sendEmail("reset-password", user, sessionData.validationToken);
 }
 
 export function calcUpdatedBalance(
@@ -190,10 +196,7 @@ export async function externalFetch(url: string, options?: RequestInit) {
   } catch (error) {
     console.error("❌ [External fetch failed]");
     console.error(error);
-
-    const errorForClient = new Error();
-    errorForClient.name = "BadGateway";
-    throw errorForClient;
+    throw createError("BadGateway");
   }
 }
 

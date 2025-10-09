@@ -17,11 +17,7 @@ async function getRates(req: Request, res: Response, next: NextFunction) {
     const { rates } = await utils.externalFetch(
       `https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_RATES_API_KEY}`
     );
-    if (!rates) {
-      const error = new Error();
-      error.name = "BadGateway";
-      throw error;
-    }
+    if (!rates) throw utils.createError("BadGateway");
 
     const savedRatesData = await exchangeRatesService.addExchangeRatesData({
       rates,

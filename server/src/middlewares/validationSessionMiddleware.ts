@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { findSession } from "../servicies/sessionService.js";
 import { validateData } from "../config/index.js";
+import { createError } from "../utils/index.js";
 
 const validationSessionMiddleware = async (
   req: Request,
@@ -13,9 +14,10 @@ const validationSessionMiddleware = async (
 
     const session = await findSession({ validationToken });
     if (!session?.owner) {
-      const error = new Error("No user found for the given validation token");
-      error.name = "NotFound";
-      throw error;
+      throw createError(
+        "NotFound",
+        "No user found for the given validation token"
+      );
     }
 
     req.user = session.owner;

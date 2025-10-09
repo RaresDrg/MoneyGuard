@@ -29,16 +29,15 @@ async function login(req: Request, res: Response, next: NextFunction) {
 
     const user = await userService.findUser({ email });
     if (!user) {
-      const error = new Error("There is no account associated with this email");
-      error.name = "NotFound";
-      throw error;
+      throw utils.createError(
+        "NotFound",
+        "There is no account associated with this email"
+      );
     }
 
     const passwordMatch = utils.compareHashedData(loginPassword, user.password);
     if (!passwordMatch) {
-      const error = new Error("Password is wrong");
-      error.name = "ValidationError";
-      throw error;
+      throw utils.createError("ValidationError", "Password is wrong");
     }
 
     await utils.handleAuthSession(user._id, "init", res);
@@ -72,9 +71,10 @@ async function forgotPassword(req: Request, res: Response, next: NextFunction) {
 
     const user = await userService.findUser({ email });
     if (!user) {
-      const error = new Error("There is no account associated with this email");
-      error.name = "NotFound";
-      throw error;
+      throw utils.createError(
+        "NotFound",
+        "There is no account associated with this email"
+      );
     }
 
     await utils.handleValidationSession(user);

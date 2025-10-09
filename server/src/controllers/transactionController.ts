@@ -81,9 +81,7 @@ async function updateTransaction(
 
     const targetedTransaction = await transactionService.findTransaction(ID);
     if (!targetedTransaction) {
-      const error = new Error("Transaction not found");
-      error.name = "NotFound";
-      throw error;
+      throw utils.createError("NotFound", "Transaction not found");
     }
 
     const { type, category, sum, date, comment } = req.body;
@@ -127,9 +125,7 @@ async function deleteTransaction(
 
     const result = await transactionService.deleteTransaction(ID);
     if (!result) {
-      const error = new Error("Transaction not found");
-      error.name = "NotFound";
-      throw error;
+      throw utils.createError("NotFound", "Transaction not found");
     }
 
     const user = req.user!;
@@ -172,9 +168,10 @@ async function getStatistics(req: Request, res: Response, next: NextFunction) {
     const data = await transactionService.findTransactions(dbQuery);
 
     if (data.length === 0) {
-      const error = new Error("No statistics available for this period");
-      error.name = "NotFound";
-      throw error;
+      throw utils.createError(
+        "NotFound",
+        "No statistics available for this period"
+      );
     }
 
     const statistics = utils.calculateStatistics(data);
