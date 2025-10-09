@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { envVariables, sendEmail } from "../config/index.js";
@@ -213,4 +213,12 @@ export function extractOptionalQuery<
   return Object.keys(filteredQuery).length > 0
     ? (filteredQuery as AtLeastOne<Record<K, string>>)
     : null;
+}
+
+export function welcomeRoute(req: Request, res: Response) {
+  if (req.headers.accept?.includes("text/html")) {
+    res.redirect("/api-docs");
+  } else {
+    res.send("🚀 MoneyGuard API is running.");
+  }
 }

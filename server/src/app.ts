@@ -1,4 +1,5 @@
 import express from "express";
+import { welcomeRoute } from "./utils/index.js";
 import {
   userRouter,
   transactionRouter,
@@ -22,6 +23,8 @@ app.use(express.json());
 app.use(loggerMiddleware);
 app.use(cookieParserMiddleware);
 app.use(disableCacheMiddleware);
+
+app.get("/", welcomeRoute);
 
 app.use("/api-docs", ...swaggerMiddleware);
 
