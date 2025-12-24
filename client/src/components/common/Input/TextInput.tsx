@@ -1,5 +1,5 @@
 import { Field, ErrorMessage } from "formik";
-import { renderIcon } from "../../../utils";
+import { renderIcon, notify } from "../../../utils";
 
 type Props = {
   className?: string;
@@ -13,6 +13,19 @@ type Props = {
 const TextInput = (props: Props) => {
   const { className, id, name, placeholder, icon, maxLength } = props;
 
+  function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
+    if (maxLength) {
+      const pastedValue = e.clipboardData.getData("text");
+      const currentValue = e.currentTarget.value;
+      const limit = maxLength - 1;
+      if (currentValue.length + pastedValue.length > limit) {
+        const msg = `Invalid paste: ${name} cannot exceed ${limit} characters`;
+        notify.warning(msg);
+        e.preventDefault();
+      }
+    }
+  }
+
   return (
     <div className={className}>
       <label>
@@ -22,6 +35,7 @@ const TextInput = (props: Props) => {
           name={name}
           placeholder={placeholder}
           maxLength={maxLength}
+          onPaste={handlePaste}
         />
         {icon && renderIcon(icon)}
       </label>

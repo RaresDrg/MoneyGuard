@@ -1,21 +1,29 @@
-import { Container, Logo, EllipsisTooltip, LogoutBtn } from "../common";
-import { useAuth } from "../../hooks";
+import { Container, Logo, EllipsisTooltip } from "../common";
+import { useReduxState, useModal } from "../../hooks";
+import { renderIcon } from "../../utils";
 
 type Props = {
   className?: string;
 };
 
 const Header = ({ className }: Props) => {
-  const { user } = useAuth();
-  const styles = `${className} animate__animated animate__fadeIn animate__slow`;
+  const userName = useReduxState("selectUserName");
+  const { openModal } = useModal();
 
   return (
-    <header className={styles}>
+    <header className={className}>
       <Container>
         <Logo />
-        <EllipsisTooltip className="username" text={user!.name} />
+        <EllipsisTooltip className="username" text={userName} />
         <span className="separator"></span>
-        <LogoutBtn />
+        <button
+          type="button"
+          className="logout-btn"
+          onClick={() => openModal("logoutModal")}
+        >
+          {renderIcon("icon-exit")}
+          <span>Exit</span>
+        </button>
       </Container>
     </header>
   );

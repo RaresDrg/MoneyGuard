@@ -2,12 +2,12 @@ import { renderIcon } from "../../../utils";
 
 type Props = {
   className?: string;
-  handleClick: () => void;
+  onClick: () => void;
 };
 
-const EditButton = ({ className: styles, handleClick }: Props) => {
+const EditButton = ({ className, onClick }: Props) => {
   return (
-    <button type="button" className={styles} onClick={handleClick}>
+    <button type="button" className={className} onClick={onClick}>
       Edit {renderIcon("icon-pencil")}
     </button>
   );

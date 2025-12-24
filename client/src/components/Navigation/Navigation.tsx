@@ -5,9 +5,9 @@ type Props = {
   className?: string;
 };
 
-const Navigation = ({ className: styles }: Props) => {
+const Navigation = ({ className }: Props) => {
   return (
-    <nav className={`${styles} animate__animated animate__fadeInDown`}>
+    <nav className={className}>
       <NavLink to="/dashboard" end>
         <div className="icon">{renderIcon("icon-home")}</div>
         <span>Home</span>

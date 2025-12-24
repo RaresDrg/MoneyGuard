@@ -1,6 +1,6 @@
 import { Field, useFormikContext, ErrorMessage } from "formik";
 import { useCategories } from "../../../hooks";
-import { Dropdown } from "..";
+import { ComboBox } from "..";
 
 type Props = {
   className?: string;
@@ -14,12 +14,11 @@ const CategoryDropdown = ({ className }: Props) => {
     <div className={className}>
       <Field name="category">
         {() => (
-          <Dropdown
+          <ComboBox
             options={expenseCategories}
-            currentOption={values.category || "Select a category"}
-            handlerFunction={(selectedOption) =>
-              setFieldValue("category", selectedOption)
-            }
+            handlerFunction={(option) => setFieldValue("category", option)}
+            currentOption={values.category}
+            placeholder="Select category"
           />
         )}
       </Field>

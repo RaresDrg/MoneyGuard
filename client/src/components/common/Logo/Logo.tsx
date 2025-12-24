@@ -4,9 +4,9 @@ type Props = {
   className?: string;
 };
 
-const Logo = ({ className: styles }: Props) => {
+const Logo = ({ className }: Props) => {
   return (
-    <a href="/" className={styles}>
+    <a href="/" className={className}>
       {renderIcon("icon-logo")}
       <span>Money Guard</span>
     </a>

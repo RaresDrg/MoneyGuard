@@ -4,7 +4,8 @@ import { formatAmount } from "../../utils";
 import { EllipsisTooltip } from "../common";
 import type { Statistics } from "../../App.types";
 import { Doughnut } from "react-chartjs-2";
-import "chart.js/auto";
+import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
+ChartJS.register(ArcElement, Tooltip);
 
 type Props = {
   className?: string;

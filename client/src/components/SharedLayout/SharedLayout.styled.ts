@@ -2,29 +2,37 @@ import styled from "styled-components";
 import SharedLayout from "./SharedLayout";
 
 const StyledSharedLayout = styled(SharedLayout)`
-  height: calc(100dvh - 60px);
-  min-width: 320px;
-  padding: 15px 0 45px 0;
+  padding-bottom: 30px;
+  position: relative;
+  animation: fadeIn 1s both;
 
   & > div {
+    padding-top: 15px;
+    height: 100%;
     overflow-y: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   @media (min-width: 768px) {
-    height: calc(100dvh - 80px);
-    padding: 40px 0 90px 0;
+    padding: 40px 0 54px 0;
 
     & > div {
       display: grid;
-      grid-template-columns: 127px minmax(0, 1fr);
-      grid-template-rows: auto 1fr;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
       align-items: start;
-      column-gap: 100px;
-      row-gap: 30px;
-      scrollbar-gutter: stable;
+      gap: 30px 100px;
+      padding-top: 0px;
       padding-right: calc(32px - 8px);
+      scrollbar-gutter: stable;
+      scrollbar-width: auto;
 
       &::-webkit-scrollbar {
+        display: unset;
         width: 8px;
         border-radius: 12px;
         background-color: #b0afc0;
@@ -33,7 +41,7 @@ const StyledSharedLayout = styled(SharedLayout)`
       &::-webkit-scrollbar-thumb {
         border-radius: 12px;
         background-color: #523b7e99;
-        cursor: move;
+        cursor: pointer;
       }
 
       & {
@@ -45,10 +53,6 @@ const StyledSharedLayout = styled(SharedLayout)`
         > :nth-child(2) {
           grid-row: 1;
           grid-column: 2;
-          justify-self: end;
-          width: 100%;
-          min-width: 336px;
-          max-width: fit-content;
         }
 
         > :nth-child(3) {
@@ -63,37 +67,59 @@ const StyledSharedLayout = styled(SharedLayout)`
     padding: 0;
 
     & > div {
-      grid-template-columns: 360px 1px 1fr;
-      column-gap: 16px;
-      padding-right: calc(16px - 8px);
+      grid-template-columns: 360px minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 30px 1px;
+      padding: 40px 0 54px 0;
+      position: relative;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 360px;
+        height: 100%;
+        width: 1px;
+        background-color: #ffffff66;
+        box-shadow: 1px 4px 1px 0px #00000040;
+      }
 
       & {
         > :nth-child(1) {
           grid-row: 1;
           grid-column: 1;
-          margin-top: 40px;
         }
 
         > :nth-child(2) {
           grid-row: 2;
           grid-column: 1;
-          max-width: 100%;
         }
 
-        > :nth-child(3).separator {
+        > :nth-child(3) {
           grid-row: 1 / span 2;
           grid-column: 2;
-          width: 1px;
           height: 100%;
-          background-color: #ffffff66;
-          box-shadow: 1px 4px 1px 0px #00000040;
-        }
+          overflow-y: auto;
+          scrollbar-gutter: stable;
+          padding-right: calc(24px - 8px);
+          padding-left: 70px;
 
-        > :nth-child(4) {
-          grid-row: 1 / span 2;
-          grid-column: 3;
-          height: 100%;
-          position: relative;
+          &::-webkit-scrollbar {
+            width: 8px;
+            border-radius: 12px;
+            background-color: #b0afc0;
+            cursor: pointer;
+          }
+          &::-webkit-scrollbar-thumb {
+            border-radius: 12px;
+            background-color: #523b7e99;
+            cursor: pointer;
+          }
         }
       }
     }

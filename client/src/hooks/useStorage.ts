@@ -1,35 +1,36 @@
 import { useState } from "react";
-import { useAuth, useEffectAfterMount } from ".";
+import { useReduxState, useEffectAfterMount } from ".";
 
-const useLocalStorage = <T>(key: string) => useStorage<T>(key, localStorage);
-const useSessionStorage = <T>(key: string) =>
+export const useLocalStorage = <T>(key: string) =>
+  useStorage<T>(key, localStorage);
+export const useSessionStorage = <T>(key: string) =>
   useStorage<T>(key, sessionStorage);
 
 type StorageData<T> = {
-  payload: T;
-  owner: string | null;
-  expiresAt: number | null;
+  data: T;
+  meta: {
+    owner: string | null;
+    expiresAt: number | null;
+  };
 };
 
 function useStorage<T>(key: string, storageObject: Storage) {
-  const { user } = useAuth();
+  const userEmail = useReduxState("selectUserEmail");
 
   const [storageData, setStorageData] = useState<StorageData<T> | null>(() => {
     try {
       const rawData = storageObject.getItem(key);
       if (!rawData) return null;
 
-      const { payload, owner, expiresAt } = JSON.parse(rawData);
-
+      const { data, meta } = JSON.parse(rawData);
       if (
-        (owner && owner !== user?.email) ||
-        (expiresAt && expiresAt < Date.now())
+        (meta.owner && meta.owner !== userEmail) ||
+        (meta.expiresAt && meta.expiresAt < Date.now())
       ) {
-        storageObject.removeItem(key);
-        return null;
+        throw new Error();
       }
 
-      return { payload, owner, expiresAt };
+      return { data, meta };
     } catch {
       storageObject.removeItem(key);
       return null;
@@ -37,14 +38,31 @@ function useStorage<T>(key: string, storageObject: Storage) {
   });
 
   useEffectAfterMount(() => {
-    if (storageData === null) {
-      storageObject.removeItem(key);
-    } else {
-      storageObject.setItem(key, JSON.stringify(storageData));
-    }
+    if (storageData === null) storageObject.removeItem(key);
+    else storageObject.setItem(key, JSON.stringify(storageData));
   }, [key, storageData]);
 
-  return [storageData, setStorageData] as const;
-}
+  function updateStorage(
+    data: T,
+    options: { assignToUser?: boolean; expiresAt?: number } = {}
+  ) {
+    setStorageData({
+      data,
+      meta: {
+        owner: options.assignToUser && userEmail ? userEmail : null,
+        expiresAt: options.expiresAt ?? null,
+      },
+    });
+  }
 
-export { useLocalStorage, useSessionStorage };
+  function clearStorage() {
+    setStorageData(null);
+  }
+
+  return {
+    data: storageData?.data ?? null,
+    meta: storageData?.meta ?? { owner: null, expiresAt: null },
+    updateStorage,
+    clearStorage,
+  };
+}

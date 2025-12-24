@@ -1,24 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { handleRequestFlow } from "../utils";
 import { transactionsService } from "../services";
 import type { Statistics } from "../App.types";
 
-const useStatistics = () => {
+const useStatistics = (startDate: string, endDate: string) => {
   const [statistics, setStatistics] = useState<null | Statistics>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function fetchData(startDate: string, endDate: string) {
-    try {
-      setIsLoading(true);
-      const res = await transactionsService.fetchStatistics(startDate, endDate);
-      setStatistics(res.data.statistics);
-    } catch {
-      setStatistics(null);
-    } finally {
-      setIsLoading(false);
-    }
+  function fetchData() {
+    setIsLoading(true);
+    handleRequestFlow({
+      request: () => transactionsService.fetchStatistics(startDate, endDate),
+      delay: 500,
+      onSuccess: (res) => setStatistics(res.data.statistics),
+      onError: () => setStatistics(null),
+      onFinally: () => setIsLoading(false),
+    });
   }
 
-  return { statistics, isLoading, fetchData };
+  useEffect(() => {
+    fetchData();
+  }, [startDate, endDate]);
+
+  return { statistics, isLoading };
 };
 
 export default useStatistics;

@@ -1,41 +1,32 @@
 import { useEffect, useState } from "react";
 import { useLocalStorage } from ".";
 import { exchangeRatesService } from "../services";
+import { handleRequestFlow } from "../utils";
 
 type Rates = Record<string, number>;
 
 const useExchangeRates = () => {
-  const [storageData, setStorageData] = useLocalStorage<Rates>("exchangeRates");
-
+  const { data, meta, updateStorage } = useLocalStorage<Rates>("exchangeRates");
   const [isLoading, setIsLoading] = useState(false);
-  const [hasFetchError, setHasFetchError] = useState(false);
 
-  async function fetchData() {
-    try {
-      setIsLoading(true);
-      const res = await exchangeRatesService.fetchRates();
-      setStorageData({
-        payload: res.data.rates,
-        owner: null,
-        expiresAt: new Date(res.data.expiresAt).getTime(),
-      });
-    } catch {
-      setHasFetchError(true);
-    } finally {
-      setIsLoading(false);
-    }
+  function fetchData() {
+    setIsLoading(true);
+    handleRequestFlow({
+      request: () => exchangeRatesService.fetchRates(),
+      delay: 500,
+      onSuccess: (res) => {
+        const { rates, expiresAt } = res.data;
+        updateStorage(rates, { expiresAt: new Date(expiresAt).getTime() });
+      },
+      onFinally: () => setIsLoading(false),
+    });
   }
 
   useEffect(() => {
-    if (!storageData) fetchData();
+    if (!data) fetchData();
   }, []);
 
-  return {
-    isLoading,
-    hasFetchError,
-    rates: storageData?.payload ?? null,
-    expiresAt: storageData?.expiresAt ?? null,
-  };
+  return { isLoading, rates: data, expiresAt: meta.expiresAt };
 };
 
 export default useExchangeRates;

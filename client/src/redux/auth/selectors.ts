@@ -1,8 +1,10 @@
 import type { RootState } from "../../App.types";
 
-const selectIsLoading = (state: RootState) => state.auth.isLoading;
-const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
-const selectUser = (state: RootState) => state.auth.user;
-const selectBalance = (state: RootState) => state.auth.user?.balance ?? 0;
+const authSelectors = {
+  selectIsLoggedIn: (state: RootState) => state.auth.isLoggedIn,
+  selectUserName: (state: RootState) => state.auth.user?.name ?? "",
+  selectUserEmail: (state: RootState) => state.auth.user?.email ?? "",
+  selectUserBalance: (state: RootState) => state.auth.user?.balance ?? 0,
+};
 
-export default { selectIsLoading, selectIsLoggedIn, selectUser, selectBalance };
+export default authSelectors;

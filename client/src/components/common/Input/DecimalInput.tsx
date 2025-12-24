@@ -36,10 +36,10 @@ const DecimalInput = ({ className, id, name, placeholder }: Props) => {
     }
 
     const isValidFormat = validateInput(rawValue);
-    if (!isValidFormat) return;
-
-    setFieldValue(name, rawValue);
-    setDisplayValue(formatWithCommas(rawValue));
+    if (isValidFormat) {
+      setFieldValue(name, rawValue);
+      setDisplayValue(formatWithCommas(rawValue));
+    }
   }
 
   function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
@@ -49,10 +49,10 @@ const DecimalInput = ({ className, id, name, placeholder }: Props) => {
     const cleanedValue = sanitizePastedValue(pastedValue);
 
     const isValidFormat = validateInput(cleanedValue);
-    if (!isValidFormat) return;
-
-    setFieldValue(name, cleanedValue);
-    setDisplayValue(formatWithCommas(cleanedValue));
+    if (isValidFormat) {
+      setFieldValue(name, cleanedValue);
+      setDisplayValue(formatWithCommas(cleanedValue));
+    }
   }
 
   return (

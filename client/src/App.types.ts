@@ -1,14 +1,19 @@
-export type AppDispatch = typeof import("./redux/store").store.dispatch;
+import { store } from "./redux/store";
 
-export type RootState = ReturnType<
-  typeof import("./redux/store").store.getState
->;
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
 
-export type AuthState = {
-  isLoading: boolean;
-  error: null | string;
-  isLoggedIn: boolean;
-  user: null | User;
+export type LoadingType = "screen" | "spinner";
+
+export type ModalType =
+  | "addTransactionModal"
+  | "deleteTransactionModal"
+  | "editTransactionModal"
+  | "logoutModal";
+
+export type GeneralState = {
+  activeLoader: LoadingType | null;
+  activeModal: ModalType | null;
 };
 
 export type User = {
@@ -17,19 +22,9 @@ export type User = {
   balance: number;
 };
 
-export type ErrorResponse = {
-  status?: number;
-  response?: { data?: { message?: string } };
-};
-
-export type TransactionsState = {
-  isLoading: boolean;
-  error: null | string;
-  transactionsList: Array<Transaction>;
-  initialFetchDone: boolean;
-  cursor: null | string;
-  hasMore: boolean;
-  targetedTransaction: null | Transaction;
+export type AuthState = {
+  isLoggedIn: boolean;
+  user: User | null;
 };
 
 export type Transaction = {
@@ -39,6 +34,14 @@ export type Transaction = {
   sum: number;
   date: string;
   comment: string;
+};
+
+export type TransactionsState = {
+  transactionsList: Array<Transaction>;
+  initialFetchDone: boolean;
+  cursor: null | Transaction["id"];
+  hasMore: boolean;
+  targetedTransaction: null | Transaction;
 };
 
 export type Statistics = {
@@ -53,24 +56,7 @@ export type Statistics = {
   balance: number;
 };
 
-export type Background =
-  | "gradientBg_mobile"
-  | "gradientBg_mobile_2x"
-  | "gradientBg_tablet"
-  | "gradientBg_tablet_2x"
-  | "gradientBg_desktop"
-  | "gradientBg_desktop_2x"
-  | "loginBg_tablet"
-  | "loginBg_tablet_2x"
-  | "loginBg_desktop"
-  | "loginBg_desktop_2x"
-  | "registerBg_tablet"
-  | "registerBg_tablet_2x"
-  | "registerBg_desktop"
-  | "registerBg_desktop_2x";
-
-export type PaginationParams = {
-  sort: "ascending" | "descending";
-  limit: number;
-  cursor?: string;
+export type ErrorResponse = {
+  status?: number;
+  response?: { data?: { message?: string } };
 };

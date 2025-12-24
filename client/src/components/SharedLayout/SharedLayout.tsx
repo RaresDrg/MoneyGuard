@@ -1,29 +1,26 @@
 import { Outlet } from "react-router-dom";
 import { useReactResponsive } from "../../hooks";
-import { Header, Navigation, Modals } from "..";
+import { Header, Navigation, Footer } from "..";
 import { Section, Container, Balance } from "../common";
 
 type Props = {
   className?: string;
 };
 
-const SharedLayout = ({ className: styles }: Props) => {
-  const { isOnMobile, isOnDesktop } = useReactResponsive();
+const SharedLayout = ({ className }: Props) => {
+  const { isOnMobile } = useReactResponsive();
 
   return (
     <>
       <Header />
-
-      <Section variant="gradientBg" className={styles}>
+      <Section className={className}>
         <Container>
           <Navigation />
           {!isOnMobile && <Balance />}
-          {isOnDesktop && <div className="separator"></div>}
           <Outlet />
         </Container>
       </Section>
-
-      <Modals />
+      <Footer />
     </>
   );
 };

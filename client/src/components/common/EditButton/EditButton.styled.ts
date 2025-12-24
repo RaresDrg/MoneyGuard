@@ -22,6 +22,7 @@ const StyledEditButton = styled(EditButton)`
     width: 14px;
     height: 14px;
     stroke: currentColor;
+    fill: none;
   }
 `;
 

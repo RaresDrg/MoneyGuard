@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSessionStorage } from ".";
 import { transactionsService } from "../services";
+import { handleRequestFlow } from "../utils";
 
 type Categories = {
   income: Array<string>;
@@ -8,29 +9,25 @@ type Categories = {
 };
 
 const useCategories = () => {
-  const [storageData, setStorageData] =
-    useSessionStorage<Categories>("categories");
+  const { data, updateStorage } = useSessionStorage<Categories>("categories");
 
   async function fetchData() {
-    try {
-      const res = await transactionsService.fetchCategories();
-      setStorageData({
-        payload: res.data,
-        owner: null,
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24,
-      });
-    } catch (error) {
-      console.error("Failed to fetch categories:", error);
-    }
+    handleRequestFlow({
+      request: () => transactionsService.fetchCategories(),
+      onSuccess: (res) =>
+        updateStorage(res.data, {
+          expiresAt: Date.now() + 1000 * 60 * 60 * 24,
+        }),
+    });
   }
 
   useEffect(() => {
-    if (!storageData) fetchData();
+    if (!data) fetchData();
   }, []);
 
   return {
-    expenseCategories: storageData?.payload.expense || [],
-    incomeCategories: storageData?.payload.income || [],
+    expenseCategories: data?.expense || [],
+    incomeCategories: data?.income || [],
   };
 };
 

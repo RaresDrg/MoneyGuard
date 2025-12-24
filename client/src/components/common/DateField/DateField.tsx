@@ -7,16 +7,11 @@ type Props = {
   className?: string;
 };
 
-const DateField = ({ className: styles }: Props) => {
+const DateField = ({ className }: Props) => {
   const { values, setFieldValue } = useFormikContext<{ date: string }>();
 
-  function handleChange(date: Date) {
-    const normalizedDate = normalizeDate(date);
-    setFieldValue("date", normalizedDate);
-  }
-
   return (
-    <div className={styles}>
+    <div className={className}>
       <Field name="date">
         {() => (
           <DatePicker
@@ -28,8 +23,8 @@ const DateField = ({ className: styles }: Props) => {
             showIcon
             icon={renderIcon("icon-date")}
             toggleCalendarOnIconClick
-            onChange={(date) => handleChange(date!)}
             onKeyDown={(e) => e.preventDefault()}
+            onChange={(date) => setFieldValue("date", normalizeDate(date!))}
           />
         )}
       </Field>

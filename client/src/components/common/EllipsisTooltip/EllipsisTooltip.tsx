@@ -6,14 +6,12 @@ type Props = {
   text: string;
 };
 
-const EllipsisTooltip = ({ className: styles, text }: Props) => {
+const EllipsisTooltip = ({ className, text }: Props) => {
   const [isTooltipShown, setIsTooltipShown] = useState(false);
-  const spanRef = useRef<HTMLSpanElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
 
   function handleShowTooltip() {
-    const { current } = spanRef;
-
-    if (current && current.scrollWidth > current.clientWidth) {
+    if (ref.current && ref.current.scrollWidth > ref.current.clientWidth) {
       setIsTooltipShown(true);
     }
   }
@@ -25,8 +23,8 @@ const EllipsisTooltip = ({ className: styles, text }: Props) => {
   return (
     <Tippy content={text} visible={isTooltipShown} theme="material">
       <span
-        ref={spanRef}
-        className={styles}
+        ref={ref}
+        className={className}
         onMouseEnter={handleShowTooltip}
         onMouseLeave={handleHideTooltip}
       >

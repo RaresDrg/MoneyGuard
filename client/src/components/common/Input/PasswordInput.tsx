@@ -1,8 +1,6 @@
-import { useState, useRef } from "react";
-import { Field, ErrorMessage, useFormikContext } from "formik";
-import { renderIcon } from "../../../utils";
-import UseAnimations from "react-useanimations";
-import visibility from "react-useanimations/lib/visibility";
+import { useState, useEffect, useRef } from "react";
+import { Field, ErrorMessage } from "formik";
+import { renderIcon, notify } from "../../../utils";
 
 type Props = {
   className?: string;
@@ -15,19 +13,17 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { values, setFieldValue } = useFormikContext<Record<string, string>>();
-  const showToggleIcon = !!values[name]?.length;
+  useEffect(() => {
+    if (isVisible) inputRef.current?.focus();
+  }, [isVisible]);
 
-  function togglePasswordClick() {
-    if (!isVisible) inputRef.current?.focus();
-    setIsVisible((prev) => !prev);
-  }
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === " ") e.preventDefault();
-  }
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/\s/g, "");
-    setFieldValue(name, value);
+  function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
+    const pastedValue = e.clipboardData.getData("text");
+    const currentValue = e.currentTarget.value;
+    if (currentValue.length + pastedValue.length > 50) {
+      notify.warning("Invalid paste: Password cannot exceed 50 characters");
+      e.preventDefault();
+    }
   }
 
   return (
@@ -40,23 +36,21 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
           name={name}
           placeholder={placeholder}
           maxLength={51}
-          onKeyDown={handleKeyDown}
-          onChange={handleChange}
+          onPaste={handlePaste}
         />
         {renderIcon("icon-password")}
       </label>
       <ErrorMessage className="error" name={name} component="p" />
 
-      {showToggleIcon && (
-        <UseAnimations
+      {!!inputRef.current?.value.length && (
+        <button
+          type="button"
+          onClick={() => setIsVisible((prev) => !prev)}
           title={isVisible ? "Hide password" : "Show password"}
-          animation={visibility}
-          onClick={togglePasswordClick}
-          size={30}
-          className="toggle-icon"
-          strokeColor="currentColor"
-          speed={2}
-        />
+          className={`toggle-btn ${isVisible ? "visible" : ""}`}
+        >
+          {renderIcon("icon-eye")}
+        </button>
       )}
     </div>
   );

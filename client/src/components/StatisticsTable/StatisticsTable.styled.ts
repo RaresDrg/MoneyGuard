@@ -11,32 +11,21 @@ const dynamicRowStyles = EXPENSE_BACKGROUNDS.map(
 ).join("");
 
 const StyledStatisticsTable = styled(StatisticsTable)`
-  &.text-loader {
-    margin: 0 auto;
-  }
-
-  &.fallback {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: #ffffff99;
-    text-align: center;
-    font-style: italic;
-  }
+  animation: fadeIn 1s both;
+  width: 100%;
 
   & {
     .head {
       position: sticky;
-      top: 0;
+      top: -15px;
       left: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #523b7e;
+      box-shadow: 0px 4px 60px 0px #00000040;
       border-radius: 8px;
       padding: 16px;
-      backdrop-filter: blur(100px);
-      box-shadow: 0px 4px 60px 0px #00000040;
       font-weight: 600;
       font-size: 16px;
       line-height: 24px;
@@ -65,6 +54,7 @@ const StyledStatisticsTable = styled(StatisticsTable)`
           width: 24px;
           height: 24px;
           border-radius: 2px;
+          flex-shrink: 0;
         }
       }
 
@@ -75,7 +65,7 @@ const StyledStatisticsTable = styled(StatisticsTable)`
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 20px;
+      gap: 30px;
       padding: 0 16px;
       font-weight: 600;
       font-size: 14px;
@@ -93,6 +83,12 @@ const StyledStatisticsTable = styled(StatisticsTable)`
       &.income > span:nth-of-type(2) {
         color: var(--incomeColor);
       }
+    }
+  }
+
+  @media (min-width: 768px) {
+    .head {
+      top: 0;
     }
   }
 `;

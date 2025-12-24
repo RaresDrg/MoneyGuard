@@ -1,20 +1,33 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore } from "redux-persist";
-import { authReducer } from "./auth/slice";
-import { modalsReducer } from "./modals/slice";
-import { transactionsReducer } from "./transactions/slice";
+import { persistStore, persistReducer } from "redux-persist";
+import storageSession from "redux-persist/lib/storage/session";
+import { reducer as generalReducer } from "./general/slice";
+import { reducer as authReducer } from "./auth/slice";
+import { reducer as transactionsReducer } from "./transactions/slice";
 
-export const store = configureStore({
+const persistedAuthReducer = persistReducer(
+  { key: "auth", storage: storageSession, whitelist: ["isLoggedIn", "user"] },
+  authReducer
+);
+
+const store = configureStore({
   reducer: {
-    auth: authReducer,
-    modals: modalsReducer,
+    general: generalReducer,
+    auth: persistedAuthReducer,
     transactions: transactionsReducer,
   },
-
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: [
+          "persist/PERSIST",
+          "persist/REHYDRATE",
+          "persist/REGISTER",
+        ],
+      },
     }),
 });
 
-export const persistor = persistStore(store);
+const persistor = persistStore(store);
+
+export { store, persistor };

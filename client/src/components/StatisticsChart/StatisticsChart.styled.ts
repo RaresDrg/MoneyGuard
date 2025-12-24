@@ -2,7 +2,6 @@ import styled from "styled-components";
 import StatisticsChart from "./StatisticsChart";
 
 const StyledStatisticsChart = styled(StatisticsChart)`
-  margin: 0 auto;
   width: 280px;
   height: 280px;
   position: relative;
@@ -18,13 +17,18 @@ const StyledStatisticsChart = styled(StatisticsChart)`
     font-size: 18px;
     line-height: 27px;
     color: var(--textColor);
+
+    &::first-letter {
+      font-weight: 400;
+    }
   }
 
-  .text-loader {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  @media (min-width: 768px) {
+    width: 330px;
+    height: 330px;
+    position: sticky;
+    top: 0;
+    left: 0;
   }
 `;
 

@@ -1,11 +1,11 @@
 type Props = {
   className?: string;
-  handleClick: () => void;
+  onClick: () => void;
 };
 
-const DeleteButton = ({ className: styles, handleClick }: Props) => {
+const DeleteButton = ({ className, onClick }: Props) => {
   return (
-    <button type="button" className={styles} onClick={handleClick}>
+    <button type="button" className={className} onClick={onClick}>
       Delete
     </button>
   );

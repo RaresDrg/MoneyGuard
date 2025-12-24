@@ -1,38 +1,54 @@
-import { TransactionsTableRow } from "..";
+import { DeleteButton, EditButton, EllipsisTooltip } from "../common";
+import { formatDate, formatAmount } from "../../utils";
+import { useAppDispatch, useModal } from "../../hooks";
+import { setTargetedTransaction } from "../../redux/transactions/actions";
 import type { Transaction } from "../../App.types";
 
 type Props = {
   className?: string;
   transactions: Transaction[];
-  observerRef: (node: HTMLElement | null) => void;
+  observerRef: ((node: HTMLElement | null) => void) | null;
 };
 
 const TransactionsTable = ({ className, transactions, observerRef }: Props) => {
-  const styles = `${className} animate__animated animate__zoomIn`;
+  const dispatch = useAppDispatch();
+  const { openModal } = useModal();
+
+  function handleClick(action: "delete" | "edit", transaction: Transaction) {
+    dispatch(setTargetedTransaction(transaction));
+    openModal(`${action}TransactionModal`);
+  }
 
   return (
-    <table className={styles}>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Category</th>
-          <th>Comment</th>
-          <th>Sum</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {transactions.map((item, index) => (
-          <TransactionsTableRow
-            key={item.id}
-            transaction={item}
-            observerRef={index === transactions.length - 1 ? observerRef : null}
+    <div className={className}>
+      <div className="row header">
+        <span>Date</span>
+        <span>Type</span>
+        <span>Category</span>
+        <span>Comment</span>
+        <span>Sum</span>
+        <span></span>
+        <span></span>
+      </div>
+      {transactions.map((item, index) => (
+        <div
+          key={item.id}
+          ref={index === transactions.length - 1 ? observerRef : null}
+          className="row body"
+        >
+          <span>{formatDate(item.date)}</span>
+          <span>{item.type === "income" ? "+" : "-"}</span>
+          <span>{item.category}</span>
+          <EllipsisTooltip text={item.comment} />
+          <EllipsisTooltip
+            className={item.type === "income" ? "income" : "expense"}
+            text={formatAmount(item.sum)}
           />
-        ))}
-      </tbody>
-    </table>
+          <EditButton onClick={() => handleClick("edit", item)} />
+          <DeleteButton onClick={() => handleClick("delete", item)} />
+        </div>
+      ))}
+    </div>
   );
 };
 

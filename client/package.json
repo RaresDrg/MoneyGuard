@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "stats": "vite build --mode development",
     "lint": "eslint .",
     "tscheck": "tsc --build tsconfig.app.json --noEmit",
     "preview": "vite preview"
@@ -13,7 +14,6 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
     "@tippyjs/react": "^4.2.6",
-    "@types/chart.js": "^2.9.41",
     "animate.css": "^4.1.1",
     "axios": "^1.8.3",
     "chart.js": "^4.4.8",
@@ -29,7 +29,7 @@
     "react-responsive": "^10.0.1",
     "react-router-dom": "^7.3.0",
     "react-toastify": "^11.0.5",
-    "react-useanimations": "^2.10.0",
+    "react-type-animation": "^3.2.0",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.15",
     "tippy.js": "^6.3.7",
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/chart.js": "^2.9.41",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
@@ -44,6 +45,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "rollup-plugin-visualizer": "^6.0.4",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0"

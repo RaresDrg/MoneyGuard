@@ -1,28 +1,26 @@
 import { useExchangeRates } from "../../hooks";
-import { TextLoader } from "../../components/common";
 import { CurrencyConverter } from "../../components";
 
 type Props = {
   className?: string;
 };
 
-const CurrencyPage = ({ className: styles }: Props) => {
-  const { rates, expiresAt, isLoading, hasFetchError } = useExchangeRates();
-  const showFallback = (hasFetchError || !rates) && !isLoading;
-  const showConverter = rates && expiresAt && !isLoading;
+const CurrencyPage = ({ className }: Props) => {
+  const { rates, expiresAt, isLoading } = useExchangeRates();
 
   return (
-    <div className={styles}>
-      <h2>Currency Converter</h2>
-      {isLoading && <TextLoader text="Loading..." />}
-      {showFallback && (
-        <p className="fallback animate__animated animate__fadeInUp">
+    <div className={className}>
+      <h2 className="page-title">Currency Converter</h2>
+
+      {isLoading ? (
+        <span className="text-loader">Loading...</span>
+      ) : rates && expiresAt ? (
+        <CurrencyConverter rates={rates} expiresAt={expiresAt} />
+      ) : (
+        <p className="fallback">
           ❌ Our currency provider is currently unreachable. We're working on it
           — please try again later ❌
         </p>
-      )}
-      {showConverter && (
-        <CurrencyConverter rates={rates} expiresAt={expiresAt} />
       )}
     </div>
   );

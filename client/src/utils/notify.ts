@@ -7,9 +7,7 @@ export const notify = {
   },
   error(error: ErrorResponse) {
     if (error.status === 401) return;
-
-    const message = error?.response?.data?.message ?? "Internal server error";
-    toast.error(message);
+    toast.error(`${error.response?.data?.message ?? "Internal server error"}`);
   },
   warning(message: string) {
     toast.warning(message);

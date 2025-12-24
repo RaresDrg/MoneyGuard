@@ -21,10 +21,7 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (
-      error.response?.status === 401 &&
-      !error.config?.url?.includes("users/logout")
-    ) {
+    if (error.status === 401 && !error.config?.url?.includes("users/logout")) {
       forceLogout();
     }
     return Promise.reject(error);

@@ -17,7 +17,7 @@ const StyledCopyButton = styled(CopyButton)`
   }
 
   &[disabled] {
-    opacity: 0.8;
+    opacity: 1;
   }
 `;
 

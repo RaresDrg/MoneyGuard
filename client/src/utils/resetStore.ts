@@ -1,10 +1,10 @@
 import { store } from "../redux/store";
-import { resetAuth } from "../redux/auth/slice";
-import { resetTransactions } from "../redux/transactions/slice";
-import { setModalsClose as resetModals } from "../redux/modals/slice";
+import { resetSlice as resetGeneralSlice } from "../redux/general/actions";
+import { resetSlice as resetAuthSlice } from "../redux/auth/actions";
+import { resetSlice as resetTransactionsSlice } from "../redux/transactions/actions";
 
 export function resetStore() {
-  store.dispatch(resetAuth());
-  store.dispatch(resetTransactions());
-  store.dispatch(resetModals());
+  store.dispatch(resetGeneralSlice());
+  store.dispatch(resetAuthSlice());
+  store.dispatch(resetTransactionsSlice());
 }

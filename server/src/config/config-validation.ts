@@ -29,7 +29,6 @@ const VALIDATIONS_MAP = {
       "any.required": "{#label} is required",
     }),
   password: Joi.string()
-    .trim()
     .min(8)
     .max(50)
     .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/)
@@ -44,15 +43,11 @@ const VALIDATIONS_MAP = {
         "{#label} must include an uppercase, a lowercase and a digit",
       "any.required": "{#label} is required",
     }),
-  loginPassword: Joi.string()
-    .trim()
-    .required()
-    .label("Login Password")
-    .messages({
-      "string.base": "{#label} must be a string",
-      "string.empty": "{#label} is required",
-      "any.required": "{#label} is required",
-    }),
+  loginPassword: Joi.string().required().label("Login Password").messages({
+    "string.base": "{#label} must be a string",
+    "string.empty": "{#label} is required",
+    "any.required": "{#label} is required",
+  }),
   type: Joi.string()
     .trim()
     .valid("income", "expense")

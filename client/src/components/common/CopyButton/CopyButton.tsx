@@ -11,11 +11,11 @@ const CopyButton = ({ className, valueToCopy }: Props) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleClick = () => {
+  function handleClick() {
     navigator.clipboard.writeText(valueToCopy);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 1000);
-  };
+  }
 
   const content = isCopied ? "Copied !" : "Copy to clipboard !";
 

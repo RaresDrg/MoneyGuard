@@ -4,7 +4,7 @@ type Props = {
   className?: string;
 };
 
-const TypeSwitcher = ({ className: styles }: Props) => {
+const TypeSwitcher = ({ className }: Props) => {
   const { values, setFieldValue } = useFormikContext<{
     type: "income" | "expense";
   }>();
@@ -14,7 +14,7 @@ const TypeSwitcher = ({ className: styles }: Props) => {
   }
 
   return (
-    <div className={styles}>
+    <div className={className}>
       <span>Income</span>
       <label>
         <Field

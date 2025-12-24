@@ -44,5 +44,3 @@ export const EXPENSE_BACKGROUNDS: readonly string[] = [
   "#BEDBB0",
   "#ff7700",
 ];
-
-export const PAGE_SIZE = 10;
