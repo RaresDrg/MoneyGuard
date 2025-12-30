@@ -3,22 +3,34 @@ import type { UserType } from "../types/app.types.js";
 
 const schema = new Schema<UserType>(
   {
+    authMethod: {
+      type: String,
+      enum: ["local", "google"],
+      required: true,
+    },
     name: {
       type: String,
       trim: true,
-      required: [true, "=> this field is required"],
-      minlength: [3, "=> it must be at least 3 characters"],
-      maxlength: [50, "=> it must be at most 50 characters"],
+      required: true,
+      validate: {
+        validator: function (value) {
+          if (this.authMethod === "google") return true;
+          else return value.trim().length >= 3 && value.trim().length <= 50;
+        },
+        message: "=> it must be between 3 and 50 characters long",
+      },
     },
     email: {
       type: String,
       trim: true,
       unique: true,
-      required: [true, "=> this field is required"],
+      required: true,
     },
     password: {
       type: String,
-      required: [true, "=> this field is required"],
+      required: function () {
+        return this.authMethod === "local";
+      },
     },
     balance: {
       type: Number,

@@ -1,15 +1,19 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 import { userService, sessionService } from "../servicies/index.js";
 import * as utils from "../utils/index.js";
-import { validateData } from "../config/index.js";
+import { validateData, sendEmail } from "../config/index.js";
 
-async function register(req: Request, res: Response, next: NextFunction) {
+const register: RequestHandler = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     validateData({ name, email, password });
 
-    const userData = { name, email, password: utils.hash(password) };
-    const newUser = await userService.addUser(userData);
+    const newUser = await userService.addUser({
+      name,
+      email,
+      password: utils.hash(password),
+      authMethod: "local",
+    });
 
     await utils.handleAuthSession(newUser._id, "init", res);
 
@@ -20,9 +24,9 @@ async function register(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function login(req: Request, res: Response, next: NextFunction) {
+const login: RequestHandler = async (req, res, next) => {
   try {
     const { email, loginPassword } = req.body;
     validateData({ email, loginPassword });
@@ -31,7 +35,14 @@ async function login(req: Request, res: Response, next: NextFunction) {
     if (!user) {
       throw utils.createError(
         "NotFound",
-        "There is no account associated with this email"
+        "There is no account associated with this email address"
+      );
+    }
+
+    if (user.authMethod === "google") {
+      throw utils.createError(
+        "Forbidden",
+        "The account associated with this email address is managed through Google, so please authenticate using Google sign-in"
       );
     }
 
@@ -49,9 +60,9 @@ async function login(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function logout(req: Request, res: Response, next: NextFunction) {
+const logout: RequestHandler = async (req, res, next) => {
   try {
     await sessionService.deleteSession({ owner: req.user!._id, type: "auth" });
 
@@ -62,9 +73,9 @@ async function logout(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function forgotPassword(req: Request, res: Response, next: NextFunction) {
+const forgotPassword: RequestHandler = async (req, res, next) => {
   try {
     const { email } = req.body;
     validateData({ email });
@@ -73,20 +84,28 @@ async function forgotPassword(req: Request, res: Response, next: NextFunction) {
     if (!user) {
       throw utils.createError(
         "NotFound",
-        "There is no account associated with this email"
+        "There is no account associated with this email address"
       );
     }
 
-    await utils.handleValidationSession(user);
+    if (user.authMethod === "google") {
+      throw utils.createError(
+        "Forbidden",
+        "Password reset is not supported. The account associated with this email address is managed through Google sign-in"
+      );
+    }
+
+    const validationToken = await utils.handleValidationSession(user._id);
+    await sendEmail("reset-password", user, validationToken);
 
     const message = `Request received - check your email (including spam folder) for further instructions`;
     utils.sendSuccessResponse(res, 200, { message });
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function updatePassword(req: Request, res: Response, next: NextFunction) {
+const updatePassword: RequestHandler = async (req, res, next) => {
   try {
     const { password } = req.body;
     validateData({ password });
@@ -96,7 +115,6 @@ async function updatePassword(req: Request, res: Response, next: NextFunction) {
     const updates = { password: utils.hash(password) };
     const updatedUser = await userService.updateUser(userId, updates);
 
-    await sessionService.deleteSession({ owner: userId, type: "validation" });
     await utils.handleAuthSession(userId, "init", res);
 
     utils.sendSuccessResponse(res, 200, {
@@ -106,7 +124,20 @@ async function updatePassword(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
+
+const finalizeGoogleAuth: RequestHandler = async (req, res, next) => {
+  try {
+    const user = req.user!;
+    await utils.handleAuthSession(user._id, "init", res);
+    utils.sendSuccessResponse(res, 200, {
+      message: "Logged in successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export default {
   register,
@@ -114,4 +145,5 @@ export default {
   logout,
   forgotPassword,
   updatePassword,
+  finalizeGoogleAuth,
 };

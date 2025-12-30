@@ -46,10 +46,13 @@ const RegisterPage = ({ className }: Props) => {
         utils.notify.success(`Welcome, ${res.data.name} !`);
       },
       onError: (error) => {
-        utils.notify.error(error);
         if (error.status === 409) {
           formikBag.setFieldError("email", "Invalid email address");
+          const msg = `You can't use this email. It belongs to another account`;
+          utils.notify.errorMessage(msg);
+          return;
         }
+        utils.notify.error(error);
       },
       onFinally: () => formikBag.setSubmitting(false),
     });

@@ -11,9 +11,7 @@ type Query =
   | AtLeastOne<AuthSession, "_id" | "accessToken" | "refreshToken">
   | AtLeastOne<ValidationSession, "_id" | "validationToken">
   | Pick<AuthSession | ValidationSession, "owner" | "type">;
-type PopulatedSession = Omit<AuthSession | ValidationSession, "owner"> & {
-  owner: UserType | null;
-};
+type Owner = UserType | null;
 
 export async function addSession(data: SessionData) {
   await Session.deleteOne({ owner: data.owner, type: data.type });
@@ -21,9 +19,11 @@ export async function addSession(data: SessionData) {
 }
 
 export function findSession(query: Query) {
-  return Session.findOne(query)
-    .populate("owner")
-    .lean<PopulatedSession | null>();
+  return Session.findOne(query).populate<{ owner: Owner }>("owner");
+}
+
+export function findSessionAndDelete(query: Query) {
+  return Session.findOneAndDelete(query).populate<{ owner: Owner }>("owner");
 }
 
 export function updateSession(query: Query, updates: SessionData) {

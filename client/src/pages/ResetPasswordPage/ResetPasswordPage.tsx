@@ -48,7 +48,7 @@ const ResetPasswordPage = ({ className }: Props) => {
       onError: !validationToken
         ? (error) => {
             utils.notify.error(error);
-            if (error.status === 404) {
+            if (error.status === 404 || error.status === 403) {
               formikBag.setFieldError("email", "Invalid email address");
             }
           }
@@ -56,7 +56,8 @@ const ResetPasswordPage = ({ className }: Props) => {
             if (error.status === 404) {
               const msg = "The reset link is expired. Please request a new one";
               utils.notify.warning(msg);
-              setSearchParams({});
+              searchParams.delete("validationToken");
+              setSearchParams(searchParams);
               return;
             }
             utils.notify.error(error);

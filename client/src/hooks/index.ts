@@ -4,6 +4,7 @@ export { default as useCategories } from "./useCategories";
 export { default as useDebounce } from "./useDebounce";
 export { default as useEffectAfterMount } from "./useEffectAfterMount";
 export { default as useExchangeRates } from "./useExchangeRates";
+export { default as useGoogleAuth } from "./useGoogleAuth";
 export { default as useIntroScreen } from "./useIntroScreen";
 export { default as useModal } from "./useModal";
 export { default as useReactResponsive } from "./useReactResponsive";

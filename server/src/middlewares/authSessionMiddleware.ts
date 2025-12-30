@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 import { Types } from "mongoose";
 import { findSession } from "../servicies/sessionService.js";
 import { handleAuthSession, createError } from "../utils/index.js";
 
-const authSessionMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const authSessionMiddleware: RequestHandler = async (req, res, next) => {
   try {
     const { accessToken, refreshToken } = req.signedCookies ?? {};
     const [scheme, sessionId] = req.headers.authorization?.split(" ") ?? [];
@@ -27,8 +23,9 @@ const authSessionMiddleware = async (
       if (refreshToken) {
         const session = await findSession({ _id, refreshToken });
         if (session?.owner) {
-          const renew = !(req.path === "/logout");
-          if (renew) await handleAuthSession(session.owner._id, "renew", res);
+          if (req.path !== "/logout") {
+            await handleAuthSession(session.owner._id, "renew", res);
+          }
           req.user = session.owner;
           next();
           return;

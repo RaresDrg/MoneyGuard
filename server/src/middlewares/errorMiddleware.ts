@@ -1,17 +1,13 @@
-import { Request, Response, NextFunction } from "express";
-import { MongoServerError } from "mongodb";
-import { sendFailureResponse, formatDuplicateMessage } from "../utils/index.js";
+import { ErrorRequestHandler } from "express";
+import { sendFailureResponse } from "../utils/index.js";
 
-const errorMiddleware = (
-  error: Error & MongoServerError,
-  req: Request,
-  res: Response,
-  next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
-) => {
+const errorMiddleware: ErrorRequestHandler = (error, req, res, _next) => {
   if (error.code === 11000) {
-    const duplicatedField = Object.keys(error.keyPattern)[0];
-    const duplicatedValue = error.keyValue[duplicatedField];
-    const msg = formatDuplicateMessage(duplicatedField, duplicatedValue);
+    const duplicatedFields = Object.keys(error.keyPattern);
+    const duplicateEntries = duplicatedFields
+      .map((field) => `${field} - ${error.keyValue[field]}`)
+      .join(", ");
+    const msg = `Duplicate entry for fields: ${duplicateEntries}`;
     return sendFailureResponse(res, 409, msg);
   }
 

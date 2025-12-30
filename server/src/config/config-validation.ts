@@ -207,7 +207,7 @@ const VALIDATIONS_MAP = {
 };
 type ValidationKey = keyof typeof VALIDATIONS_MAP;
 
-export function validateData(data: AtLeastOne<Record<ValidationKey, unknown>>) {
+function validateData(data: AtLeastOne<Record<ValidationKey, unknown>>) {
   const schema = Joi.object(
     Object.fromEntries(
       Object.keys(data)

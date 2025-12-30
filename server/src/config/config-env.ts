@@ -1,15 +1,42 @@
 import "dotenv/config";
+import env from "env-var";
 
-export const IN_DEVELOPMENT = process.env.NODE_ENV === "development";
-export const PORT = process.env.PORT ?? 3000;
-export const DB_URI = process.env.DB_URI!;
+export const IN_DEVELOPMENT =
+  env.get("NODE_ENV").default("development").asString() === "development";
 
-export const SALT_ROUNDS = Number(process.env.SALT_ROUNDS!);
-export const RANDOM_BYTES_LENGTH = Number(process.env.RANDOM_BYTES_LENGTH!);
-export const COOKIE_PARSER_SECRET = process.env.COOKIE_PARSER_SECRET!;
+export const CLIENT_URL = IN_DEVELOPMENT
+  ? env.get("CLIENT_URL_DEV").required().asString()
+  : env.get("CLIENT_URL_PROD").required().asString();
+export const SERVER_URL = IN_DEVELOPMENT
+  ? env.get("SERVER_URL_DEV").required().asString()
+  : env.get("SERVER_URL_PROD").required().asString();
 
-export const EMAIL = process.env.EMAIL!;
-export const PASSWORD = process.env.PASSWORD!;
+export const PORT = env.get("PORT").default("3000").asPortNumber();
+export const DB_URI = env.get("DB_URI").required().asString();
 
-export const OPEN_EXCHANGE_RATES_API_KEY =
-  process.env.OPEN_EXCHANGE_RATES_API_KEY!;
+export const GOOGLE_CLIENT_ID = env
+  .get("GOOGLE_CLIENT_ID")
+  .required()
+  .asString();
+export const GOOGLE_CLIENT_SECRET = env
+  .get("GOOGLE_CLIENT_SECRET")
+  .required()
+  .asString();
+
+export const SALT_ROUNDS = env.get("SALT_ROUNDS").required().asIntPositive();
+export const RANDOM_BYTES_LENGTH = env
+  .get("RANDOM_BYTES_LENGTH")
+  .required()
+  .asIntPositive();
+export const COOKIE_PARSER_SECRET = env
+  .get("COOKIE_PARSER_SECRET")
+  .required()
+  .asString();
+
+export const EMAIL = env.get("EMAIL").required().asEmailString();
+export const PASSWORD = env.get("PASSWORD").required().asString();
+
+export const OPEN_EXCHANGE_RATES_API_KEY = env
+  .get("OPEN_EXCHANGE_RATES_API_KEY")
+  .required()
+  .asString();

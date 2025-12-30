@@ -10,7 +10,9 @@ import {
   TRANSACTION_CATEGORIES,
 } from "../constants/index.js";
 
-// todo
+// todo: de refacut
+// todo: "vercel" => SERVER_URL
+
 function getApiDocsGlob() {
   if (IN_DEVELOPMENT) return "src/routes/swaggerDocs/*.ts";
 

@@ -10,19 +10,20 @@ const schema = new Schema<TransactionType>(
     },
     type: {
       type: String,
+      trim: true,
       enum: {
         values: ["income", "expense"],
         message: "=> it should be one of these: income or expense",
       },
-      required: [true, "=> this field is required"],
+      required: true,
     },
     category: {
       type: String,
-      required: [true, "=> this field is required"],
+      required: true,
     },
     sum: {
       type: Number,
-      required: [true, "=> this field is required"],
+      required: true,
       validate: {
         validator: (value: number) => value > 0 && value < 100_000_000,
         message: "Sum must be between 0 and 100,000,000",
@@ -30,14 +31,14 @@ const schema = new Schema<TransactionType>(
     },
     date: {
       type: Date,
-      required: [true, "=> this field is required"],
+      required: true,
     },
     comment: {
       type: String,
       trim: true,
       minlength: [5, "Comment must be at least 5 characters long"],
       maxlength: [200, "Comment must be at most 200 characters long"],
-      required: [true, "=> this field is required"],
+      required: true,
     },
   },
   {

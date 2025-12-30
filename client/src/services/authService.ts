@@ -28,4 +28,11 @@ async function changePassword(data: PasswordChangeData) {
   return res.data;
 }
 
-export { register, login, logout, forgotPassword, changePassword };
+async function googleAuth(validationToken: string) {
+  const res = await apiClient.post("/users/google-auth/finalize", {
+    validationToken,
+  });
+  return res.data;
+}
+
+export { register, login, logout, forgotPassword, changePassword, googleAuth };

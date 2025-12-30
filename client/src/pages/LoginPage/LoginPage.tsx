@@ -41,7 +41,7 @@ const LoginPage = ({ className }: Props) => {
       },
       onError: (error) => {
         utils.notify.error(error);
-        if (error.status === 404) {
+        if (error.status === 404 || error.status === 403) {
           formikBag.setFieldError("email", "Invalid email address");
           return;
         }

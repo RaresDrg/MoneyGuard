@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 import { OPEN_EXCHANGE_RATES_API_KEY } from "../config/config-env.js";
 import { exchangeRatesService } from "../servicies/index.js";
 import * as utils from "../utils/index.js";
 
-async function getRates(req: Request, res: Response, next: NextFunction) {
+const getRates: RequestHandler = async (req, res, next) => {
   try {
     const dataFromDb = await exchangeRatesService.getExchangeRatesData();
     if (dataFromDb) {
@@ -31,6 +31,6 @@ async function getRates(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
 export default { getRates };

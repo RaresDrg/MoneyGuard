@@ -3,6 +3,7 @@ import { userController } from "../../controllers/index.js";
 import {
   authSessionMiddleware,
   validationSessionMiddleware,
+  googleAuthMiddleware,
 } from "../../middlewares/index.js";
 
 const router = express.Router();
@@ -16,6 +17,14 @@ router.patch(
   "/update-password",
   validationSessionMiddleware,
   userController.updatePassword
+);
+
+router.get("/google-auth", googleAuthMiddleware.redirect);
+router.get("/google-auth/callback", googleAuthMiddleware.handleCallback);
+router.post(
+  "/google-auth/finalize",
+  validationSessionMiddleware,
+  userController.finalizeGoogleAuth
 );
 
 export default router;

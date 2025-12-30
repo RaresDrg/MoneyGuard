@@ -6,6 +6,7 @@ export type AtLeastOne<T, K extends keyof T = keyof T> = {
 
 export type UserType = {
   _id: Types.ObjectId;
+  authMethod: "local" | "google";
   name: string;
   email: string;
   password: string;

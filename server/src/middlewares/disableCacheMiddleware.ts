@@ -1,10 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 
-const disableCacheMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const disableCacheMiddleware: RequestHandler = (req, res, next) => {
   res.set(
     "Cache-Control",
     "no-store, no-cache, must-revalidate, proxy-revalidate"

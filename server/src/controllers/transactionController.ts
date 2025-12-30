@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { RequestHandler } from "express";
 import { Types } from "mongoose";
 import { transactionService, userService } from "../servicies/index.js";
 import * as utils from "../utils/index.js";
 import { validateData } from "../config/index.js";
 import { TRANSACTION_CATEGORIES } from "../constants/index.js";
 
-async function addTransaction(req: Request, res: Response, next: NextFunction) {
+const addTransaction: RequestHandler = async (req, res, next) => {
   try {
     const { type, category, sum, date, comment } = req.body;
     validateData({ type, category, sum, date, comment });
@@ -28,13 +28,9 @@ async function addTransaction(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function getTransactions(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+const getTransactions: RequestHandler = async (req, res, next) => {
   try {
     const optionalQueryKeys = ["limit", "cursor", "sort"] as const;
     const query = utils.extractOptionalQuery(req.query, optionalQueryKeys);
@@ -68,13 +64,9 @@ async function getTransactions(
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function updateTransaction(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+const updateTransaction: RequestHandler = async (req, res, next) => {
   try {
     const { transactionID: ID } = req.params;
     validateData({ ID });
@@ -112,13 +104,9 @@ async function updateTransaction(
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function deleteTransaction(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+const deleteTransaction: RequestHandler = async (req, res, next) => {
   try {
     const { transactionID: ID } = req.params;
     validateData({ ID });
@@ -143,9 +131,9 @@ async function deleteTransaction(
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function getCategories(req: Request, res: Response, next: NextFunction) {
+const getCategories: RequestHandler = async (req, res, next) => {
   try {
     utils.sendSuccessResponse(res, 200, {
       message: "Categories retrieved successfully",
@@ -154,9 +142,9 @@ async function getCategories(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-async function getStatistics(req: Request, res: Response, next: NextFunction) {
+const getStatistics: RequestHandler = async (req, res, next) => {
   try {
     const { startDate, endDate } = req.query;
     validateData({ statisticsRange: { startDate, endDate } });
@@ -183,7 +171,7 @@ async function getStatistics(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
-}
+};
 
 export default {
   addTransaction,

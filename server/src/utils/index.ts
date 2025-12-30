@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { envVariables, sendEmail } from "../config/index.js";
+import { envVariables } from "../config/index.js";
 import { TRANSACTION_CATEGORIES } from "../constants/index.js";
 import { sessionService } from "../servicies/index.js";
 import type {
@@ -11,10 +11,10 @@ import type {
   AtLeastOne,
 } from "../types/app.types.js";
 
-export function sendSuccessResponse(
+export function sendSuccessResponse<T extends object>(
   res: Response,
   statusCode: 200 | 201,
-  responseBody: object
+  responseBody: T
 ) {
   res.status(statusCode).json({ status: "success", ...responseBody });
 }
@@ -33,15 +33,6 @@ export function createError(name: string, message?: string) {
   return error;
 }
 
-export function formatDuplicateMessage(field: string, value: string): string {
-  switch (field) {
-    case "email":
-      return `You can't use this email. It belongs to another account`;
-    default:
-      return `Duplicate entry for the field '${field}': the value '${value}' is already in use`;
-  }
-}
-
 export function hash(text: string) {
   const hashedText = bcrypt.hashSync(text, envVariables.SALT_ROUNDS);
   return hashedText;
@@ -55,7 +46,6 @@ export function generateRandomBytes() {
   const token = crypto
     .randomBytes(envVariables.RANDOM_BYTES_LENGTH)
     .toString("hex");
-
   return token;
 }
 
@@ -103,15 +93,15 @@ export async function handleAuthSession(
   }
 }
 
-export async function handleValidationSession(user: UserType) {
+export async function handleValidationSession(userId: UserType["_id"]) {
   const sessionData = {
-    owner: user._id,
+    owner: userId,
     type: "validation" as const,
     validationToken: generateRandomBytes(),
     expiresAt: new Date(Date.now() + 15 * 60 * 1000),
   };
   await sessionService.addSession(sessionData);
-  await sendEmail("reset-password", user, sessionData.validationToken);
+  return sessionData.validationToken;
 }
 
 export function calcUpdatedBalance(
@@ -143,7 +133,6 @@ export function normalizeDate(date: Date, endOfDay: boolean) {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth();
   const day = date.getUTCDate();
-
   const [hours, minutes, seconds, ms] = endOfDay
     ? [23, 59, 59, 999]
     : [0, 0, 0, 0];

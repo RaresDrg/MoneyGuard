@@ -1,10 +1,8 @@
 import cors from "cors";
-import { IN_DEVELOPMENT } from "../config/config-env.js";
+import { CLIENT_URL } from "../config/config-env.js";
 
 const corsMiddleware = cors({
-  origin: IN_DEVELOPMENT
-    ? ["http://localhost:5173", "http://www.localhost:5173"]
-    : ["https://moneyguard-phi.vercel.app"],
+  origin: CLIENT_URL,
   credentials: true,
 });
 
