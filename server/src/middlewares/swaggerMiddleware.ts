@@ -507,7 +507,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: getApiDocsGlob(),
+  apis: swaggerDocs,
 });
 
 const swaggerMiddleware = [swaggerUi.serve, swaggerUi.setup(swaggerSpec)];
