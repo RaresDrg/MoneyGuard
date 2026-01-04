@@ -10,4 +10,6 @@ const swaggerDocs = [
   path.join(__dirname, "welcomeDocs.{ts,js}"),
 ];
 
+console.log(swaggerDocs);
+
 export default swaggerDocs;
