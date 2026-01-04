@@ -7,11 +7,13 @@
  *     description: >
  *       The request body must include the following required properties:
  *         - **type**: Must be one of the allowed values: "income" or "expense"
- *         - **category**: Must be one of the predefined categories, depending on the selected transaction type (*see schema)
+ *         - **category**: Must be one of the predefined categories, depending on the selected transaction type (**see **schema**)*
  *         - **sum**: A number greater than 0 and less than 100,000,000
- *         - **date**: A valid ISO date, within the allowed range (*see schema)
+ *         - **date**: A valid ISO date, within the allowed range (**see **schema**)*
  *         - **comment**: A string between 5 and 200 characters
  *     tags: [Transactions]
+ *     security:
+ *       - SessionAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -37,9 +39,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Transaction added successfully"
@@ -89,6 +92,8 @@
  *           type: string
  *           enum: ["ascending", "descending"]
  *     tags: [Transactions]
+ *     security:
+ *       - SessionAuth: []
  *     responses:
  *       200:
  *         description: Successful response. Returns a list of transactions or an empty array if none are found
@@ -96,9 +101,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Transactions retrieved successfully / Looks like there's nothing here for now"
@@ -126,18 +132,15 @@
  *     description: >
  *       The request body must include the following required properties:
  *         - **type**: Must be one of the allowed values: "income" or "expense"
- *         - **category**: Must be one of the predefined categories, depending on the selected transaction type (*see schema)
+ *         - **category**: Must be one of the predefined categories, depending on the selected transaction type (**see **schema**)*
  *         - **sum**: A number greater than 0 and less than 100,000,000
- *         - **date**: A valid ISO date, within the allowed range (*see schema)
+ *         - **date**: A valid ISO date, within the allowed range (**see **schema**)*
  *         - **comment**: A string between 5 and 200 characters
  *     parameters:
- *       - in: path
- *         name: transactionID
- *         description: Unique identifier of the transaction
- *         required: true
- *         schema:
- *           type: string
+ *       - $ref: "#/components/utils/transactionIDParam"
  *     tags: [Transactions]
+ *     security:
+ *       - SessionAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -163,9 +166,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Transaction updated successfully"
@@ -181,12 +185,13 @@
  *       400:
  *         description: >
  *           Two possible cases:
- *             - Validation error
+ *             - Validation error: the required data are missing or do not meet the requirements
  *             - Invalid transaction ID format
  *         content:
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"
@@ -208,13 +213,10 @@
  *   delete:
  *     summary: Delete a transaction
  *     parameters:
- *       - in: path
- *         name: transactionID
- *         description: Unique identifier of the transaction
- *         required: true
- *         schema:
- *           type: string
+ *       - $ref: "#/components/utils/transactionIDParam"
  *     tags: [Transactions]
+ *     security:
+ *       - SessionAuth: []
  *     responses:
  *       200:
  *         description: Transaction deleted successfully
@@ -222,9 +224,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Transaction deleted successfully"
@@ -252,9 +255,11 @@
  * @swagger
  * /api/transactions/categories:
  *   get:
- *     summary: Get categories
- *     description: Returns available categories grouped by transaction type
+ *     summary: Get transactions categories
+ *     description: Returns all available transaction categories, grouped by type
  *     tags: [Categories]
+ *     security:
+ *       - SessionAuth: []
  *     responses:
  *       200:
  *         description: Categories retrieved successfully
@@ -262,9 +267,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: Categories retrieved successfully
@@ -288,6 +294,8 @@
  *       - $ref: "#/components/utils/startDate"
  *       - $ref: "#/components/utils/endDate"
  *     tags: [Statistics]
+ *     security:
+ *       - SessionAuth: []
  *     responses:
  *       200:
  *         description: Statistics retrieved successfully
@@ -295,9 +303,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: Statistics retrieved successfully
@@ -315,6 +324,7 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"
@@ -329,6 +339,7 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"

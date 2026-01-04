@@ -31,9 +31,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "User created successfully"
@@ -42,7 +43,7 @@
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       409:
- *         $ref: '#/components/responses/ConflictError'
+ *         $ref: '#/components/responses/DuplicateEmailError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -77,9 +78,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Logged in successfully"
@@ -94,12 +96,26 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"
  *                 message:
  *                   type: string
- *                   example: The submitted data does not meet the requirements / Password is wrong
+ *                   example: The required data are missing or do not meet the requirements / Password is wrong
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: ["status", "message"]
+ *               properties:
+ *                 status:
+ *                   $ref: "#/components/utils/failedStatus"
+ *                 message:
+ *                   type: string
+ *                   example: The account associated with this email address is managed through Google, so please authenticate using Google sign-in
  *       404:
  *         $ref: '#/components/responses/UserNotFoundError'
  *       500:
@@ -112,7 +128,10 @@
  * /api/users/logout:
  *   delete:
  *     summary: Log out user
+ *     description: Ends the user's authentication session and clears access/refresh tokens from cookies
  *     tags: [User]
+ *     security:
+ *       - SessionAuth: []
  *     responses:
  *       200:
  *         description: Logged out successfully
@@ -120,9 +139,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Logged out successfully"
@@ -159,14 +179,28 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
- *                   example: "Password change request received. Please check your email (including spam folder) for a confirmation message."
+ *                   example: "Request received - check your email (including spam folder) for further instructions"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: ["status", "message"]
+ *               properties:
+ *                 status:
+ *                   $ref: "#/components/utils/failedStatus"
+ *                 message:
+ *                   type: string
+ *                   example: Password reset is not supported. The account associated with this email address is managed through Google sign-in
  *       404:
  *         $ref: '#/components/responses/UserNotFoundError'
  *       500:
@@ -203,9 +237,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: "Password changed successfully"
@@ -213,24 +248,67 @@
  *                   $ref: "#/components/utils/userData"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
- *       403:
- *         description: Validation token is expired
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   $ref: "#/components/utils/failedStatus"
- *                 message:
- *                   type: string
- *                   example: Validation token is expired
  *       404:
  *         description: User not found
  *         content:
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message"]
+ *               properties:
+ *                 status:
+ *                   $ref: "#/components/utils/failedStatus"
+ *                 message:
+ *                   type: string
+ *                   example: No user found for the given validation token
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
+
+// *Google auth
+/**
+ * @swagger
+ * /api/users/google-auth/finalize:
+ *   post:
+ *     summary: Google Auth - Phase 2
+ *     description: >
+ *      Completes the **Google sign-in** process using **validation token**, from Phase 1 (**see **Overview** above*)
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: ["validationToken"]
+ *             properties:
+ *               validationToken:
+ *                 $ref: '#/components/utils/validationToken'
+ *     responses:
+ *       200:
+ *         description: Logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: ["status", "message", "data"]
+ *               properties:
+ *                 status:
+ *                   $ref: "#/components/utils/successStatus"
+ *                 message:
+ *                   type: string
+ *                   example: "Logged in successfully"
+ *                 data:
+ *                   $ref: "#/components/utils/userData"
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"

@@ -9,6 +9,8 @@
  *       -  Data is refreshed daily and remains valid until the end of the current calendar day
  *       -  All rates are calculated strictly against **USD** as the base currency
  *     tags: [Exchange Rates]
+ *     security:
+ *       - SessionAuth: []
  *     responses:
  *       200:
  *         description: Exchange rates data retrieved successfully
@@ -16,9 +18,10 @@
  *           application/json:
  *             schema:
  *               type: object
+ *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
- *                   $ref: "#/components/utils/succesStatus"
+ *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
  *                   example: Exchange rates data retrieved successfully
@@ -33,4 +36,6 @@
  *         $ref: '#/components/responses/UnauthorizedError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
+ *       502:
+ *         $ref: '#/components/responses/BadGatewayError'
  */

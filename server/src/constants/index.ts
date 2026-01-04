@@ -14,10 +14,5 @@ export const TRANSACTION_CATEGORIES = {
   ],
 };
 
-export const ALL_CATEGORIES = [
-  ...TRANSACTION_CATEGORIES.income,
-  ...TRANSACTION_CATEGORIES.expense,
-];
-
 export const CURRENT_YEAR = new Date().getUTCFullYear();
 export const MIN_YEAR = 2020;
