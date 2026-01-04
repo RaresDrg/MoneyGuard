@@ -7,20 +7,6 @@ import {
   MIN_YEAR,
   CURRENT_YEAR,
 } from "../constants/index.js";
-import { fileURLToPath } from "url";
-import path from "path";
-
-function getApiDocsGlob() {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const apiDocsDir = path.join(__dirname, "..", "routes", "swaggerDocs");
-
-  const a = [`${apiDocsDir}/*.js`];
-  console.log("AICI =>", a);
-
-  return a;
-}
-getApiDocsGlob();
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
