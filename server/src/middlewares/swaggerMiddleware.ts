@@ -15,10 +15,11 @@ function getApiDocsGlob() {
   const __dirname = path.dirname(__filename);
   const apiDocsDir = path.join(__dirname, "..", "routes", "swaggerDocs");
 
-  // console.log(apiDocsDir);
+  console.log("AICI =>", apiDocsDir);
 
   return `${apiDocsDir}/*.js`;
 }
+getApiDocsGlob();
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
