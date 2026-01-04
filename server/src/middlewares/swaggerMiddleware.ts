@@ -7,6 +7,18 @@ import {
   MIN_YEAR,
   CURRENT_YEAR,
 } from "../constants/index.js";
+import { fileURLToPath } from "url";
+import path from "path";
+
+function getApiDocsGlob() {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const apiDocsDir = path.join(__dirname, "..", "routes", "swaggerDocs");
+
+  console.log(apiDocsDir);
+
+  return `${apiDocsDir}/*.js`;
+}
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
@@ -492,7 +504,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: swaggerDocs,
+  apis: [getApiDocsGlob()],
 });
 
 const swaggerMiddleware = [swaggerUi.serve, swaggerUi.setup(swaggerSpec)];
