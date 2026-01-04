@@ -15,7 +15,7 @@ function getApiDocsGlob() {
   const __dirname = path.dirname(__filename);
   const apiDocsDir = path.join(__dirname, "..", "routes", "swaggerDocs");
 
-  console.log(apiDocsDir);
+  // console.log(apiDocsDir);
 
   return `${apiDocsDir}/*.js`;
 }
@@ -504,7 +504,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: [getApiDocsGlob()],
+  apis: [`${swaggerDocs}/*.js`],
 });
 
 const swaggerMiddleware = [swaggerUi.serve, swaggerUi.setup(swaggerSpec)];
