@@ -48,4 +48,4 @@ export const EXPENSE_BACKGROUNDS: readonly string[] = [
 export const GOOGLE_AUTH_URL =
   import.meta.env.MODE === "development"
     ? "http://localhost:3000/api/users/google-auth"
-    : "https://moneyguardserver.vercel.app/api/users/google-auth";
+    : "https://moneyguard-server.onrender.com/api/users/google-auth";
