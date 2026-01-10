@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import passport from "passport";
 import { Strategy } from "passport-google-oauth20";
-import { findUser, addUser } from "../servicies/userService.js";
+import { findUser, addUser } from "../services/userService.js";
 import { handleValidationSession } from "../utils/index.js";
 import {
   GOOGLE_CLIENT_ID,

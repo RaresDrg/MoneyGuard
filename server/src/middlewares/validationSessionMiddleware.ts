@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { findSessionAndDelete } from "../servicies/sessionService.js";
+import { findSessionAndDelete } from "../services/sessionService.js";
 import { validateData } from "../config/index.js";
 import { createError } from "../utils/index.js";
 

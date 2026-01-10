@@ -1,5 +1,4 @@
-import express from "express";
-import { welcomeRoute } from "./utils/index.js";
+import express, { Response } from "express";
 import {
   userRouter,
   transactionRouter,
@@ -24,7 +23,7 @@ app.use(loggerMiddleware);
 app.use(cookieParserMiddleware);
 app.use(disableCacheMiddleware);
 
-app.get("/", welcomeRoute);
+app.get("/", (_, res: Response) => res.send("🚀 MoneyGuard API is running."));
 
 app.use("/api-docs", ...swaggerMiddleware);
 

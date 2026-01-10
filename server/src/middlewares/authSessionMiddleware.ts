@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { Types } from "mongoose";
-import { findSession } from "../servicies/sessionService.js";
+import { findSession } from "../services/sessionService.js";
 import { handleAuthSession, createError } from "../utils/index.js";
 
 const authSessionMiddleware: RequestHandler = async (req, res, next) => {

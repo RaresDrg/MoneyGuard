@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { Types } from "mongoose";
-import { transactionService, userService } from "../servicies/index.js";
+import { transactionService, userService } from "../services/index.js";
 import * as utils from "../utils/index.js";
 import { validateData } from "../config/index.js";
 import { TRANSACTION_CATEGORIES } from "../constants/index.js";

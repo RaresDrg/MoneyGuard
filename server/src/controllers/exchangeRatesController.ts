@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { OPEN_EXCHANGE_RATES_API_KEY } from "../config/config-env.js";
-import { exchangeRatesService } from "../servicies/index.js";
+import { exchangeRatesService } from "../services/index.js";
 import * as utils from "../utils/index.js";
 
 const getRates: RequestHandler = async (req, res, next) => {

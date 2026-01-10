@@ -58,7 +58,7 @@ const swaggerSpec = swaggerJsdoc({
     },
     servers: [{ url: SERVER_URL, description: "Base URL" }],
     tags: [
-      { name: "Welcome" },
+      { name: "Status" },
       { name: "User" },
       { name: "Transactions" },
       { name: "Statistics" },

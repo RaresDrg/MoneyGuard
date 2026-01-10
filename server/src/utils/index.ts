@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { envVariables } from "../config/index.js";
 import { TRANSACTION_CATEGORIES } from "../constants/index.js";
-import { sessionService } from "../servicies/index.js";
+import { sessionService } from "../services/index.js";
 import type {
   UserType,
   TransactionType,
@@ -202,12 +202,4 @@ export function extractOptionalQuery<
   return Object.keys(filteredQuery).length > 0
     ? (filteredQuery as AtLeastOne<Record<K, string>>)
     : null;
-}
-
-export function welcomeRoute(req: Request, res: Response) {
-  if (req.headers.accept?.includes("text/html")) {
-    res.redirect("/api-docs");
-  } else {
-    res.send("🚀 MoneyGuard API is running.");
-  }
 }

@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { userService, sessionService } from "../servicies/index.js";
+import { userService, sessionService } from "../services/index.js";
 import * as utils from "../utils/index.js";
 import { validateData, sendEmail } from "../config/index.js";
 

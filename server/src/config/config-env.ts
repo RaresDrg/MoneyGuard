@@ -33,9 +33,7 @@ export const COOKIE_PARSER_SECRET = env
   .required()
   .asString();
 
-export const EMAIL = env.get("EMAIL").required().asEmailString();
-export const PASSWORD = env.get("PASSWORD").required().asString();
-
+export const RESEND_API_KEY = env.get("RESEND_API_KEY").required().asString();
 export const OPEN_EXCHANGE_RATES_API_KEY = env
   .get("OPEN_EXCHANGE_RATES_API_KEY")
   .required()
