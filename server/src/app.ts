@@ -23,7 +23,10 @@ app.use(loggerMiddleware);
 app.use(cookieParserMiddleware);
 app.use(disableCacheMiddleware);
 
-app.get("/", (_, res: Response) => res.send("🚀 MoneyGuard API is running."));
+app.get("/", (_, res: Response) => res.redirect("/api-docs"));
+app.get("/health-check", (_, res: Response) => {
+  res.status(200).send("🚀 MoneyGuard API is running.");
+});
 
 app.use("/api-docs", ...swaggerMiddleware);
 
