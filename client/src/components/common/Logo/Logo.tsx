@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { renderIcon } from "../../../utils";
 
 type Props = {
@@ -6,10 +7,10 @@ type Props = {
 
 const Logo = ({ className }: Props) => {
   return (
-    <a href="/" className={className}>
+    <Link to="/" state={{ skipIntro: true }} className={className}>
       {renderIcon("icon-logo")}
       <span>Money Guard</span>
-    </a>
+    </Link>
   );
 };
 

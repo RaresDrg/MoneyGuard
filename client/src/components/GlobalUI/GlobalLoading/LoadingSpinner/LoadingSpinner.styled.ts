@@ -9,6 +9,7 @@ const StyledLoadingSpinner = styled(LoadingSpinner)`
   width: 100%;
   height: 100dvh;
   background: #220d5b3b;
+  -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
   display: flex;
   cursor: wait;

@@ -92,6 +92,7 @@ const StyledComboBox = styled(ComboBox)`
         #6a46a586 73.27%,
         #855daf22 120.03%
       );
+      -webkit-backdrop-filter: blur(100px);
       backdrop-filter: blur(100px);
       box-shadow: 0px 4px 60px 0px #00000040;
       border-radius: 8px;

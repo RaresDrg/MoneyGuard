@@ -55,7 +55,7 @@ const LoginPage = ({ className }: Props) => {
   }
 
   return (
-    <Section className={className}>
+    <Section className={className} backgrounds={{ t: "loginBg", d: "loginBg" }}>
       <FormContainer>
         <Formik
           initialValues={initialValues}
@@ -97,7 +97,9 @@ const LoginPage = ({ className }: Props) => {
                 type="button"
                 variant="white"
                 text="back to home"
-                handlerFunction={() => navigate("/")}
+                handlerFunction={() =>
+                  navigate("/", { state: { skipIntro: true } })
+                }
               />
             </Form>
           )}

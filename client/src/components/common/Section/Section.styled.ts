@@ -1,19 +1,23 @@
 import styled from "styled-components";
 import Section from "./Section";
-import { getCloudinaryImage } from "../../../utils";
+import { getCloudinaryLQIP } from "../../../utils";
 
 const StyledSection = styled(Section)`
   background-color: #101010;
-  background-image: image-set(
-    url(${getCloudinaryImage("gradientBg_m_1x")}) 1x,
-    url(${getCloudinaryImage("gradientBg_m_2x")}) 2x
-  );
+  background-image: ${(props) => {
+    return props.backgrounds?.m === "none"
+      ? "none"
+      : `url(${getCloudinaryLQIP(
+          `${props.backgrounds?.m ?? "gradientBg"}_m_LQIP`
+        )})`;
+  }};
   background-size: cover;
   background-position: center;
   min-width: 320px;
   height: 100%;
   overflow-y: auto;
   scrollbar-width: none;
+  transition: background-image 1s ease-out;
   animation: sectionReveal 0.8s ease-out both;
 
   &::-webkit-scrollbar {
@@ -21,17 +25,23 @@ const StyledSection = styled(Section)`
   }
 
   @media (min-width: 768px) {
-    background-image: image-set(
-      url(${getCloudinaryImage("gradientBg_t_1x")}) 1x,
-      url(${getCloudinaryImage("gradientBg_t_2x")}) 2x
-    );
+    background-image: ${(props) => {
+      return props.backgrounds?.t === "none"
+        ? "none"
+        : `url(${getCloudinaryLQIP(
+            `${props.backgrounds?.t ?? "gradientBg"}_t_LQIP`
+          )})`;
+    }};
   }
 
   @media (min-width: 1280px) {
-    background-image: image-set(
-      url(${getCloudinaryImage("gradientBg_d_1x")}) 1x,
-      url(${getCloudinaryImage("gradientBg_d_2x")}) 2x
-    );
+    background-image: ${(props) => {
+      return props.backgrounds?.d === "none"
+        ? "none"
+        : `url(${getCloudinaryLQIP(
+            `${props.backgrounds?.d ?? "gradientBg"}_d_LQIP`
+          )})`;
+    }};
   }
 `;
 

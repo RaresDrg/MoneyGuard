@@ -14,7 +14,10 @@ const HomePage = ({ className }: Props) => {
   if (showIntro) return <IntroScreen onSceneClose={onIntroEnd} />;
 
   return (
-    <Section className={className}>
+    <Section
+      className={className}
+      backgrounds={{ m: "homeBg", t: "homeBg", d: "homeBg" }}
+    >
       <div>
         <Logo />
         <p className="hero-text">

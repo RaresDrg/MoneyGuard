@@ -1,13 +1,7 @@
 import styled from "styled-components";
 import HomePage from "./HomePage";
-import { getCloudinaryImage } from "../../utils";
 
 const StyledHomePage = styled(HomePage)`
-  background-image: image-set(
-    url(${getCloudinaryImage("homeBg_m_1x")}) 1x,
-    url(${getCloudinaryImage("homeBg_m_2x")}) 2x
-  );
-
   & > div {
     display: flex;
     flex-direction: column;
@@ -16,6 +10,7 @@ const StyledHomePage = styled(HomePage)`
     height: 100%;
     min-height: fit-content;
     background: linear-gradient(to bottom, #0f0f0f99, #10101033);
+    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
     padding: 20px;
 
@@ -34,6 +29,7 @@ const StyledHomePage = styled(HomePage)`
         text-align: center;
         text-shadow: 2px 2px 5px black;
         background: #ffffff33;
+        -webkit-backdrop-filter: blur(20px);
         backdrop-filter: blur(20px);
         box-shadow: 0px 4px 60px 0px #00000040, inset 0 0 100px #00000040;
         border: 0.5px solid #ffffff4d;
@@ -142,11 +138,6 @@ const StyledHomePage = styled(HomePage)`
   }
 
   @media (min-width: 768px) {
-    background-image: image-set(
-      url(${getCloudinaryImage("homeBg_t_1x")}) 1x,
-      url(${getCloudinaryImage("homeBg_t_2x")}) 2x
-    );
-
     & > div {
       padding: 50px;
 
@@ -173,13 +164,6 @@ const StyledHomePage = styled(HomePage)`
         }
       }
     }
-  }
-
-  @media (min-width: 1280px) {
-    background-image: image-set(
-      url(${getCloudinaryImage("homeBg_d_1x")}) 1x,
-      url(${getCloudinaryImage("homeBg_d_2x")}) 2x
-    );
   }
 `;
 

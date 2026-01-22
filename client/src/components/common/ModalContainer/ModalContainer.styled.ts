@@ -7,6 +7,7 @@ const StyledModalContainer = styled(ModalContainer)`
   left: 0;
   z-index: 50;
   background: #220d5b3b;
+  -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
   width: 100%;
   height: 100dvh;

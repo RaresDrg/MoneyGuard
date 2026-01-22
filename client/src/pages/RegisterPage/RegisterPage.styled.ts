@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import RegisterPage from "./RegisterPage";
-import { getCloudinaryImage } from "../../utils";
 
 const StyledRegisterPage = styled(RegisterPage)`
   & > div > form {
@@ -25,21 +24,10 @@ const StyledRegisterPage = styled(RegisterPage)`
   @media (min-width: 768px) {
     display: flex;
     padding: 50px;
-    background-image: image-set(
-      url(${getCloudinaryImage("registerBg_t_1x")}) 1x,
-      url(${getCloudinaryImage("registerBg_t_2x")}) 2x
-    );
 
     & > div > form {
       padding: 40px 62px;
     }
-  }
-
-  @media (min-width: 1280px) {
-    background-image: image-set(
-      url(${getCloudinaryImage("registerBg_d_1x")}) 1x,
-      url(${getCloudinaryImage("registerBg_d_2x")}) 2x
-    );
   }
 `;
 

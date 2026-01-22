@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const useIntroScreen = () => {
+  const location = useLocation();
   const [showIntro, setShowIntro] = useState(() => {
-    return sessionStorage.getItem("introWasShown") !== "true";
+    if (location.state?.skipIntro) return false;
+    if (sessionStorage.getItem("introWasShown") === "true") return false;
+    return true;
   });
 
   function onIntroEnd() {

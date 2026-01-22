@@ -35,6 +35,7 @@ const StyledCurrencyConverter = styled(CurrencyConverter)`
 
     div.form {
       background: #ffffff1a;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       box-shadow: 0px 4px 60px 0px #00000040;
       border: 0.5px solid #ffffff66;

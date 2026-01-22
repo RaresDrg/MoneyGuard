@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import LoginPage from "./LoginPage";
-import { getCloudinaryImage } from "../../utils";
 
 const StyledLoginPage = styled(LoginPage)`
   & > div > form {
@@ -45,21 +44,10 @@ const StyledLoginPage = styled(LoginPage)`
   @media (min-width: 768px) {
     display: flex;
     padding: 50px;
-    background-image: image-set(
-      url(${getCloudinaryImage("loginBg_t_1x")}) 1x,
-      url(${getCloudinaryImage("loginBg_t_2x")}) 2x
-    );
 
     & > div > form {
       padding: 80px 62px;
     }
-  }
-
-  @media (min-width: 1280px) {
-    background-image: image-set(
-      url(${getCloudinaryImage("loginBg_d_1x")}) 1x,
-      url(${getCloudinaryImage("loginBg_d_2x")}) 2x
-    );
   }
 `;
 

@@ -9,6 +9,7 @@ const StyledFormContainer = styled(FormContainer)`
   height: 100%;
   min-height: fit-content;
   background: #ffffff1a;
+  -webkit-backdrop-filter: blur(30px);
   backdrop-filter: blur(30px);
   animation: fadeIn 1s both;
 

@@ -10,43 +10,47 @@
   --font-family: Poppins, Arial, Helvetica, sans-serif;
   --font-family-mono: Consolas, "Courier New", monospace;
   --textColor: #fbfbfb;
-  --errorColor: #ff868d;
   --incomeColor: #ffb627;
   --expenseColor: #ff868d;
   --transition: all 0.35s ease-in-out;
 }
 
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   font: inherit;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  overflow: auto;
-  scrollbar-width: none;
-}
-
-#root::-webkit-scrollbar {
-  display: none;
+ul,
+ol {
+  list-style: none;
 }
 
 a {
   text-decoration: none;
 }
 
-li {
-  list-style: none;
+button {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
 }
 
 input {
+  -webkit-appearance: none;
   appearance: none;
   border: none;
   outline: none;
@@ -61,20 +65,27 @@ input::-ms-clear {
 
 input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
   appearance: none;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  background-color: transparent;
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+#root::-webkit-scrollbar {
+  display: none;
 }
 
 .error {
   font-weight: 600;
   font-size: 14px;
   line-height: 21px;
-  color: var(--errorColor);
+  color: #ff868d;
   position: absolute;
   left: 10px;
   bottom: -2px;
@@ -151,6 +162,7 @@ button {
 @keyframes clipReveal {
   0% {
     filter: blur(10px) grayscale(100%) brightness(0.3);
+    -webkit-clip-path: inset(100% 0 100% 0);
     clip-path: inset(100% 0 100% 0);
     opacity: 0;
   }
@@ -160,6 +172,7 @@ button {
   }
   100% {
     filter: blur(0) grayscale(0%) brightness(1);
+    -webkit-clip-path: inset(0 0 0 0);
     clip-path: inset(0 0 0 0);
     opacity: 1;
   }
@@ -168,6 +181,7 @@ button {
 @keyframes clipDismiss {
   0% {
     filter: blur(0) grayscale(0%) brightness(1);
+    -webkit-clip-path: inset(0 0 0 0);
     clip-path: inset(0 0 0 0);
     opacity: 1;
   }
@@ -177,6 +191,7 @@ button {
   }
   100% {
     filter: blur(10px) grayscale(100%) brightness(0.3);
+    -webkit-clip-path: inset(100% 0 100% 0);
     clip-path: inset(100% 0 100% 0);
     opacity: 0;
   }

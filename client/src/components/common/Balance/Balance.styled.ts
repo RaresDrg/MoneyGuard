@@ -6,6 +6,7 @@ const StyledBalance = styled(Balance)`
   flex-direction: column;
   gap: 12px;
   background: #523b7e99;
+  -webkit-backdrop-filter: blur(100px);
   backdrop-filter: blur(100px);
   box-shadow: 0px 4px 60px 0px #00000040;
   border-radius: 8px;
