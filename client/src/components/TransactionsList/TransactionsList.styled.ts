@@ -9,6 +9,7 @@ const StyledTransactionsList = styled(TransactionsList)`
 
   & > li {
     background: #ffffff1a;
+    box-shadow: 0 2px 4px #00000022;
     border-radius: 10px;
     overflow: hidden;
     position: relative;

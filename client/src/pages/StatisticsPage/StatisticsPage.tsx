@@ -3,7 +3,7 @@ import { useStatistics } from "../../hooks";
 import { MONTHS, YEARS } from "../../constants";
 import { normalizeDate } from "../../utils";
 import { StatisticsChart, StatisticsTable } from "../../components";
-import { ComboBox } from "../../components/common";
+import { Select } from "../../components/common";
 
 type Props = {
   className?: string;
@@ -24,14 +24,14 @@ const StatisticsPage = ({ className }: Props) => {
       <div>
         <StatisticsChart statistics={statistics} />
         <div className="filters">
-          <ComboBox
+          <Select
+            label={MONTHS[month]}
             options={MONTHS}
-            currentOption={MONTHS[month]}
             handlerFunction={(option) => setMonth(MONTHS.indexOf(option))}
           />
-          <ComboBox
+          <Select
+            label={String(year)}
             options={YEARS}
-            currentOption={String(year)}
             handlerFunction={(option) => setYear(Number(option))}
           />
         </div>

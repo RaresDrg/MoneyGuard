@@ -58,6 +58,7 @@ const useTransactions = () => {
 
   useEffect(() => {
     if (!initialFetchDone || inView) fetchTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, initialFetchDone]);
 
   return {

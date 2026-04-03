@@ -36,25 +36,23 @@ const DeleteTransactionModal = ({ className }: Props) => {
   }
 
   return (
-    <ModalContainer className={className}>
+    <ModalContainer className={className} aria-label="Delete transaction">
       <FormContainer>
-        <>
-          <h2 className="form-title">Delete transaction</h2>
-          <p>Are you sure you want to delete this transaction ?</p>
-          <FormButton
-            type="button"
-            variant="gradient"
-            text="Delete"
-            handlerFunction={handleDelete}
-            isDisabled={isSubmitting}
-          />
-          <FormButton
-            type="button"
-            variant="white"
-            text="cancel"
-            handlerFunction={closeModal}
-          />
-        </>
+        <h2 className="form-title">Delete transaction</h2>
+        <p>Are you sure you want to delete this transaction ?</p>
+        <FormButton
+          type="button"
+          variant="gradient"
+          text="Delete"
+          handlerFunction={handleDelete}
+          isDisabled={isSubmitting}
+        />
+        <FormButton
+          type="button"
+          variant="white"
+          text="cancel"
+          handlerFunction={closeModal}
+        />
       </FormContainer>
     </ModalContainer>
   );

@@ -7,16 +7,14 @@ const StyledCopyButton = styled(CopyButton)`
   transition: var(--transition);
   opacity: 0.5;
 
-  &:hover {
-    opacity: 1;
-  }
-
   & > svg {
     height: 100%;
     width: 100%;
   }
 
-  &[disabled] {
+  &:hover,
+  &:focus-visible,
+  &:disabled {
     opacity: 1;
   }
 `;

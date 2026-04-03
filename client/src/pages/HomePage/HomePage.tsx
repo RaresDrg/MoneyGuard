@@ -32,11 +32,17 @@ const HomePage = ({ className }: Props) => {
           >
             Register now
           </button>
-          <p className="login-prompt">
+          <div className="login-prompt">
             <span>Already have an account ?</span>
-            <span onClick={() => navigate("/login")}>Log in</span>
+            <button
+              type="button"
+              className="login-btn"
+              onClick={() => navigate("/login")}
+            >
+              Log in
+            </button>
             <span>or</span>
-          </p>
+          </div>
           <GoogleButton />
         </div>
       </div>

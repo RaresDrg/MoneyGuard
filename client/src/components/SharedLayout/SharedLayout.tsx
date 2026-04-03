@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useReactResponsive } from "../../hooks";
+import { useResponsive } from "../../hooks";
 import { Header, Navigation, Footer } from "..";
 import { Section, Container, Balance } from "../common";
 
@@ -8,12 +8,15 @@ type Props = {
 };
 
 const SharedLayout = ({ className }: Props) => {
-  const { isOnMobile } = useReactResponsive();
+  const { isOnMobile } = useResponsive();
 
   return (
     <>
       <Header />
-      <Section className={className}>
+      <Section
+        className={className}
+        backgrounds={{ m: "gradientBg", t: "gradientBg", d: "gradientBg" }}
+      >
         <Container>
           <Navigation />
           {!isOnMobile && <Balance />}

@@ -25,7 +25,8 @@ const StyledFormButton = styled(FormButton)`
     cursor: not-allowed;
   }
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled),
+  &:focus-visible {
     transform: scale(1.02);
     background-size: 200%;
     background-position: right center;

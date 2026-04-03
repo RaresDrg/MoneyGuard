@@ -44,7 +44,8 @@ const StyledDashboardPage = styled(DashboardPage)`
         stroke: var(--textColor);
       }
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         border: 1px solid var(--textColor);
         opacity: 1;
         scale: 1.15;

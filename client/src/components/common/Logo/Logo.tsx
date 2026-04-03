@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { renderIcon } from "../../../utils";
+import { Icon } from "..";
 
 type Props = {
   className?: string;
@@ -8,7 +8,7 @@ type Props = {
 const Logo = ({ className }: Props) => {
   return (
     <Link to="/" state={{ skipIntro: true }} className={className}>
-      {renderIcon("icon-logo")}
+      <Icon name="icon-logo" />
       <span>Money Guard</span>
     </Link>
   );

@@ -9,12 +9,19 @@ const NotFoundPage = ({ className }: Props) => {
   const { src, poster } = getCloudinaryVideo("not-found");
 
   return (
-    <Section
-      className={className}
-      backgrounds={{ m: "none", t: "none", d: "none" }}
-    >
+    <Section className={className} aria-label="Page not found">
       <div>
-        <video autoPlay muted loop preload="auto" poster={poster} playsInline>
+        <video
+          muted
+          autoPlay
+          loop
+          preload="auto"
+          poster={poster}
+          playsInline
+          disablePictureInPicture
+          controls={false}
+          aria-hidden="true"
+        >
           <source src={src} type="video/mp4" />
         </video>
         <h1>Page not found</h1>

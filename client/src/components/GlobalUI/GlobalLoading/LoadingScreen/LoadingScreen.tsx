@@ -9,10 +9,22 @@ const LoadingScreen = ({ className }: Props) => {
 
   return (
     <div className={className}>
-      <video autoPlay muted loop preload="auto" poster={poster} playsInline>
+      <video
+        muted
+        autoPlay
+        loop
+        preload="auto"
+        poster={poster}
+        playsInline
+        disablePictureInPicture
+        controls={false}
+        aria-hidden="true"
+      >
         <source src={src} type="video/mp4" />
       </video>
-      <span className="loader">Loading</span>
+      <span className="loader" role="status">
+        Loading
+      </span>
     </div>
   );
 };

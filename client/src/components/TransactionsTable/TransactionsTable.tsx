@@ -44,8 +44,14 @@ const TransactionsTable = ({ className, transactions, observerRef }: Props) => {
             className={item.type === "income" ? "income" : "expense"}
             text={formatAmount(item.sum)}
           />
-          <EditButton onClick={() => handleClick("edit", item)} />
-          <DeleteButton onClick={() => handleClick("delete", item)} />
+          <EditButton
+            onClick={() => handleClick("edit", item)}
+            aria-label="Edit transaction"
+          />
+          <DeleteButton
+            onClick={() => handleClick("delete", item)}
+            aria-label="Delete transaction"
+          />
         </div>
       ))}
     </div>

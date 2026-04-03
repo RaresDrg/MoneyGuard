@@ -7,7 +7,7 @@ const useStatistics = (startDate: string, endDate: string) => {
   const [statistics, setStatistics] = useState<null | Statistics>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  function fetchData() {
+  useEffect(() => {
     setIsLoading(true);
     handleRequestFlow({
       request: () => transactionsService.fetchStatistics(startDate, endDate),
@@ -16,10 +16,6 @@ const useStatistics = (startDate: string, endDate: string) => {
       onError: () => setStatistics(null),
       onFinally: () => setIsLoading(false),
     });
-  }
-
-  useEffect(() => {
-    fetchData();
   }, [startDate, endDate]);
 
   return { statistics, isLoading };

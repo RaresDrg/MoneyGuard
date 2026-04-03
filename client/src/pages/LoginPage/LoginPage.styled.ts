@@ -29,7 +29,8 @@ const StyledLoginPage = styled(LoginPage)`
         opacity: 0.4;
         transition: var(--transition);
 
-        &:hover {
+        &:hover,
+        &:focus-visible {
           opacity: 1;
         }
       }

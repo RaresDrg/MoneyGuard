@@ -38,7 +38,12 @@ const StatisticsChart = ({ className, statistics }: Props) => {
 
   return (
     <div className={className}>
-      <Doughnut data={data} options={options} />
+      <Doughnut
+        data={data}
+        options={options}
+        aria-label="Expense distribution chart"
+        aria-description="A doughnut chart showing the distribution of expenses by category"
+      />
       <EllipsisTooltip text={formatAmount(animatedBalance)} />
     </div>
   );

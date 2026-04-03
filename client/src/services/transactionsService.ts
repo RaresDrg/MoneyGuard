@@ -1,4 +1,4 @@
-import { apiClient } from "../utils";
+import apiClient from "../api/apiClient";
 import type { Transaction } from "../App.types";
 
 type TransactionData = Omit<Transaction, "id">;

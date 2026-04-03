@@ -1,6 +1,5 @@
-import { Container, Logo, EllipsisTooltip } from "../common";
+import { Container, Logo, EllipsisTooltip, Icon } from "../common";
 import { useReduxState, useModal } from "../../hooks";
-import { renderIcon } from "../../utils";
 
 type Props = {
   className?: string;
@@ -21,7 +20,7 @@ const Header = ({ className }: Props) => {
           className="logout-btn"
           onClick={() => openModal("logoutModal")}
         >
-          {renderIcon("icon-exit")}
+          <Icon name="icon-exit" />
           <span>Exit</span>
         </button>
       </Container>

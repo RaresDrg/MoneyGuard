@@ -13,11 +13,13 @@ const CurrencyPage = ({ className }: Props) => {
       <h2 className="page-title">Currency Converter</h2>
 
       {isLoading ? (
-        <span className="text-loader">Loading...</span>
+        <span className="text-loader" role="status">
+          Loading...
+        </span>
       ) : rates && expiresAt ? (
         <CurrencyConverter rates={rates} expiresAt={expiresAt} />
       ) : (
-        <p className="fallback">
+        <p className="fallback" role="status" aria-live="polite">
           ❌ Our currency provider is currently unreachable. We're working on it
           — please try again later ❌
         </p>

@@ -1,4 +1,4 @@
-import { apiClient } from "../utils";
+import apiClient from "../api/apiClient";
 
 type NewUser = { name: string; email: string; password: string };
 type LoginCredentials = { email: string; loginPassword: string };

@@ -11,8 +11,7 @@ const StyledStatisticsChart = styled(StatisticsChart)`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 140px;
-    text-align: center;
+    max-width: 140px;
     font-weight: 600;
     font-size: 18px;
     line-height: 27px;

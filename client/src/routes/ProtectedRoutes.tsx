@@ -5,7 +5,7 @@ import { CurrencyPage, DashboardPage, StatisticsPage } from "../pages";
 
 const ProtectedRoutesGuard = () => {
   const isLoggedIn = useReduxState("selectIsLoggedIn");
-  return !isLoggedIn ? <Navigate to="/login" /> : <Outlet />;
+  return !isLoggedIn ? <Navigate to="/login" replace /> : <Outlet />;
 };
 
 const ProtectedRoutes = (

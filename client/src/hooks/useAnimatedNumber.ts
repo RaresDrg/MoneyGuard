@@ -6,15 +6,17 @@ function useAnimatedNumber(target: number) {
   const motionValue = useMotionValue(0);
 
   useEffect(() => {
-    if (motionValue.get() === target) return;
+    if (motionValue.get() !== target) {
+      const controls = animate(motionValue, target, {
+        duration: 1,
+        ease: "easeOut",
+        onUpdate: (latest) => setValue(latest),
+      });
 
-    const controls = animate(motionValue, target, {
-      duration: 1,
-      ease: "easeOut",
-      onUpdate: (latest) => setValue(latest),
-    });
+      return () => controls.stop();
+    }
 
-    return () => controls.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
   return value;

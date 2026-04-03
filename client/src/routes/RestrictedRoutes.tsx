@@ -4,7 +4,7 @@ import { HomePage, LoginPage, RegisterPage, ResetPasswordPage } from "../pages";
 
 function RestrictedRoutesGuard() {
   const isLoggedIn = useReduxState("selectIsLoggedIn");
-  return isLoggedIn ? <Navigate to="/dashboard" /> : <Outlet />;
+  return isLoggedIn ? <Navigate to="/dashboard" replace /> : <Outlet />;
 }
 
 const RestrictedRoutes = (

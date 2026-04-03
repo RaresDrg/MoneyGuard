@@ -1,86 +1,206 @@
-import { useState, useEffect, useRef } from "react";
-import { renderIcon } from "../../../utils";
+import { useState, useEffect, useRef, useId } from "react";
+import { Icon } from "..";
 
 type Props<T extends string> = {
   className?: string;
+  noMatchMessage?: string;
+  placeholder?: string;
+  initialValue?: T;
   options: readonly T[];
   handlerFunction: (selectedOption: T) => void;
-  currentOption?: T;
-  placeholder?: string;
-  searchEnabled?: boolean;
 };
 
 const ComboBox = <T extends string>(props: Props<T>) => {
+  const [value, setValue] = useState(props.initialValue ?? "");
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(props.currentOption ?? "");
+  const [highlightIndex, setHighlightIndex] = useState(0);
 
-  const comboBoxRef = useRef<HTMLDivElement>(null);
+  const liRefs = useRef<(HTMLLIElement | null)[]>([]);
   const searchQuery = useRef("");
 
-  const displayedOptions =
-    props.searchEnabled && searchQuery.current
-      ? props.options.filter((item) =>
-          item.toLowerCase().includes(searchQuery.current.toLowerCase().trim())
-        )
-      : props.options;
+  const displayedOptions = searchQuery.current
+    ? props.options.filter((item) =>
+        item.toLowerCase().includes(searchQuery.current.toLowerCase().trim()),
+      )
+    : props.options;
 
-  useEffect(() => {
-    if (isOpen) document.addEventListener("mousedown", onOutsideMouseDown);
-    return () => document.removeEventListener("mousedown", onOutsideMouseDown);
-  }, [isOpen]);
+  const listId = useId();
 
-  function onOutsideMouseDown(e: MouseEvent) {
-    if (
-      !comboBoxRef.current?.contains(e.target as Node) &&
-      !searchQuery.current
-    ) {
-      setIsOpen(false);
-    }
-  }
-
-  function onSelect(selectedOption: T) {
+  function handleSelect(selectedOption: T) {
     props.handlerFunction(selectedOption);
     setValue(selectedOption);
     setIsOpen(false);
-    if (searchQuery.current) setTimeout(() => (searchQuery.current = ""), 0);
+  }
+
+  function handleOpen() {
+    if (searchQuery.current !== "") searchQuery.current = "";
+    const index = props.options.findIndex((opt) => opt === value);
+    setHighlightIndex(index !== -1 ? index : 0);
+    setIsOpen(true);
+  }
+
+  function onLabelMouseDown(e: React.MouseEvent<HTMLElement>) {
+    if (e.button !== 0) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!isOpen) handleOpen();
+    else if (!(e.target instanceof HTMLInputElement)) {
+      e.preventDefault();
+      if (!searchQuery.current) setIsOpen(false);
+    }
+  }
+
+  function onFocus() {
+    if (!isOpen) handleOpen();
+  }
+
+  function onBlur() {
+    if (isOpen && !searchQuery.current) setIsOpen(false);
+  }
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    e.stopPropagation();
+
+    if (!isOpen) {
+      if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+        e.preventDefault();
+        handleOpen();
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case "Escape": {
+        if (!searchQuery.current) setIsOpen(false);
+        break;
+      }
+      case "ArrowDown": {
+        e.preventDefault();
+        if (displayedOptions.length > 0) {
+          setHighlightIndex((prev) =>
+            prev < displayedOptions.length - 1 ? prev + 1 : 0,
+          );
+        }
+        break;
+      }
+      case "ArrowUp": {
+        e.preventDefault();
+        if (displayedOptions.length > 0) {
+          setHighlightIndex((prev) =>
+            prev > 0 ? prev - 1 : displayedOptions.length - 1,
+          );
+        }
+        break;
+      }
+      case "PageDown": {
+        e.preventDefault();
+        if (displayedOptions.length > 0) {
+          setHighlightIndex((prev) =>
+            Math.min(prev + 10, displayedOptions.length - 1),
+          );
+        }
+        break;
+      }
+      case "PageUp": {
+        e.preventDefault();
+        if (displayedOptions.length > 0) {
+          setHighlightIndex((prev) => Math.max(prev - 10, 0));
+        }
+        break;
+      }
+      case "Home": {
+        e.preventDefault();
+        if (displayedOptions.length > 0) setHighlightIndex(0);
+        break;
+      }
+      case "End": {
+        e.preventDefault();
+        if (displayedOptions.length > 0)
+          setHighlightIndex(displayedOptions.length - 1);
+        break;
+      }
+      case "Enter": {
+        e.preventDefault();
+        const selectedOption = displayedOptions[highlightIndex];
+        if (selectedOption) handleSelect(selectedOption);
+        break;
+      }
+    }
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
     searchQuery.current = e.target.value;
+    if (highlightIndex !== 0) setHighlightIndex(0);
+    if (!isOpen) setIsOpen(true);
   }
 
-  return (
-    <div
-      ref={comboBoxRef}
-      className={`${props.className} ${isOpen ? "isOpen" : ""}`}
-    >
-      {props.searchEnabled ? (
-        <label>
-          <input
-            value={value}
-            placeholder={props.placeholder ?? "Select option"}
-            onFocus={() => setIsOpen(true)}
-            onChange={onChange}
-          />
-          {renderIcon("icon-dropdown")}
-        </label>
-      ) : (
-        <button type="button" onClick={() => setIsOpen((prev) => !prev)}>
-          {value || props.placeholder || "Select option"}
-          {renderIcon("icon-dropdown")}
-        </button>
-      )}
+  useEffect(() => {
+    if (isOpen) {
+      liRefs.current[highlightIndex]?.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+        behavior: "smooth",
+      });
+    }
+  }, [highlightIndex, isOpen]);
 
-      <ul>
+  return (
+    <div className={`${props.className} ${isOpen ? "isOpen" : ""}`}>
+      <label onMouseDown={onLabelMouseDown}>
+        <input
+          value={value}
+          placeholder={props.placeholder ?? "Select an option"}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onKeyDown={onKeyDown}
+          onChange={onChange}
+          role="combobox"
+          aria-label={props.placeholder ?? "Select an option"}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          aria-activedescendant={
+            isOpen ? `combo-option-${highlightIndex}` : undefined
+          }
+        />
+        <Icon name="icon-dropdown" />
+      </label>
+      <ul
+        tabIndex={-1}
+        onMouseDown={(e) => e.preventDefault()}
+        id={listId}
+        role="listbox"
+      >
         {displayedOptions.length > 0 ? (
-          displayedOptions.map((item) => (
-            <li key={item} onMouseDown={() => onSelect(item)}>
+          displayedOptions.map((item, index) => (
+            <li
+              key={item}
+              ref={(el) => {
+                liRefs.current[index] = el;
+              }}
+              className={index === highlightIndex ? "highlighted" : ""}
+              onMouseEnter={() => setHighlightIndex(index)}
+              onMouseLeave={() => setHighlightIndex(-1)}
+              onClick={() => handleSelect(item)}
+              id={`combo-option-${index}`}
+              role="option"
+              aria-selected={index === highlightIndex}
+            >
               {item}
             </li>
           ))
         ) : (
-          <li className="fallback-option">❌ No matches found ❌</li>
+          <li
+            className="fallback-option"
+            aria-live="polite"
+            aria-disabled="true"
+          >
+            {props.noMatchMessage ?? "❌ No matches found ❌"}
+          </li>
         )}
       </ul>
     </div>

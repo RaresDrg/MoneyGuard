@@ -7,6 +7,11 @@ const StyledTypeSwitcher = styled(TypeSwitcher)`
   align-items: center;
   justify-content: center;
 
+  &:has(> label > input:focus-visible) {
+    outline: 1px solid var(--textColor);
+    outline-offset: 5px;
+  }
+
   &:has(> label > input:not(:checked)) > span:nth-of-type(1) {
     color: var(--incomeColor);
     opacity: 1;
@@ -32,7 +37,9 @@ const StyledTypeSwitcher = styled(TypeSwitcher)`
       height: 40px;
       border-radius: 30px;
       background-color: var(--textColor);
-      box-shadow: inset 0px 5px 15px #00000066, inset 0 -5px 15px #ffffff66;
+      box-shadow:
+        inset 0px 5px 15px #00000066,
+        inset 0 -5px 15px #ffffff66;
       cursor: pointer;
       position: relative;
     }

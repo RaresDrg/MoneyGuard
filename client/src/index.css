@@ -12,6 +12,7 @@
   --textColor: #fbfbfb;
   --incomeColor: #ffb627;
   --expenseColor: #ff868d;
+  --errorColor: #fb7185;
   --transition: all 0.35s ease-in-out;
 }
 
@@ -47,6 +48,13 @@ button {
   cursor: pointer;
   border: none;
   background-color: transparent;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
 }
 
 input {
@@ -85,11 +93,10 @@ input::-webkit-outer-spin-button {
   font-weight: 600;
   font-size: 14px;
   line-height: 21px;
-  color: #ff868d;
+  color: var(--errorColor);
   position: absolute;
   left: 10px;
-  bottom: -2px;
-  transform: translateY(100%);
+  top: calc(100% + 2px);
 }
 
 .fallback {
@@ -209,5 +216,14 @@ input::-webkit-outer-spin-button {
   100% {
     opacity: 1;
     filter: brightness(1) grayscale(0%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }

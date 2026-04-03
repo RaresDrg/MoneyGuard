@@ -6,7 +6,9 @@ const StyledFooter = styled(Footer)`
   height: 60px;
   flex-shrink: 0;
   background: linear-gradient(270.02deg, #2e1746 3.2%, #2e225f 99.98%);
-  box-shadow: 0px -4px 40px 0px #00000040, 0px 3px 2px 0px #0000001a inset;
+  box-shadow:
+    0px -4px 40px 0px #00000040,
+    0px 3px 2px 0px #0000001a inset;
   animation: fadeIn 1s both;
 
   & > div {

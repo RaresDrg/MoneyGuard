@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Field, ErrorMessage } from "formik";
-import { renderIcon, notify } from "../../../utils";
+import { Icon } from "..";
 
 type Props = {
   className?: string;
@@ -17,15 +17,6 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
     if (isVisible) inputRef.current?.focus();
   }, [isVisible]);
 
-  function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
-    const pastedValue = e.clipboardData.getData("text");
-    const currentValue = e.currentTarget.value;
-    if (currentValue.length + pastedValue.length > 50) {
-      notify.warning("Invalid paste: Password cannot exceed 50 characters");
-      e.preventDefault();
-    }
-  }
-
   return (
     <div className={className}>
       <label>
@@ -35,10 +26,10 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
           id={id}
           name={name}
           placeholder={placeholder}
+          aria-label={placeholder}
           maxLength={51}
-          onPaste={handlePaste}
         />
-        {renderIcon("icon-password")}
+        <Icon name="icon-password" />
       </label>
       <ErrorMessage className="error" name={name} component="p" />
 
@@ -49,7 +40,7 @@ const PasswordInput = ({ className, id, name, placeholder }: Props) => {
           title={isVisible ? "Hide password" : "Show password"}
           className={`toggle-btn ${isVisible ? "visible" : ""}`}
         >
-          {renderIcon("icon-eye")}
+          <Icon name="icon-eye" />
         </button>
       )}
     </div>

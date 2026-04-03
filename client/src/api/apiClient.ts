@@ -1,5 +1,5 @@
 import axios from "axios";
-import { forceLogout } from ".";
+import { forceLogout } from "../utils";
 
 const IN_DEVELOPMENT = import.meta.env.MODE === "development";
 
@@ -25,7 +25,7 @@ apiClient.interceptors.response.use(
       forceLogout();
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

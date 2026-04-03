@@ -5,7 +5,7 @@ type Props = {
 const LoadingSpinner = ({ className }: Props) => {
   return (
     <div className={className}>
-      <span className="loader"></span>
+      <span className="loader" role="status" aria-label="Loading"></span>
     </div>
   );
 };

@@ -1,14 +1,13 @@
-import { useReactResponsive, useModal, useTransactions } from "../../hooks";
-import { renderIcon } from "../../utils";
+import { useResponsive, useModal, useTransactions } from "../../hooks";
 import { TransactionsList, TransactionsTable } from "../../components";
-import { Balance } from "../../components/common";
+import { Balance, Icon } from "../../components/common";
 
 type Props = {
   className?: string;
 };
 
 const DashboardPage = ({ className }: Props) => {
-  const { isOnMobile } = useReactResponsive();
+  const { isOnMobile } = useResponsive();
   const { openModal } = useModal();
   const { transactionsList, isLoading, observerRef } = useTransactions();
   const hasTransactions = transactionsList.length > 0;
@@ -44,8 +43,9 @@ const DashboardPage = ({ className }: Props) => {
         type="button"
         className="add-btn"
         onClick={() => openModal("addTransactionModal")}
+        aria-label="Add transaction"
       >
-        {renderIcon("icon-plus")}
+        <Icon name="icon-plus" />
       </button>
     </div>
   );

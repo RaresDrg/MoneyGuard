@@ -5,7 +5,6 @@ const StyledLoadingSpinner = styled(LoadingSpinner)`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
   width: 100%;
   height: 100dvh;
   background: #220d5b3b;

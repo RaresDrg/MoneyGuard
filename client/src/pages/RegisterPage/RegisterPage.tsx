@@ -48,8 +48,8 @@ const RegisterPage = ({ className }: Props) => {
       onError: (error) => {
         if (error.status === 409) {
           formikBag.setFieldError("email", "Invalid email address");
-          const msg = `You can't use this email. It belongs to another account`;
-          utils.notify.errorMessage(msg);
+          document.getElementById("emailInput")?.focus();
+          utils.notify.errorMessage("Email is already used by another account");
           return;
         }
         utils.notify.error(error);
@@ -61,7 +61,7 @@ const RegisterPage = ({ className }: Props) => {
   return (
     <Section
       className={className}
-      backgrounds={{ t: "registerBg", d: "registerBg" }}
+      backgrounds={{ m: "gradientBg", t: "registerBg", d: "registerBg" }}
     >
       <FormContainer>
         <Formik

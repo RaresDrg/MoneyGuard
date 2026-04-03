@@ -33,25 +33,23 @@ const LogoutModal = ({ className }: Props) => {
   }
 
   return (
-    <ModalContainer className={className}>
+    <ModalContainer className={className} aria-label="Logout confirmation">
       <FormContainer>
-        <>
-          <Logo />
-          <p>Are you sure you want to log out ?</p>
-          <FormButton
-            type="button"
-            variant="gradient"
-            text="logout"
-            handlerFunction={handleLogout}
-            isDisabled={isSubmitting}
-          />
-          <FormButton
-            type="button"
-            variant="white"
-            text="cancel"
-            handlerFunction={closeModal}
-          />
-        </>
+        <Logo />
+        <p>Are you sure you want to log out ?</p>
+        <FormButton
+          type="button"
+          variant="gradient"
+          text="logout"
+          handlerFunction={handleLogout}
+          isDisabled={isSubmitting}
+        />
+        <FormButton
+          type="button"
+          variant="white"
+          text="cancel"
+          handlerFunction={closeModal}
+        />
       </FormContainer>
     </ModalContainer>
   );

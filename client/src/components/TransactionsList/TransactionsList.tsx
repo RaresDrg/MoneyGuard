@@ -48,8 +48,14 @@ const TransactionsList = ({ className, transactions, observerRef }: Props) => {
             <EllipsisTooltip text={formatAmount(item.sum)} />
           </p>
           <p>
-            <DeleteButton onClick={() => handleClick("delete", item)} />
-            <EditButton onClick={() => handleClick("edit", item)} />
+            <DeleteButton
+              onClick={() => handleClick("delete", item)}
+              aria-label="Delete transaction"
+            />
+            <EditButton
+              onClick={() => handleClick("edit", item)}
+              aria-label="Edit transaction"
+            />
           </p>
         </li>
       ))}

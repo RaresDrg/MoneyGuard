@@ -62,7 +62,7 @@ const AddTransactionModal = ({ className }: Props) => {
   }
 
   return (
-    <ModalContainer className={className}>
+    <ModalContainer className={className} aria-label="Add transaction">
       <FormContainer>
         <Formik
           initialValues={initialValues}

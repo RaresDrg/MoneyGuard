@@ -22,6 +22,9 @@ const TypeSwitcher = ({ className }: Props) => {
           name="type"
           checked={values.type === "expense"}
           onChange={handleChange}
+          role="switch"
+          aria-label="Toggle transaction type: income or expense"
+          aria-checked={values.type === "expense"}
         />
       </label>
       <span>Expense</span>

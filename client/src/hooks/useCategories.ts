@@ -11,18 +11,18 @@ type Categories = {
 const useCategories = () => {
   const { data, updateStorage } = useSessionStorage<Categories>("categories");
 
-  async function fetchData() {
-    handleRequestFlow({
-      request: () => transactionsService.fetchCategories(),
-      onSuccess: (res) =>
-        updateStorage(res.data, {
-          expiresAt: Date.now() + 1000 * 60 * 60 * 24,
-        }),
-    });
-  }
-
   useEffect(() => {
-    if (!data) fetchData();
+    if (!data) {
+      handleRequestFlow({
+        request: () => transactionsService.fetchCategories(),
+        onSuccess: (res) =>
+          updateStorage(res.data, {
+            expiresAt: Date.now() + 1000 * 60 * 60 * 24,
+          }),
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

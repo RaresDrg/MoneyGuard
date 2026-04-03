@@ -1,4 +1,4 @@
-import { renderIcon } from "../../../utils";
+import { Icon } from "..";
 
 type Props = {
   className?: string;
@@ -8,7 +8,8 @@ type Props = {
 const EditButton = ({ className, onClick }: Props) => {
   return (
     <button type="button" className={className} onClick={onClick}>
-      Edit {renderIcon("icon-pencil")}
+      Edit
+      <Icon name="icon-pencil" />
     </button>
   );
 };

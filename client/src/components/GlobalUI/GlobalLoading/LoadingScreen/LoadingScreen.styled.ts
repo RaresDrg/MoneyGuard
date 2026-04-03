@@ -5,7 +5,6 @@ const StyledLoadingScreen = styled(LoadingScreen)`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
   width: 100%;
   height: 100dvh;
   background: linear-gradient(270.02deg, #2e1746 3.2%, #2e225f 99.98%);

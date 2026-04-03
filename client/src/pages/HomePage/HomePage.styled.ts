@@ -10,8 +10,6 @@ const StyledHomePage = styled(HomePage)`
     height: 100%;
     min-height: fit-content;
     background: linear-gradient(to bottom, #0f0f0f99, #10101033);
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
     padding: 20px;
 
     & {
@@ -31,7 +29,9 @@ const StyledHomePage = styled(HomePage)`
         background: #ffffff33;
         -webkit-backdrop-filter: blur(20px);
         backdrop-filter: blur(20px);
-        box-shadow: 0px 4px 60px 0px #00000040, inset 0 0 100px #00000040;
+        box-shadow:
+          0px 4px 60px 0px #00000040,
+          inset 0 0 100px #00000040;
         border: 0.5px solid #ffffff4d;
         border-radius: 8px;
         padding: 16px;
@@ -62,7 +62,8 @@ const StyledHomePage = styled(HomePage)`
             transition: var(--transition);
             animation: fadeInUp 0.6s 0.2s backwards;
 
-            &:hover {
+            &:hover,
+            &:focus-visible {
               transform: translateY(-2px) scale(1.02);
               box-shadow: 0 0 12px #edc0d766;
               border: 1px solid var(--textColor);
@@ -73,23 +74,45 @@ const StyledHomePage = styled(HomePage)`
           }
 
           .login-prompt {
-            font-weight: 400;
-            font-size: 14px;
-            line-height: 21px;
-            color: var(--textColor);
-            text-shadow: 2px 2px 2px black;
             animation: fadeInUp 0.6s 0.4s both;
 
             & {
+              > span:nth-of-type(1),
+              > span:nth-of-type(2) {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 21px;
+                color: var(--textColor);
+                text-shadow: 2px 2px 2px black;
+              }
+
               > span:nth-of-type(1) {
                 opacity: 0.9;
               }
 
               > span:nth-of-type(2) {
-                cursor: pointer;
-                margin-left: 5px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: 24px;
+                margin-bottom: 16px;
+
+                &::before,
+                &::after {
+                  content: "";
+                  flex: 1;
+                  height: 1px;
+                  background-color: #ffffff66;
+                }
+              }
+
+              .login-btn {
                 font-weight: 600;
+                font-size: 14px;
+                line-height: 21px;
                 color: #ffd8d0;
+                text-shadow: 2px 2px 2px black;
+                margin-left: 5px;
                 position: relative;
 
                 &:after {
@@ -104,26 +127,11 @@ const StyledHomePage = styled(HomePage)`
                   transition: var(--transition);
                 }
 
-                &:hover:after {
+                &:hover:after,
+                &:focus-visible:after {
                   width: 100%;
                   opacity: 1;
                   left: 0;
-                }
-              }
-
-              > span:nth-of-type(3) {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-top: 24px;
-                margin-bottom: 16px;
-
-                &::before,
-                &::after {
-                  content: "";
-                  flex: 1;
-                  height: 1px;
-                  background-color: #ffffff66;
                 }
               }
             }
@@ -157,8 +165,14 @@ const StyledHomePage = styled(HomePage)`
 
           & {
             .login-prompt {
-              font-size: 16px;
-              line-height: 24px;
+              & {
+                > span:nth-of-type(1),
+                > span:nth-of-type(2),
+                .login-btn {
+                  font-size: 16px;
+                  line-height: 24px;
+                }
+              }
             }
           }
         }

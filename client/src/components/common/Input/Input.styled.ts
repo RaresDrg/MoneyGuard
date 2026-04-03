@@ -60,7 +60,8 @@ const StyledInput = styled(Input)`
       opacity: 0.4;
       transition: var(--transition);
 
-      &:hover {
+      &:hover,
+      &:focus-visible {
         opacity: 1;
       }
 

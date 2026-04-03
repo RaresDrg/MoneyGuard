@@ -19,7 +19,8 @@ const StyledDeleteButton = styled(DeleteButton)`
   opacity: 0.7;
   transition: var(--transition);
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     opacity: 1;
     transform: scale(1.05);
     border: 0.5px solid currentColor;

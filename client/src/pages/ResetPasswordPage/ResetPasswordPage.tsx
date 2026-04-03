@@ -21,7 +21,7 @@ const ResetPasswordPage = ({ className }: Props) => {
 
   const { forgotPassword, changePassword } = authService;
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const validationToken = searchParams.get("validationToken");
 
   const initialValues = !validationToken
@@ -50,14 +50,16 @@ const ResetPasswordPage = ({ className }: Props) => {
             utils.notify.error(error);
             if (error.status === 404 || error.status === 403) {
               formikBag.setFieldError("email", "Invalid email address");
+              document.getElementById("emailInput")?.focus();
             }
           }
         : (error) => {
             if (error.status === 404) {
-              const msg = "The reset link is expired. Please request a new one";
-              utils.notify.warning(msg);
-              searchParams.delete("validationToken");
-              setSearchParams(searchParams);
+              navigate("", { replace: true });
+              utils.notify.warning("Reset link expired. Request a new one");
+              setTimeout(() => {
+                document.getElementById("emailInput")?.focus();
+              }, 10);
               return;
             }
             utils.notify.error(error);
@@ -67,7 +69,10 @@ const ResetPasswordPage = ({ className }: Props) => {
   }
 
   return (
-    <Section className={className}>
+    <Section
+      className={className}
+      backgrounds={{ m: "gradientBg", t: "gradientBg", d: "gradientBg" }}
+    >
       <FormContainer>
         <Formik
           initialValues={initialValues}

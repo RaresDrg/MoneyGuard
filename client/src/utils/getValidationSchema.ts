@@ -9,6 +9,7 @@ const VALIDATIONS_MAP = {
   email: Yup.string()
     .trim()
     .email("Invalid email format")
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "Invalid email format")
     .required("Required *"),
   password: Yup.string()
     .min(8, "Password is too short")
@@ -44,8 +45,8 @@ export function getValidationSchema(data: ValidationKey[]) {
     Object.fromEntries(
       data
         .filter((key) => key in VALIDATIONS_MAP)
-        .map((key) => [key, VALIDATIONS_MAP[key]])
-    )
+        .map((key) => [key, VALIDATIONS_MAP[key]]),
+    ),
   );
 
   return schema;

@@ -14,7 +14,8 @@ const StyledEditButton = styled(EditButton)`
   opacity: 0.6;
   transition: var(--transition);
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     opacity: 1;
   }
 

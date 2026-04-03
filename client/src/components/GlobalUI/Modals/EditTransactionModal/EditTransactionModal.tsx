@@ -11,6 +11,7 @@ import {
   CategoryDropdown,
   DateField,
   Input,
+  Icon,
 } from "../../../common";
 
 type Props = {
@@ -64,7 +65,7 @@ const EditTransactionModal = ({ className }: Props) => {
   }
 
   return (
-    <ModalContainer className={className}>
+    <ModalContainer className={className} aria-label="Edit transaction">
       <FormContainer>
         <Formik
           initialValues={initialValues}
@@ -76,7 +77,7 @@ const EditTransactionModal = ({ className }: Props) => {
               <h2 className="form-title">Edit transaction</h2>
               <div className={`type ${type}`}>
                 <span>Income</span>
-                {utils.renderIcon("icon-typeSeparator")}
+                <Icon name="icon-typeSeparator" />
                 <span>Expense</span>
               </div>
               {values.type === "expense" && <CategoryDropdown />}

@@ -8,20 +8,16 @@ type Props = {
 };
 
 const FormButton = (props: Props) => {
-  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
-    e.stopPropagation();
-    if (props.handlerFunction) props.handlerFunction();
-  }
+  const { className, type, text, isDisabled, handlerFunction } = props;
 
   return (
     <button
-      type={props.type}
-      className={props.className}
-      onClick={handleClick}
-      disabled={props.isDisabled}
-      data-variant={props.variant}
+      type={type}
+      className={className}
+      onClick={() => handlerFunction?.()}
+      disabled={isDisabled}
     >
-      {props.text}
+      {text}
     </button>
   );
 };

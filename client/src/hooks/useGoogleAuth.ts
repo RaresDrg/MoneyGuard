@@ -41,6 +41,7 @@ const useGoogleAuth = () => {
   useEffect(() => {
     if (authHasFailed) handleAuthFailed();
     else if (validationToken) finalizeAuth(validationToken);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authHasFailed, validationToken]);
 };
 

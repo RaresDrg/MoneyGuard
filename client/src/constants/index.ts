@@ -1,3 +1,12 @@
+export const FOCUSABLE_ELEMENTS: readonly string[] = [
+  "a[href]",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "button:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+];
+
 export const DECIMAL_INPUT_ALLOWED_KEYS: readonly string[] = [
   ...Array.from({ length: 10 }, (_, i) => i.toString()),
   "Backspace",
@@ -29,7 +38,7 @@ export const MIN_YEAR = 2020;
 
 export const YEARS: readonly string[] = Array.from(
   { length: CURRENT_YEAR - MIN_YEAR + 1 },
-  (_, index) => String(CURRENT_YEAR - index)
+  (_, index) => String(CURRENT_YEAR - index),
 );
 
 export const EXPENSE_BACKGROUNDS: readonly string[] = [

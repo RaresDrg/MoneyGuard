@@ -43,10 +43,12 @@ const LoginPage = ({ className }: Props) => {
         utils.notify.error(error);
         if (error.status === 404 || error.status === 403) {
           formikBag.setFieldError("email", "Invalid email address");
+          document.getElementById("emailInput")?.focus();
           return;
         }
         if (error.response?.data?.message === "Password is wrong") {
           formikBag.setFieldError("loginPassword", "Invalid password");
+          document.getElementById("loginPasswordInput")?.focus();
           return;
         }
       },
@@ -55,7 +57,10 @@ const LoginPage = ({ className }: Props) => {
   }
 
   return (
-    <Section className={className} backgrounds={{ t: "loginBg", d: "loginBg" }}>
+    <Section
+      className={className}
+      backgrounds={{ m: "gradientBg", t: "loginBg", d: "loginBg" }}
+    >
       <FormContainer>
         <Formik
           initialValues={initialValues}

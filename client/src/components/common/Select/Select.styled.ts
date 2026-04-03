@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import ComboBox from "./ComboBox";
+import Select from "./Select";
 
-const StyledComboBox = styled(ComboBox)`
+const StyledSelect = styled(Select)`
   width: 100%;
   position: relative;
 
   &.isOpen {
-    > label {
+    > button {
       opacity: 1;
 
       & > svg {
@@ -21,47 +21,34 @@ const StyledComboBox = styled(ComboBox)`
   }
 
   & {
-    > label {
-      cursor: pointer;
+    > button {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--textColor);
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
       background: #4a56e21a;
       border-radius: 8px;
       border: 1px solid var(--textColor);
+      outline: none;
       padding: 13px 20px;
       opacity: 0.6;
       transition: var(--transition);
 
-      & {
-        > input {
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 24px;
-          color: var(--textColor);
-          caret-color: var(--textColor);
+      & > svg {
+        width: 18px;
+        height: 9px;
+        fill: transparent;
+        stroke: var(--textColor);
+        transition: var(--transition);
+      }
 
-          &::placeholder {
-            color: var(--textColor);
-          }
-
-          &:-webkit-autofill,
-          &:-webkit-autofill:hover,
-          &:-webkit-autofill:focus {
-            -webkit-text-fill-color: var(--textColor);
-            -webkit-background-clip: text;
-          }
-        }
-
-        > svg {
-          width: 18px;
-          height: 9px;
-          fill: transparent;
-          stroke: var(--textColor);
-          transition: var(--transition);
-        }
+      &:hover,
+      &:focus-visible {
+        opacity: 1;
       }
     }
 
@@ -81,6 +68,7 @@ const StyledComboBox = styled(ComboBox)`
       backdrop-filter: blur(100px);
       box-shadow: 0px 4px 60px 0px #00000040;
       border-radius: 8px;
+      outline: none;
       width: 100%;
       max-height: 230px;
       overflow-y: auto;
@@ -113,17 +101,9 @@ const StyledComboBox = styled(ComboBox)`
           color: var(--expenseColor);
           font-weight: 600;
         }
-
-        &.fallback-option {
-          font-weight: 500;
-          font-style: italic;
-          text-align: center;
-          background: grey;
-          cursor: not-allowed;
-        }
       }
     }
   }
 `;
 
-export default StyledComboBox;
+export default StyledSelect;

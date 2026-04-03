@@ -14,7 +14,8 @@ const StyledGoogleButton = styled(GoogleButton)`
   gap: 15px;
   transition: var(--transition);
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background: #bab9be;
     border: 1px solid #000000;
     box-shadow: 0 1px 1px #0000001a;

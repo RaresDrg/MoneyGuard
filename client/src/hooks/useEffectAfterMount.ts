@@ -8,8 +8,8 @@ const useEffectAfterMount = (effect: EffectCallback, deps: DependencyList) => {
       isOnMounting.current = false;
       return;
     }
-
     return effect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 };
 

@@ -50,7 +50,8 @@ const StyledNavigation = styled(Navigation)`
     }
   }
 
-  & > a:hover:not(.active) {
+  & > a:hover:not(.active),
+  & > a:focus-visible:not(.active) {
     opacity: 0.7;
 
     .icon > svg {

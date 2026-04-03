@@ -7,7 +7,7 @@ import { reducer as transactionsReducer } from "./transactions/slice";
 
 const persistedAuthReducer = persistReducer(
   { key: "auth", storage: storageSession, whitelist: ["isLoggedIn", "user"] },
-  authReducer
+  authReducer,
 );
 
 const store = configureStore({

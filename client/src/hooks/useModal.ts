@@ -10,9 +10,17 @@ const useModal = () => {
   }
 
   function closeModal() {
-    document.querySelector(".modal")?.classList.add("hidden");
-    document.querySelector(".modal > :nth-child(1)")?.classList.add("hidden");
-    setTimeout(() => dispatch(setActiveModal(null)), 500);
+    const modal = document.querySelector(".modal");
+
+    if (modal instanceof HTMLElement) {
+      modal.classList.add("hidden");
+      modal.firstElementChild?.classList.add("hidden");
+      modal.addEventListener(
+        "animationend",
+        () => dispatch(setActiveModal(null)),
+        { once: true },
+      );
+    }
   }
 
   return { openModal, closeModal };

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { renderIcon } from "../../../utils";
 import Tippy from "@tippyjs/react";
+import { Icon } from "..";
 
 type Props = {
   className?: string;
@@ -8,22 +8,27 @@ type Props = {
 };
 
 const CopyButton = ({ className, valueToCopy }: Props) => {
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [content, setContent] = useState("Copy to clipboard !");
 
   function handleClick() {
     navigator.clipboard.writeText(valueToCopy);
     setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 1000);
-  }
+    setContent("Copied !");
 
-  const content = isCopied ? "Copied !" : "Copy to clipboard !";
+    setTimeout(() => {
+      setIsCopied(false);
+      setIsTooltipVisible(false);
+      setTimeout(() => setContent("Copy to clipboard !"), 200);
+    }, 1000);
+  }
 
   return (
     <Tippy
       content={content}
       theme="material"
-      visible={isHovered || isCopied}
+      visible={isTooltipVisible || isCopied}
       placement="top"
       offset={[0, 20]}
     >
@@ -32,11 +37,13 @@ const CopyButton = ({ className, valueToCopy }: Props) => {
         aria-label={content}
         className={className}
         disabled={isCopied}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => setIsTooltipVisible(true)}
+        onMouseLeave={() => setIsTooltipVisible(false)}
+        onFocus={() => setIsTooltipVisible(true)}
+        onBlur={() => setIsTooltipVisible(false)}
         onClick={handleClick}
       >
-        {renderIcon(isCopied ? "icon-checkmark" : "icon-copy")}
+        <Icon name={isCopied ? "icon-checkmark" : "icon-copy"} />
       </button>
     </Tippy>
   );

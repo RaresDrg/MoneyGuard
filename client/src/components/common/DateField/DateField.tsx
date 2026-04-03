@@ -1,6 +1,7 @@
 import { Field, useFormikContext } from "formik";
 import DatePicker from "react-datepicker";
-import { normalizeDate, renderIcon } from "../../../utils";
+import { Icon } from "..";
+import { normalizeDate } from "../../../utils";
 import { CURRENT_YEAR, MIN_YEAR } from "../../../constants";
 
 type Props = {
@@ -9,6 +10,11 @@ type Props = {
 
 const DateField = ({ className }: Props) => {
   const { values, setFieldValue } = useFormikContext<{ date: string }>();
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    e.stopPropagation();
+    if (e.key !== "Tab") e.preventDefault();
+  }
 
   return (
     <div className={className}>
@@ -21,10 +27,10 @@ const DateField = ({ className }: Props) => {
             maxDate={new Date(CURRENT_YEAR, 11, 31)}
             calendarStartDay={1}
             showIcon
-            icon={renderIcon("icon-date")}
-            toggleCalendarOnIconClick
-            onKeyDown={(e) => e.preventDefault()}
+            icon={<Icon name="icon-date" />}
+            onKeyDown={handleKeyDown}
             onChange={(date) => setFieldValue("date", normalizeDate(date!))}
+            aria-label="Select transaction date"
           />
         )}
       </Field>
