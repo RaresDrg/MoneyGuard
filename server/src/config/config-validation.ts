@@ -169,7 +169,7 @@ const VALIDATIONS_MAP = {
       "string.base": "{#label} must be a string",
       "string.empty": "{#label} is required",
       "any.invalid":
-        "{#label} has an invalid format - it must be a 24-character hexadecimal string",
+        "{#label} has an invalid format — it must be a 24-character hexadecimal string",
       "any.required": "{#label} is required",
     }),
   sort: Joi.string()
@@ -192,7 +192,7 @@ const VALIDATIONS_MAP = {
       "string.base": "{#label} must be a string",
       "string.empty": "{#label} is required",
       "any.invalid":
-        "{#label} has an invalid format - it must be a 24-character hexadecimal string",
+        "{#label} has an invalid format — it must be a 24-character hexadecimal string",
       "any.required": "{#label} is required",
     }),
   validationToken: Joi.string()
@@ -212,8 +212,8 @@ function validateData(data: AtLeastOne<Record<ValidationKey, unknown>>) {
     Object.fromEntries(
       Object.keys(data)
         .filter((key) => key in VALIDATIONS_MAP)
-        .map((key) => [key, VALIDATIONS_MAP[key as ValidationKey]])
-    )
+        .map((key) => [key, VALIDATIONS_MAP[key as ValidationKey]]),
+    ),
   ).options({ errors: { wrap: { label: false } } });
 
   const { error } = schema.validate(data, { abortEarly: false });

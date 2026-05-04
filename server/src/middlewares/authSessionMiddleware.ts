@@ -37,7 +37,7 @@ const authSessionMiddleware: RequestHandler = async (req, res, next) => {
   } catch {
     const error = createError(
       "Unauthorized",
-      "Access denied: invalid or expired session"
+      "Access denied: invalid or expired session",
     );
     next(error);
   }

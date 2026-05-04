@@ -185,7 +185,7 @@
  *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
- *                   example: "Request received - check your email (including spam folder) for further instructions"
+ *                   example: "Request received — check your email (including spam folder) for further instructions"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       403:
@@ -216,7 +216,7 @@
  *     description: >
  *       The request body must include the following required properties:
  *         - **validationToken**: The previous endpoint sends an email with a link that contains the validationToken as a query parameter
- *         - **password**: The new password - a string between 8 and 50 characters, including at least one uppercase, one lowercase, and one digit
+ *         - **password**: The new password — a string between 8 and 50 characters, including at least one uppercase, one lowercase, and one digit
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -270,7 +270,7 @@
  * @swagger
  * /api/users/google-auth/finalize:
  *   post:
- *     summary: Google Auth - Phase 2
+ *     summary: Google Auth — Phase 2
  *     description: >
  *      Completes the **Google sign-in** process using **validation token**, from Phase 1 (**see **Overview** above*)
  *     tags: [User]

@@ -6,5 +6,6 @@ export { default as errorMiddleware } from "./errorMiddleware.js";
 export { default as googleAuthMiddleware } from "./googleAuthMiddleware.js";
 export { default as loggerMiddleware } from "./loggerMiddleware.js";
 export { default as missingRouteMiddleware } from "./missingRouteMiddleware.js";
+export { default as rateLimitMiddleware } from "./rateLimitMiddleware.js";
 export { default as swaggerMiddleware } from "./swaggerMiddleware.js";
 export { default as validationSessionMiddleware } from "./validationSessionMiddleware.js";

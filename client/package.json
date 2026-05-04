@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "MoneyGuard - your finance app",
+  "description": "MoneyGuard — your finance app",
   "author": "Rares Dragan",
   "scripts": {
     "dev": "vite",

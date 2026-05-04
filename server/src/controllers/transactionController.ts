@@ -53,7 +53,7 @@ const getTransactions: RequestHandler = async (req, res, next) => {
       dbQuery,
       sortBy,
       sortDirection,
-      limit
+      limit,
     );
 
     const message = transactions.length
@@ -82,7 +82,7 @@ const updateTransaction: RequestHandler = async (req, res, next) => {
     const updates = { type, category, sum, date, comment };
     const updatedTransaction = await transactionService.updateTransaction(
       ID,
-      updates
+      updates,
     );
 
     const user = req.user!;
@@ -158,11 +158,11 @@ const getStatistics: RequestHandler = async (req, res, next) => {
     if (data.length === 0) {
       throw utils.createError(
         "NotFound",
-        "No statistics available for this period"
+        "No statistics available for this period",
       );
     }
 
-    const statistics = utils.calculateStatistics(data);
+    const statistics = utils.calcStatistics(data);
 
     utils.sendSuccessResponse(res, 200, {
       message: "Statistics retrieved successfully",

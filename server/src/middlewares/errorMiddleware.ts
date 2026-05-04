@@ -4,10 +4,10 @@ import { sendFailureResponse } from "../utils/index.js";
 const errorMiddleware: ErrorRequestHandler = (error, req, res, _next) => {
   if (error.code === 11000) {
     const duplicatedFields = Object.keys(error.keyPattern);
-    const duplicateEntries = duplicatedFields
-      .map((field) => `${field} - ${error.keyValue[field]}`)
-      .join(", ");
-    const msg = `Duplicate entry for fields: ${duplicateEntries}`;
+    const duplicateEntries = duplicatedFields.map(
+      (field) => `${field} — ${error.keyValue[field]}`,
+    );
+    const msg = `Duplicate entry for fields: ${duplicateEntries.join(", ")}`;
     return sendFailureResponse(res, 409, msg);
   }
 
@@ -20,6 +20,9 @@ const errorMiddleware: ErrorRequestHandler = (error, req, res, _next) => {
       const msg = `We're experiencing technical difficulties. Please try again later`;
       return sendFailureResponse(res, 500, msg);
     }
+    case "RateLimitError": {
+      return sendFailureResponse(res, 429, error.message);
+    }
     case "NotFound":
       return sendFailureResponse(res, 404, error.message);
     case "Forbidden":
@@ -29,7 +32,7 @@ const errorMiddleware: ErrorRequestHandler = (error, req, res, _next) => {
     case "ValidationError":
       return sendFailureResponse(res, 400, error.message);
     case "CastError": {
-      const msg = `Invalid ID format - it must be a 24-character hexadecimal string`;
+      const msg = `Invalid ID format — it must be a 24-character hexadecimal string`;
       return sendFailureResponse(res, 400, msg);
     }
     default: {

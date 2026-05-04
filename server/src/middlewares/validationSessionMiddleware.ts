@@ -12,7 +12,7 @@ const validationSessionMiddleware: RequestHandler = async (req, res, next) => {
     if (!session?.owner) {
       throw createError(
         "NotFound",
-        "No user found for the given validation token"
+        "No user found for the given validation token",
       );
     }
 

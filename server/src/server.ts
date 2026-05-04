@@ -12,7 +12,7 @@ import { DB_URI, PORT } from "./config/config-env.js";
     }
 
     app.listen(PORT, () =>
-      console.log(`✅ [Server] Listening on port: ${PORT}`)
+      console.log(`✅ [Server] Listening on port: ${PORT}`),
     );
   } catch (error) {
     console.error("❌ [Startup] Failed to initialize");

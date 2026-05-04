@@ -1,7 +1,7 @@
 // *Get exchange rates
 /**
  * @swagger
- * /api/exchangeRates:
+ * /api/exchange-rates:
  *   get:
  *     summary: Get latest currency exchange rates
  *     description: |

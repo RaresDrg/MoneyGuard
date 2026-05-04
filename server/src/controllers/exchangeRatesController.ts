@@ -15,7 +15,7 @@ const getRates: RequestHandler = async (req, res, next) => {
     }
 
     const { rates } = await utils.externalFetch(
-      `https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_RATES_API_KEY}`
+      `https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_RATES_API_KEY}`,
     );
     if (!rates) throw utils.createError("BadGateway");
 

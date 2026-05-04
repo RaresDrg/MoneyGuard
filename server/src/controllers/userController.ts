@@ -35,14 +35,14 @@ const login: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw utils.createError(
         "NotFound",
-        "There is no account associated with this email address"
+        "There is no account associated with this email address",
       );
     }
 
     if (user.authMethod === "google") {
       throw utils.createError(
         "Forbidden",
-        "The account associated with this email address is managed through Google, so please authenticate using Google sign-in"
+        "The account associated with this email address is managed through Google, so please authenticate using Google sign-in",
       );
     }
 
@@ -84,21 +84,21 @@ const forgotPassword: RequestHandler = async (req, res, next) => {
     if (!user) {
       throw utils.createError(
         "NotFound",
-        "There is no account associated with this email address"
+        "There is no account associated with this email address",
       );
     }
 
     if (user.authMethod === "google") {
       throw utils.createError(
         "Forbidden",
-        "Password reset is not supported. The account associated with this email address is managed through Google sign-in"
+        "Password reset is not supported. The account associated with this email address is managed through Google sign-in",
       );
     }
 
     const validationToken = await utils.handleValidationSession(user._id);
     await sendEmail("reset-password", user, validationToken);
 
-    const message = `Request received - check your email (including spam folder) for further instructions`;
+    const message = `Request received — check your email (including spam folder) for further instructions`;
     utils.sendSuccessResponse(res, 200, { message });
   } catch (error) {
     next(error);

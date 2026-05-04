@@ -1,18 +1,16 @@
 import { Resend } from "resend";
 import { RESEND_API_KEY, CLIENT_URL } from "./config-env.js";
-import type { UserType } from "../types/app.types.js";
+import type { UserType, EmailType } from "../types/app.types.js";
 import { createError } from "../utils/index.js";
-
-type EmailType = "reset-password";
 
 const resend = new Resend(RESEND_API_KEY);
 
 const TEMPLATES = {
-  "reset-password": (user: UserType, data?: unknown) => {
+  "reset-password": (username: string, data?: unknown) => {
     return {
-      id: "reset-password-moneyguard",
+      id: "moneyguard_reset-password",
       variables: {
-        name: user.name,
+        name: username,
         resetLink: `${CLIENT_URL}/reset-password?validationToken=${data}`,
         clientUrl: CLIENT_URL,
       },
@@ -21,9 +19,11 @@ const TEMPLATES = {
 };
 
 async function sendEmail(type: EmailType, user: UserType, data?: unknown) {
-  const template = TEMPLATES[type](user, data);
-  const { error } = await resend.emails.send({ to: user.email, template });
+  const username =
+    user.name.length > 25 ? `${user.name.slice(0, 25)}...` : user.name;
+  const template = TEMPLATES[type](username, data);
 
+  const { error } = await resend.emails.send({ to: user.email, template });
   if (error) {
     console.error("❌ [Email not sent]");
     console.error(error);

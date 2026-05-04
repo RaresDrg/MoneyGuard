@@ -27,30 +27,30 @@ const swaggerSpec = swaggerJsdoc({
         <ul>
           <li>
             <b>A pair of secure, HTTP-only cookies</b> containing authentication tokens: <br>
-            - accessToken: expires in 15 minutes <br>
-            - refreshToken: expires in 24 hours <br>
+            — accessToken: expires in 15 minutes <br>
+            — refreshToken: expires in 24 hours <br>
             <b>* Important</b>: client requests must be sent with <b>"credentials: true"</b> enabled in order for these cookies to be stored automatically
           </li> <br>
           <li>
             <b>Session ID</b> <br>
-            - It is returned in response headers as <b>"session-id"</b> <br>
+            — It is returned in response headers as <b>"session-id"</b> <br>
             <b>* Important</b>: It must be included in subsequent requests as: "Authorization: <b>Bearer &lt;session-id&gt;</b>"
           </li>
         </ul>
         <b>Google Auth:</b> The Google sign-in flow takes place in two phases:
         <ul>
           <li>
-            <b>Phase 1 - Redirect:</b> <br>
-            - In order to initialize this process, the client must redirect the browser to: <b><i>"${SERVER_URL}/api/users/google-auth"</i></b>, to trigger the official Google sign-in screen <br>
-            - After the user selects an account and completes sign-in, the server responds by redirecting back to the client with either: 
+            <b>Phase 1 — Redirect:</b> <br>
+            — In order to initialize this process, the client must redirect the browser to: <b><i>"${SERVER_URL}/api/users/google-auth"</i></b>, to trigger the official Google sign-in screen <br>
+            — After the user selects an account and completes sign-in, the server responds by redirecting back to the client with either: 
             <ul>
               <li><b>Success:</b> a temporary validation token in the query string: <i>"<b>...?googleAuthSuccess=&lt;ValidationToken&gt;</b>"</i></li>
               <li><b>Failure:</b> an error flag in the query string: <i>"<b>...?googleAuthFailed</b>"</i></li>
             </ul>
           </li> <br>
           <li>
-            <b>Phase 2 - Finalize:</b> <br>
-            - Once Phase 1 has been completed successfully, the client must extract the <b>validation token</b> from the query string and use it as described in the <b>"User"</b> routes section below
+            <b>Phase 2 — Finalize:</b> <br>
+            — Once Phase 1 has been completed successfully, the client must extract the <b>validation token</b> from the query string and use it as described in the <b>"User"</b> routes section below
           </li>
         </ul>
         <b>Base URL:</b> => <a href='${SERVER_URL}'>${SERVER_URL}</a>
@@ -226,7 +226,7 @@ const swaggerSpec = swaggerJsdoc({
                     TRANSACTION_CATEGORIES.income.map((category) => [
                       category,
                       2000,
-                    ])
+                    ]),
                   ),
                 },
               },
@@ -248,7 +248,7 @@ const swaggerSpec = swaggerJsdoc({
                     TRANSACTION_CATEGORIES.expense.map((category, i) => [
                       category,
                       100 * i,
-                    ])
+                    ]),
                   ),
                 },
               },
@@ -451,7 +451,7 @@ const swaggerSpec = swaggerJsdoc({
                   message: {
                     type: "string",
                     example:
-                      "Invalid ID format - it must be a 24-character hexadecimal string",
+                      "Invalid ID format — it must be a 24-character hexadecimal string",
                   },
                 },
                 required: ["status", "message"],

@@ -65,3 +65,5 @@ type EditAction = {
 };
 
 export type TransactionAction = AddAction | DeleteAction | EditAction;
+
+export type EmailType = "reset-password";

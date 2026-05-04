@@ -16,7 +16,7 @@ router.post("/forgot-password", userController.forgotPassword);
 router.patch(
   "/update-password",
   validationSessionMiddleware,
-  userController.updatePassword
+  userController.updatePassword,
 );
 
 router.get("/google-auth", googleAuthMiddleware.redirect);
@@ -24,7 +24,7 @@ router.get("/google-auth/callback", googleAuthMiddleware.handleCallback);
 router.post(
   "/google-auth/finalize",
   validationSessionMiddleware,
-  userController.finalizeGoogleAuth
+  userController.finalizeGoogleAuth,
 );
 
 export default router;
