@@ -1,6 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import path from "path";
 import { fileURLToPath } from "url";
 import { SERVER_URL, IN_DEVELOPMENT } from "../config/config-env.js";
 import {
@@ -9,11 +8,21 @@ import {
   CURRENT_YEAR,
 } from "../constants/index.js";
 
-function getApiDocsGlob() {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const apiDocsDir = path.join(__dirname, "..", "routes", "swaggerDocs");
-  const ext = IN_DEVELOPMENT ? "ts" : "js";
-  return [`${apiDocsDir}/*.${ext}`];
+function createErrorResponse(description: string, message: string) {
+  return {
+    description,
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            status: { $ref: "#/components/utils/failedStatus" },
+            message: { type: "string", example: message },
+          },
+        },
+      },
+    },
+  };
 }
 
 const swaggerSpec = swaggerJsdoc({
@@ -23,37 +32,88 @@ const swaggerSpec = swaggerJsdoc({
       title: "MoneyGuard API",
       version: "1.0.0",
       description: `<hr>
-        <b>Overview:</b> Protected routes require authentication, which is established after successful response from: <b>register</b>, <b>login</b>, <b>update-password</b>, or <b>Google Auth</b>. Once authenticated, the server issues:
-        <ul>
-          <li>
-            <b>A pair of secure, HTTP-only cookies</b> containing authentication tokens: <br>
-            — accessToken: expires in 15 minutes <br>
-            — refreshToken: expires in 24 hours <br>
-            <b>* Important</b>: client requests must be sent with <b>"credentials: true"</b> enabled in order for these cookies to be stored automatically
-          </li> <br>
-          <li>
-            <b>Session ID</b> <br>
-            — It is returned in response headers as <b>"session-id"</b> <br>
-            <b>* Important</b>: It must be included in subsequent requests as: "Authorization: <b>Bearer &lt;session-id&gt;</b>"
-          </li>
-        </ul>
-        <b>Google Auth:</b> The Google sign-in flow takes place in two phases:
-        <ul>
-          <li>
-            <b>Phase 1 — Redirect:</b> <br>
-            — In order to initialize this process, the client must redirect the browser to: <b><i>"${SERVER_URL}/api/users/google-auth"</i></b>, to trigger the official Google sign-in screen <br>
-            — After the user selects an account and completes sign-in, the server responds by redirecting back to the client with either: 
-            <ul>
-              <li><b>Success:</b> a temporary validation token in the query string: <i>"<b>...?googleAuthSuccess=&lt;ValidationToken&gt;</b>"</i></li>
-              <li><b>Failure:</b> an error flag in the query string: <i>"<b>...?googleAuthFailed</b>"</i></li>
-            </ul>
-          </li> <br>
-          <li>
-            <b>Phase 2 — Finalize:</b> <br>
-            — Once Phase 1 has been completed successfully, the client must extract the <b>validation token</b> from the query string and use it as described in the <b>"User"</b> routes section below
-          </li>
-        </ul>
-        <b>Base URL:</b> => <a href='${SERVER_URL}'>${SERVER_URL}</a>
+        <div>
+          <span>
+            <b>Overview:</b> Protected endpoints require authentication, which is established after successful response from: <b>register</b>, <b>login</b>, <b>update-password</b>, or <b>Google Auth</b>. Once authenticated, the server issues:
+          </span>
+          <ol>
+            <li>
+              <span>
+                <b>A pair of secure, HTTP-only cookies</b> containing authentication tokens:
+              </span>
+              <br>
+              <span>
+                — accessToken: expires in 15 minutes
+              </span>
+              <br>
+              <span>
+                — refreshToken: expires in 24 hours
+              </span>
+              <br>
+              <span>
+                <b>* Important</b>: client requests must be sent with <b>"credentials: true"</b> enabled in order for these cookies to be stored automatically
+              </span>
+            </li>
+            <br>
+            <li>
+              <span>
+                <b>Session ID</b>
+              </span>
+              <br>
+              <span>
+                — It is returned in response headers as <b>"session-id"</b>
+              </span>
+              <br>
+              <span>
+                <b>* Important</b>: It must be included in subsequent requests as: "Authorization: <b>Bearer &lt;session-id&gt;</b>"
+              </span>
+            </li>
+          </ol>
+        </div>
+        <br>
+        <div>
+          <span>
+            <b>Google Auth:</b> The Google sign-in flow takes place in two phases:
+          </span>
+          <ol>
+            <li>
+              <b>Redirect</b>
+              <br>
+              <span>
+                — In order to initialize this process, the client must redirect the browser to: <b><i>"${SERVER_URL}/api/users/google-auth"</i></b>, to trigger the official Google sign-in screen
+              </span>
+              <br>
+              <span>
+                — After the user selects an account and completes sign-in, the server responds by redirecting back to the client with either: 
+              </span>
+              <br>
+              <ul>
+                <li>
+                  <b>Success:</b> a temporary validation token (15 min) in the query string: <b><i>"...?googleAuthSuccess=&lt;ValidationToken&gt;"</i></b>
+                </li>
+                <li>
+                  <b>Failure:</b> an error flag in the query string: <b><i>"...?googleAuthFailed"</i></b>
+                </li>
+              </ul>
+            </li>
+            <br>
+            <li>
+              <b>Finalize</b>
+              <br>
+              <span>
+                — Once Phase 1 has been completed successfully, the client must extract the <b>validation token</b> from the query string and use it as described in the <b>"User"</b> routes section below
+              </span>
+            </li>
+          </ol>
+        </div>
+        <br>
+        <div>
+          <span>
+            <b>Base URL</b>
+            <span>—</span>
+            <a href='${SERVER_URL}'>${SERVER_URL}</a>
+          </span>
+        </div>    
       `,
     },
     servers: [{ url: SERVER_URL, description: "Base URL" }],
@@ -66,22 +126,115 @@ const swaggerSpec = swaggerJsdoc({
       { name: "Exchange Rates" },
     ],
     components: {
-      securitySchemes: {
-        SessionAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "SessionID",
-          description:
-            "Enter the session-id value here. Swagger will send it as Bearer automatically.",
-        },
-      },
       utils: {
-        authMethod: {
-          type: "string",
-          description:
-            "Authentication method used by the user: local = Email/Password or google: Google OAuth Sign-in",
-          enum: ["local", "google"],
-          example: "local",
+        User: {
+          type: "object",
+          properties: {
+            name: { $ref: "#/components/utils/name" },
+            email: { $ref: "#/components/utils/email" },
+            balance: { $ref: "#/components/utils/balance" },
+          },
+        },
+        Transaction: {
+          type: "object",
+          properties: {
+            id: { $ref: "#/components/utils/transactionID" },
+            type: { $ref: "#/components/utils/type" },
+            category: { $ref: "#/components/utils/category" },
+            sum: { $ref: "#/components/utils/sum" },
+            date: { $ref: "#/components/utils/date" },
+            comment: { $ref: "#/components/utils/comment" },
+          },
+        },
+        Statistics: {
+          type: "object",
+          properties: {
+            income: {
+              type: "object",
+              description: `Statistical breakdown of all income transactions within the selected period`,
+              properties: {
+                total: {
+                  type: "number",
+                  description: "Total income amount",
+                  example: 2000,
+                },
+                summary: {
+                  type: "object",
+                  description: "Income breakdown by category",
+                  example: Object.fromEntries(
+                    TRANSACTION_CATEGORIES.income.map((category) => {
+                      return [category, 2000];
+                    }),
+                  ),
+                },
+              },
+            },
+            expense: {
+              type: "object",
+              description: `Statistical breakdown of all expense transactions within the selected period`,
+              properties: {
+                total: {
+                  type: "number",
+                  description: "Total expense amount",
+                  example: 4500,
+                },
+                summary: {
+                  type: "object",
+                  description: "Expense breakdown by category",
+                  example: Object.fromEntries(
+                    TRANSACTION_CATEGORIES.expense.map((category, i) => {
+                      return [category, 100 * i];
+                    }),
+                  ),
+                },
+              },
+            },
+            balance: {
+              type: "number",
+              description: `Net balance for the selected period, calculated as total income minus total expenses`,
+              example: -2500,
+            },
+          },
+        },
+        Categories: {
+          type: "object",
+          description: `Predefined transaction categories organized by type (income and expense)`,
+          properties: {
+            income: {
+              type: "array",
+              items: { type: "string" },
+              description: `Supported income categories`,
+              example: [...TRANSACTION_CATEGORIES.income],
+            },
+            expense: {
+              type: "array",
+              items: { type: "string" },
+              description: `Supported expense categories`,
+              example: [...TRANSACTION_CATEGORIES.expense],
+            },
+          },
+        },
+        ExchangeRates: {
+          type: "object",
+          properties: {
+            rates: {
+              type: "object",
+              description: `Currency exchange rates indexed by currency code. Each value represents the rate relative to **USD**.`,
+              example: {
+                EUR: 0.93,
+                GBP: 0.81,
+                AUD: 1.54,
+                JPY: 147.32,
+                RON: 4.95,
+              },
+            },
+            expiresAt: {
+              type: "string",
+              format: "date-time",
+              description: `Timestamp indicating when the exchange rate data expires. Always set to midnight UTC of the current calendar day.`,
+              example: "2025-09-13T23:59:59.999Z",
+            },
+          },
         },
         name: {
           type: "string",
@@ -98,44 +251,31 @@ const swaggerSpec = swaggerJsdoc({
         },
         password: {
           type: "string",
-          description:
-            "The password must be between 8 and 50 characters long, including at least one uppercase, one lowercase, and one digit.",
+          description: `The password must be between 8 and 50 characters long, including at least one uppercase, one lowercase, and one digit.`,
           minLength: 8,
           maxLength: 50,
-          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$",
+          pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).+$",
           example: "Password123",
         },
         balance: {
           type: "number",
-          description:
-            "Current balance of the user's account, based on transaction history. Income entries increase the value, while expenses decrease it.",
+          description: `Current balance of the user's account, based on transaction history. Income entries increase the value, while expenses decrease it.`,
           default: 0,
         },
-        userData: {
-          type: "object",
-          properties: {
-            name: { $ref: "#/components/utils/name" },
-            email: { $ref: "#/components/utils/email" },
-            balance: { $ref: "#/components/utils/balance" },
-          },
-        },
-        owner: {
+        transactionID: {
           type: "string",
-          description:
-            "The ID of the user who created this transaction (24-character hexadecimal ObjectId format)",
-          example: "68c3528f6a30123a2c27d726",
+          description: `Unique identifier of the transaction (24-character hexadecimal ObjectId format)`,
+          example: "69fc1d8c8f04ef56a3eb4958",
         },
         type: {
           type: "string",
-          description:
-            "Specifies the transaction type. Must be either 'income' or 'expense'",
+          description: `Specifies the transaction type. Must be either 'income' or 'expense'`,
           enum: ["income", "expense"],
           example: "expense",
         },
         category: {
           type: "string",
-          description:
-            "Specifies the transaction category. Must be one of the predefined values, depending on the selected transaction type: for income, the only allowed category is 'Income'; for expense, any of the other predefined categories may be used",
+          description: `Specifies the transaction category. Must be one of the predefined values, depending on the selected transaction type: for income, the only allowed category is 'Income'; for expense, any of the other predefined categories may be used`,
           enum: [
             ...TRANSACTION_CATEGORIES.income,
             ...TRANSACTION_CATEGORIES.expense,
@@ -144,8 +284,7 @@ const swaggerSpec = swaggerJsdoc({
         },
         sum: {
           type: "number",
-          description:
-            "Specifies the transaction amount. Must be greater than 0 and less than 100,000,000",
+          description: `Specifies the transaction amount. Must be greater than 0 and less than 100,000,000`,
           example: 500,
         },
         date: {
@@ -161,124 +300,9 @@ const swaggerSpec = swaggerJsdoc({
           maxLength: 200,
           example: "Regular car maintenance",
         },
-        transactionID: {
+        validationToken: {
           type: "string",
-          description:
-            "Unique identifier of the transaction (24-character hexadecimal ObjectId format)",
-          example: "68c38ddff1d13da8f3e084a8",
-        },
-        transactionIDParam: {
-          name: "transactionID",
-          in: "path",
-          description:
-            "Unique identifier of the transaction (24-character hexadecimal ObjectId format)",
-          required: true,
-          schema: { type: "string" },
-        },
-        transactionData: {
-          type: "object",
-          properties: {
-            id: { $ref: "#/components/utils/transactionID" },
-            type: { $ref: "#/components/utils/type" },
-            category: { $ref: "#/components/utils/category" },
-            sum: { $ref: "#/components/utils/sum" },
-            date: { $ref: "#/components/utils/date" },
-            comment: { $ref: "#/components/utils/comment" },
-          },
-        },
-        categoriesData: {
-          type: "object",
-          example: TRANSACTION_CATEGORIES,
-        },
-        startDate: {
-          name: "startDate",
-          in: "query",
-          description: `Start date of the analysis period. Must be an **ISO-formatted** date between **01.01.${MIN_YEAR}** and **31.12.${CURRENT_YEAR}**`,
-          required: true,
-          schema: { type: "string", format: "date-time" },
-          example: "2025-09-01T00:00:00.000Z",
-        },
-        endDate: {
-          name: "endDate",
-          in: "query",
-          description: `End date of the analysis period. Must be an **ISO-formatted** date between **01.01.${MIN_YEAR}** and **31.12.${CURRENT_YEAR}**`,
-          required: true,
-          schema: { type: "string", format: "date-time" },
-          example: "2025-09-30T00:00:00.000Z",
-        },
-        statisticsData: {
-          type: "object",
-          properties: {
-            income: {
-              type: "object",
-              description:
-                "Statistical breakdown of all income transactions within the selected period",
-              properties: {
-                total: {
-                  type: "number",
-                  description: "Total income amount",
-                  example: 2000,
-                },
-                summary: {
-                  type: "object",
-                  description: "Income breakdown by category",
-                  example: Object.fromEntries(
-                    TRANSACTION_CATEGORIES.income.map((category) => [
-                      category,
-                      2000,
-                    ]),
-                  ),
-                },
-              },
-            },
-            expense: {
-              type: "object",
-              description:
-                "Statistical breakdown of all expense transactions within the selected period",
-              properties: {
-                total: {
-                  type: "number",
-                  description: "Total expense amount",
-                  example: 4500,
-                },
-                summary: {
-                  type: "object",
-                  description: "Expense breakdown by category",
-                  example: Object.fromEntries(
-                    TRANSACTION_CATEGORIES.expense.map((category, i) => [
-                      category,
-                      100 * i,
-                    ]),
-                  ),
-                },
-              },
-            },
-            balance: {
-              type: "number",
-              description:
-                "Net balance for the selected period, calculated as total income minus total expenses",
-              example: -2500,
-            },
-          },
-        },
-        rates: {
-          type: "object",
-          description:
-            "Currency exchange rates indexed by currency code. Each value represents the rate relative to **USD**.",
-          example: {
-            EUR: 0.93,
-            GBP: 0.81,
-            AUD: 1.54,
-            JPY: 147.32,
-            RON: 4.95,
-          },
-        },
-        expiresAt: {
-          type: "string",
-          format: "date-time",
-          description:
-            "Timestamp indicating when the exchange rate data expires. Always set to midnight UTC of the current calendar day.",
-          example: "2025-09-13T23:59:59.999Z",
+          description: `A one-time validation token used to authorize sensitive account actions. Expires in 15 minutes.`,
         },
         failedStatus: {
           type: "string",
@@ -288,219 +312,140 @@ const swaggerSpec = swaggerJsdoc({
           type: "string",
           example: "success",
         },
-        validationToken: {
-          type: "string",
-          description:
-            "A one-time validation token used to authorize sensitive account actions. Expires in 15 minutes.",
-        },
       },
       schemas: {
-        User: {
-          type: "object",
-          properties: {
-            authMethod: { $ref: "#/components/utils/authMethod" },
-            name: { $ref: "#/components/utils/name" },
-            email: { $ref: "#/components/utils/email" },
-            password: { $ref: "#/components/utils/password" },
-            balance: { $ref: "#/components/utils/balance" },
-          },
-          required: ["name", "email", "password"],
-        },
-        Transaction: {
-          type: "object",
-          properties: {
-            owner: { $ref: "#/components/utils/owner" },
-            type: { $ref: "#/components/utils/type" },
-            category: { $ref: "#/components/utils/category" },
-            sum: { $ref: "#/components/utils/sum" },
-            date: { $ref: "#/components/utils/date" },
-            comment: { $ref: "#/components/utils/comment" },
-          },
-          required: ["owner", "type", "category", "sum", "date", "comment"],
-        },
-        ExchangeRates: {
-          type: "object",
-          properties: {
-            rates: { $ref: "#/components/utils/rates" },
-            expiresAt: { $ref: "#/components/utils/expiresAt" },
-          },
-          required: ["rates", "expiresAt"],
+        User: { $ref: "#/components/utils/User" },
+        Transaction: { $ref: "#/components/utils/Transaction" },
+        Statistics: { $ref: "#/components/utils/Statistics" },
+        Categories: { $ref: "#/components/utils/Categories" },
+        ExchangeRates: { $ref: "#/components/utils/ExchangeRates" },
+      },
+      securitySchemes: {
+        SessionAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "SessionID",
+          description: `Enter the session-id value here. Swagger will send it as Bearer automatically.`,
         },
       },
       responses: {
-        BadGatewayError: {
-          description: "Bad Gateway",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "We're experiencing issues with an external service. Please try again later",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
+        BadGatewayError: createErrorResponse(
+          "Bad Gateway",
+          "We're experiencing issues with an external service. Please try again later",
+        ),
+        InternalServerError: createErrorResponse(
+          "Internal Server Error",
+          "We're experiencing technical difficulties. Please try again later",
+        ),
+        RateLimitError: createErrorResponse(
+          "Too Many Requests",
+          "Too many requests — try again later",
+        ),
+        DuplicateEntryError: createErrorResponse(
+          "Conflict",
+          "Duplicate entry — this value is already in use",
+        ),
+        ValidationSessionError: createErrorResponse(
+          "Invalid Validation Token",
+          "The provided validation token is invalid or has expired",
+        ),
+        UserNotFoundError: createErrorResponse(
+          "User Not Found",
+          "There is no account associated with this email address",
+        ),
+        TransactionNotFoundError: createErrorResponse(
+          "Transaction Not Found",
+          "Transaction not found",
+        ),
+        ForbiddenError: createErrorResponse(
+          "Forbidden",
+          "You do not have permission to perform this action",
+        ),
+        UnauthorizedError: createErrorResponse(
+          "Unauthorized Access",
+          "Access denied: invalid or expired session",
+        ),
+        CastError: createErrorResponse(
+          "Invalid ID format",
+          "Invalid ID format — it must be a 24-character hexadecimal string",
+        ),
+        ValidationError: createErrorResponse(
+          "Validation Error",
+          "The required data are missing or do not meet the requirements",
+        ),
+        QueryParamsError: createErrorResponse(
+          "Validation Error",
+          "One or more query parameters have an invalid format",
+        ),
+      },
+      parameters: {
+        TransactionID: {
+          name: "transactionID",
+          in: "path",
+          required: true,
+          description: `Unique identifier of the transaction (24-character hexadecimal ObjectId format)`,
+          schema: {
+            type: "string",
+            example: "69fc1d8c8f04ef56a3eb4958",
           },
         },
-        InternalServerError: {
-          description: "Internal server error",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "We're experiencing technical difficulties. Please try again later",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
+        StartDate: {
+          name: "startDate",
+          in: "query",
+          required: true,
+          description: `Start date of the analysis period. Must be an **ISO-formatted** date between **01.01.${MIN_YEAR}** and **31.12.${CURRENT_YEAR}**`,
+          schema: {
+            type: "string",
+            format: "date-time",
+            example: "2025-09-01T00:00:00.000Z",
           },
         },
-        DuplicateEmailError: {
-          description: "Conflict: email already used",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "You can't use this email. It belongs to another account",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
+        EndDate: {
+          name: "endDate",
+          in: "query",
+          required: true,
+          description: `End date of the analysis period. Must be an **ISO-formatted** date between **01.01.${MIN_YEAR}** and **31.12.${CURRENT_YEAR}**`,
+          schema: {
+            type: "string",
+            format: "date-time",
+            example: "2025-09-30T00:00:00.000Z",
           },
         },
-        UserNotFoundError: {
-          description: "User not found",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "There is no account associated with this email address",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
+        Limit: {
+          name: "limit",
+          in: "query",
+          description: `An optional integer between 1 and 30 that controls how many transactions to return. If omitted, all transactions will be returned`,
+          schema: {
+            type: "integer",
+            minimum: 1,
+            maximum: 30,
           },
         },
-        TransactionNotFoundError: {
-          description: "Transaction not found",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example: "Transaction not found",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
+        Cursor: {
+          name: "cursor",
+          in: "query",
+          description: `Optional transaction ID used for pagination, referencing the last item from the previous page. If omitted, pagination starts from the beginning`,
+          schema: {
+            type: "string",
           },
         },
-        UnauthorizedError: {
-          description: "Unauthorized access",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example: "Access denied: invalid or expired session",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
-          },
-        },
-        CastError: {
-          description: "Invalid ID format",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "Invalid ID format — it must be a 24-character hexadecimal string",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
-          },
-        },
-        ValidationError: {
-          description: "Validation error",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "The required data are missing or do not meet the requirements",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
-          },
-        },
-        QueryParamsError: {
-          description: "Validation error",
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  status: { $ref: "#/components/utils/failedStatus" },
-                  message: {
-                    type: "string",
-                    example:
-                      "One or more query parameters have an invalid format",
-                  },
-                },
-                required: ["status", "message"],
-              },
-            },
+        Sort: {
+          name: "sort",
+          in: "query",
+          description: `Optional sorting direction. If omitted, the default sorting is ascending`,
+          schema: {
+            type: "string",
+            enum: ["ascending", "descending"],
           },
         },
       },
     },
   },
-  apis: getApiDocsGlob(),
+  apis: [
+    IN_DEVELOPMENT
+      ? fileURLToPath(new URL("../routes/swaggerDocs/*.ts", import.meta.url))
+      : fileURLToPath(new URL("../routes/swaggerDocs/*.js", import.meta.url)),
+  ],
 });
 
 const swaggerMiddleware = [swaggerUi.serve, swaggerUi.setup(swaggerSpec)];

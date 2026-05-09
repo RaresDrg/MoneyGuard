@@ -13,12 +13,11 @@
  *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: Exchange rates data retrieved successfully
+ *         description: Exchange Rates Retrieved Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -26,14 +25,11 @@
  *                   type: string
  *                   example: Exchange rates data retrieved successfully
  *                 data:
- *                   type: object
- *                   properties:
- *                     rates:
- *                       $ref: "#/components/utils/rates"
- *                     expiresAt:
- *                       $ref: "#/components/utils/expiresAt"
+ *                   $ref: "#/components/schemas/ExchangeRates"
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  *       502:

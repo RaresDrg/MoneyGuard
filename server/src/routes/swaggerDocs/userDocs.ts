@@ -9,6 +9,8 @@
  *         - **name**: A string between 3 and 50 characters
  *         - **email**: A valid email address
  *         - **password**: A string between 8 and 50 characters, including at least one uppercase, one lowercase, and one digit
+ *
+ *       **Rate limit** — 5 requests / 10 minutes
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -26,12 +28,11 @@
  *                 $ref: '#/components/utils/password'
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: User Registered Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -39,11 +40,13 @@
  *                   type: string
  *                   example: "User created successfully"
  *                 data:
- *                   $ref: "#/components/utils/userData"
+ *                   $ref: "#/components/schemas/User"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       409:
- *         $ref: '#/components/responses/DuplicateEmailError'
+ *         $ref: '#/components/responses/DuplicateEntryError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -58,6 +61,8 @@
  *       The request body must include the following required properties:
  *         - **email**: The account's email address
  *         - **loginPassword**: The account's password
+ *
+ *       **Rate limit** — 10 requests / 15 minutes
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -73,12 +78,11 @@
  *                 $ref: '#/components/utils/password'
  *     responses:
  *       200:
- *         description: Logged in successfully
+ *         description: Logged In Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -86,7 +90,7 @@
  *                   type: string
  *                   example: "Logged in successfully"
  *                 data:
- *                   $ref: "#/components/utils/userData"
+ *                   $ref: "#/components/schemas/User"
  *       400:
  *         description: >
  *           Two possible cases:
@@ -96,7 +100,6 @@
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"
@@ -104,20 +107,11 @@
  *                   type: string
  *                   example: The required data are missing or do not meet the requirements / Password is wrong
  *       403:
- *         description: Forbidden
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required: ["status", "message"]
- *               properties:
- *                 status:
- *                   $ref: "#/components/utils/failedStatus"
- *                 message:
- *                   type: string
- *                   example: The account associated with this email address is managed through Google, so please authenticate using Google sign-in
+ *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/UserNotFoundError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -134,12 +128,11 @@
  *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: Logged out successfully
+ *         description: Logged Out Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -148,6 +141,8 @@
  *                   example: "Logged out successfully"
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -161,6 +156,8 @@
  *     description: >
  *       The request body must include the following required properties:
  *         - **email**: The account's email address
+ *
+ *       **Rate limit** — 4 requests / 60 minutes
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -174,12 +171,11 @@
  *                 $ref: '#/components/utils/email'
  *     responses:
  *       200:
- *         description: Password reset email sent successfully
+ *         description: Password Reset Email Sent
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -189,20 +185,11 @@
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       403:
- *         description: Forbidden
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required: ["status", "message"]
- *               properties:
- *                 status:
- *                   $ref: "#/components/utils/failedStatus"
- *                 message:
- *                   type: string
- *                   example: Password reset is not supported. The account associated with this email address is managed through Google sign-in
+ *         $ref: '#/components/responses/ForbiddenError'
  *       404:
  *         $ref: '#/components/responses/UserNotFoundError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -232,12 +219,11 @@
  *                 $ref: '#/components/utils/password'
  *     responses:
  *       200:
- *         description: Password changed successfully
+ *         description: Password Changed Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -245,22 +231,13 @@
  *                   type: string
  *                   example: "Password changed successfully"
  *                 data:
- *                   $ref: "#/components/utils/userData"
+ *                   $ref: "#/components/schemas/User"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       404:
- *         description: User not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required: ["status", "message"]
- *               properties:
- *                 status:
- *                   $ref: "#/components/utils/failedStatus"
- *                 message:
- *                   type: string
- *                   example: No user found for the given validation token
+ *         $ref: '#/components/responses/ValidationSessionError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -272,7 +249,7 @@
  *   post:
  *     summary: Google Auth — Phase 2
  *     description: >
- *      Completes the **Google sign-in** process using **validation token**, from Phase 1 (**see **Overview** above*)
+ *       Finalize the **Google sign-in** process using **validation token**, from Phase 1 (**see **Overview** above*)
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -286,12 +263,11 @@
  *                 $ref: '#/components/utils/validationToken'
  *     responses:
  *       200:
- *         description: Logged in successfully
+ *         description: Logged In Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -299,22 +275,13 @@
  *                   type: string
  *                   example: "Logged in successfully"
  *                 data:
- *                   $ref: "#/components/utils/userData"
+ *                   $ref: "#/components/schemas/User"
  *       400:
  *         $ref: '#/components/responses/ValidationError'
  *       404:
- *         description: User not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required: ["status", "message"]
- *               properties:
- *                 status:
- *                   $ref: "#/components/utils/failedStatus"
- *                 message:
- *                   type: string
- *                   example: No user found for the given validation token
+ *         $ref: '#/components/responses/ValidationSessionError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */

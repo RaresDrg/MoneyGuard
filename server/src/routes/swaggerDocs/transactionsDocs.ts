@@ -34,12 +34,11 @@
  *                 $ref: '#/components/utils/comment'
  *     responses:
  *       201:
- *         description: Transaction added successfully
+ *         description: Transaction Added Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -50,7 +49,7 @@
  *                   type: object
  *                   properties:
  *                     addedTransaction:
- *                       $ref: "#/components/utils/transactionData"
+ *                       $ref: "#/components/schemas/Transaction"
  *                     updatedBalance:
  *                       type: number
  *                       description: The updated account balance after adding this transaction
@@ -59,6 +58,8 @@
  *         $ref: '#/components/responses/ValidationError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -73,52 +74,38 @@
  *       - Allows optional query parameters: **limit**, **cursor**, and **sort** to control pagination and sorting behavior
  *       - Returns an empty array when no transactions are found
  *     parameters:
- *       - in: query
- *         name: limit
- *         description: An optional integer between 1 and 30 that controls how many transactions to return. If omitted, all transactions will be returned
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 30
- *       - in: query
- *         name: cursor
- *         description: Optional transaction ID used for pagination, referencing the last item from the previous page. If omitted, pagination starts from the beginning
- *         schema:
- *           type: string
- *       - in: query
- *         name: sort
- *         description: Optional sorting direction. If omitted, the default sorting is ascending
- *         schema:
- *           type: string
- *           enum: ["ascending", "descending"]
+ *       - $ref: "#/components/parameters/Limit"
+ *       - $ref: "#/components/parameters/Cursor"
+ *       - $ref: "#/components/parameters/Sort"
  *     tags: [Transactions]
  *     security:
  *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: Successful response. Returns a list of transactions or an empty array if none are found
+ *         description: Transactions Retrieved Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
  *                 message:
  *                   type: string
- *                   example: "Transactions retrieved successfully / Looks like there's nothing here for now"
+ *                   example: "Transactions retrieved successfully"
  *                 data:
  *                   type: object
  *                   properties:
  *                     transactions:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/utils/transactionData'
+ *                         $ref: "#/components/schemas/Transaction"
  *       400:
  *         $ref: '#/components/responses/QueryParamsError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -137,7 +124,7 @@
  *         - **date**: A valid ISO date, within the allowed range (**see **schema**)*
  *         - **comment**: A string between 5 and 200 characters
  *     parameters:
- *       - $ref: "#/components/utils/transactionIDParam"
+ *       - $ref: "#/components/parameters/TransactionID"
  *     tags: [Transactions]
  *     security:
  *       - SessionAuth: []
@@ -161,12 +148,11 @@
  *                 $ref: '#/components/utils/comment'
  *     responses:
  *       200:
- *         description: Transaction updated successfully
+ *         description: Transaction Updated Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -177,7 +163,7 @@
  *                   type: object
  *                   properties:
  *                     updatedTransaction:
- *                       $ref: "#/components/utils/transactionData"
+ *                       $ref: "#/components/schemas/Transaction"
  *                     updatedBalance:
  *                       type: number
  *                       description: The updated account balance after updating this transaction
@@ -191,7 +177,6 @@
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"
@@ -202,6 +187,8 @@
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
  *         $ref: '#/components/responses/TransactionNotFoundError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -213,18 +200,17 @@
  *   delete:
  *     summary: Delete a transaction
  *     parameters:
- *       - $ref: "#/components/utils/transactionIDParam"
+ *       - $ref: "#/components/parameters/TransactionID"
  *     tags: [Transactions]
  *     security:
  *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: Transaction deleted successfully
+ *         description: Transaction Deleted Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -235,7 +221,7 @@
  *                   type: object
  *                   properties:
  *                     deletedTransaction:
- *                       $ref: "#/components/utils/transactionData"
+ *                       $ref: "#/components/schemas/Transaction"
  *                     updatedBalance:
  *                       type: number
  *                       description: The updated account balance after deleting this transaction
@@ -246,6 +232,8 @@
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
  *         $ref: '#/components/responses/TransactionNotFoundError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -256,18 +244,17 @@
  * /api/transactions/categories:
  *   get:
  *     summary: Get transactions categories
- *     description: Returns all available transaction categories, grouped by type
+ *     description: Returns all predefined transaction categories, grouped by type
  *     tags: [Categories]
  *     security:
  *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: Categories retrieved successfully
+ *         description: Categories Retrieved Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -275,9 +262,11 @@
  *                   type: string
  *                   example: Categories retrieved successfully
  *                 data:
- *                   $ref: '#/components/utils/categoriesData'
+ *                   $ref: '#/components/schemas/Categories'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
@@ -291,19 +280,18 @@
  *     description: >
  *       Requires two query parameters: **startDate** and **endDate**, both in ISO format, defining the time range for statistical analysis
  *     parameters:
- *       - $ref: "#/components/utils/startDate"
- *       - $ref: "#/components/utils/endDate"
+ *       - $ref: "#/components/parameters/StartDate"
+ *       - $ref: "#/components/parameters/EndDate"
  *     tags: [Statistics]
  *     security:
  *       - SessionAuth: []
  *     responses:
  *       200:
- *         description: Statistics retrieved successfully
+ *         description: Statistics Retrieved Successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message", "data"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/successStatus"
@@ -314,38 +302,25 @@
  *                   type: object
  *                   properties:
  *                     statistics:
- *                       $ref: "#/components/utils/statisticsData"
+ *                       $ref: "#/components/schemas/Statistics"
  *       400:
- *         description: >
- *           Two possible cases:
- *             - Validation error
- *             - Start Date > End Date
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               required: ["status", "message"]
- *               properties:
- *                 status:
- *                   $ref: "#/components/utils/failedStatus"
- *                 message:
- *                   type: string
- *                   example: One or more query parameters have an invalid format / Start Date must be before End Date
+ *         $ref: '#/components/responses/QueryParamsError'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
- *         description: Not found
+ *         description: Statistics Not found
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               required: ["status", "message"]
  *               properties:
  *                 status:
  *                   $ref: "#/components/utils/failedStatus"
  *                 message:
  *                   type: string
  *                   example: No statistics available for this period
+ *       429:
+ *         $ref: '#/components/responses/RateLimitError'
  *       500:
  *         $ref: '#/components/responses/InternalServerError'
  */
