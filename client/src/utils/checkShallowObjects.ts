@@ -14,7 +14,7 @@ type PrimitiveTypes = string | number | boolean | null | undefined;
 
 export function checkShallowObjects<T extends Record<string, PrimitiveTypes>>(
   firstObject: T,
-  secondObject: T
+  secondObject: T,
 ) {
   const firstObjectKeys = Object.keys(firstObject);
   const secondObjectKeys = Object.keys(secondObject);

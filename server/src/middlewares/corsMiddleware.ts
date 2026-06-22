@@ -1,9 +1,9 @@
 import cors from "cors";
-import { CLIENT_URL } from "../config/config-env.js";
+import { IN_DEVELOPMENT } from "../config/config-env.js";
 
 const corsMiddleware = cors({
-  origin: CLIENT_URL,
-  credentials: true,
+  origin: IN_DEVELOPMENT,
+  credentials: IN_DEVELOPMENT,
 });
 
 export default corsMiddleware;

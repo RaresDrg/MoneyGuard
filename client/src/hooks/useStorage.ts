@@ -44,7 +44,7 @@ function useStorage<T>(key: string, storageObject: Storage) {
 
   function updateStorage(
     data: T,
-    options: { assignToUser?: boolean; expiresAt?: number } = {}
+    options: { assignToUser?: boolean; expiresAt?: number } = {},
   ) {
     setStorageData({
       data,

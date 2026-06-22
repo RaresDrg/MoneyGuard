@@ -8,7 +8,7 @@ export function sanitizePastedValue(value: string): string {
 
 export function formatWithCommas(value: string) {
   return value.replace(/^(\d+)(?=\.)?/, (match) =>
-    match.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    match.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
   );
 }
 

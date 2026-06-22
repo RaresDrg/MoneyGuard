@@ -45,7 +45,7 @@ const schema = new Schema<SessionType>(
       index: { expires: 0 },
     },
   },
-  { versionKey: false, strict: true }
+  { versionKey: false, strict: true },
 );
 schema.index({ owner: 1, type: 1 }, { unique: true });
 

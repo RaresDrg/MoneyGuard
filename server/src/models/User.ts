@@ -46,7 +46,7 @@ const schema = new Schema<UserType>(
         return { name, email, balance };
       },
     },
-  }
+  },
 );
 
 const User = model<UserType>("User", schema);

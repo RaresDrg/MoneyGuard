@@ -4,12 +4,8 @@ import env from "env-var";
 export const IN_DEVELOPMENT =
   env.get("NODE_ENV").default("development").asString() === "development";
 
-export const CLIENT_URL = IN_DEVELOPMENT
-  ? env.get("CLIENT_URL_DEV").required().asString()
-  : env.get("CLIENT_URL_PROD").required().asString();
-export const SERVER_URL = IN_DEVELOPMENT
-  ? env.get("SERVER_URL_DEV").required().asString()
-  : env.get("SERVER_URL_PROD").required().asString();
+export const CLIENT_URL = env.get("CLIENT_URL").required().asString();
+export const SERVER_URL = env.get("SERVER_URL").required().asString();
 
 export const PORT = env.get("PORT").default("3000").asPortNumber();
 export const DB_URI = env.get("DB_URI").required().asString();

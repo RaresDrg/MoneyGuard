@@ -11,7 +11,7 @@
     "dev": "cross-env NODE_ENV=development nodemon",
     "lint": "eslint src",
     "tscheck": "tsc --noEmit",
-    "create-env": "(echo CLIENT_URL_DEV=&& echo CLIENT_URL_PROD=&& echo SERVER_URL_DEV=&& echo SERVER_URL_PROD=&& echo DB_URI=&& echo GOOGLE_CLIENT_ID=&& echo GOOGLE_CLIENT_SECRET=&& echo SALT_ROUNDS=&& echo RANDOM_BYTES_LENGTH=&& echo COOKIE_PARSER_SECRET=&& echo RESEND_API_KEY=&& echo OPEN_EXCHANGE_RATES_API_KEY=) > .env"
+    "create-env": "(echo CLIENT_URL=&& echo SERVER_URL=&& echo DB_URI=&& echo GOOGLE_CLIENT_ID=&& echo GOOGLE_CLIENT_SECRET=&& echo SALT_ROUNDS=&& echo RANDOM_BYTES_LENGTH=&& echo COOKIE_PARSER_SECRET=&& echo RESEND_API_KEY=&& echo OPEN_EXCHANGE_RATES_API_KEY=) > .env"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

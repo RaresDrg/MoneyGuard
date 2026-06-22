@@ -24,13 +24,13 @@ const transactionsSlice = createSlice({
     },
     editTransaction(state, action: PayloadAction<Transaction>) {
       const index = state.transactionsList.findIndex(
-        (item) => item.id === action.payload.id
+        (item) => item.id === action.payload.id,
       );
       if (index !== -1) state.transactionsList[index] = action.payload;
     },
     deleteTransaction(state, action: PayloadAction<Transaction["id"]>) {
       const index = state.transactionsList.findIndex(
-        (item) => item.id === action.payload
+        (item) => item.id === action.payload,
       );
       if (index !== -1) state.transactionsList.splice(index, 1);
     },

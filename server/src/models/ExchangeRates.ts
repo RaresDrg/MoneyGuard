@@ -9,7 +9,7 @@ const schema = new Schema<ExchangeRatesType>(
       validate: {
         validator: function (rates: Record<string, number>) {
           return Object.values(rates).every(
-            (value) => typeof value === "number" && value > 0
+            (value) => typeof value === "number" && value > 0,
           );
         },
         message: "All exchange rates must be positive numbers",
@@ -37,7 +37,7 @@ const schema = new Schema<ExchangeRatesType>(
         return { rates, expiresAt };
       },
     },
-  }
+  },
 );
 
 const ExchangeRates = model<ExchangeRatesType>("ExchangeRates", schema);

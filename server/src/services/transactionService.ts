@@ -14,7 +14,7 @@ export function findTransactions(
   query: FilterQuery<TransactionType> & { owner: TransactionType["owner"] },
   sortBy: Exclude<keyof TransactionType, "owner" | "comment"> = "_id",
   sortDirection: "ascending" | "descending" = "ascending",
-  limit?: number
+  limit?: number,
 ) {
   const sort: Record<string, SortOrder> = {
     [sortBy]: sortDirection === "ascending" ? 1 : -1,
@@ -27,7 +27,7 @@ export function findTransactions(
 
 export function updateTransaction(
   id: string,
-  updates: Omit<TransactionType, "_id" | "owner">
+  updates: Omit<TransactionType, "_id" | "owner">,
 ) {
   return Transaction.findByIdAndUpdate(id, updates, {
     new: true,

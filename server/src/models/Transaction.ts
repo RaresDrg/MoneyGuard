@@ -50,7 +50,7 @@ const schema = new Schema<TransactionType>(
         return { id: _id.toString(), type, category, sum, date, comment };
       },
     },
-  }
+  },
 );
 
 const Transaction = model<TransactionType>("Transaction", schema);

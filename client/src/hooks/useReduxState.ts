@@ -11,7 +11,7 @@ const allSelectors = {
 };
 
 type TypedSelector<K extends keyof typeof allSelectors> = (
-  state: RootState
+  state: RootState,
 ) => ReturnType<(typeof allSelectors)[K]>;
 
 function useReduxState<K extends keyof typeof allSelectors>(key: K) {

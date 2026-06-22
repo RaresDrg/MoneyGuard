@@ -32,7 +32,7 @@ passport.use(
     } catch (error) {
       return done(error);
     }
-  })
+  }),
 );
 
 const googleAuthMiddleware: {

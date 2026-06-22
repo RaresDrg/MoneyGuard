@@ -35,14 +35,14 @@ export async function handleAuthSession(
       secure: true,
       signed: true,
       maxAge: 15 * 60 * 1000,
-      sameSite: "none",
+      sameSite: "lax",
     });
     res.cookie("refreshToken", sessionData.refreshToken, {
       httpOnly: true,
       secure: true,
       signed: true,
       maxAge: sessionData.expiresAt.getTime() - Date.now(),
-      sameSite: "none",
+      sameSite: "lax",
     });
   }
 }

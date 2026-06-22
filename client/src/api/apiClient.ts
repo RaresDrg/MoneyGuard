@@ -5,7 +5,7 @@ const IN_DEVELOPMENT = import.meta.env.MODE === "development";
 
 const apiClient = axios.create({
   baseURL: IN_DEVELOPMENT ? "http://localhost:3000/api" : "/api",
-  withCredentials: true,
+  withCredentials: IN_DEVELOPMENT,
 });
 
 apiClient.interceptors.request.use((config) => {
